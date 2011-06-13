@@ -56,13 +56,14 @@
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(SolutionDir)\lib;$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)\projects\qengine\include;$(DXSDK_DIR)\Include;$(ProjectDir)\include;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)\build</OutDir>
+    <OutDir>$(SolutionDir)/build</OutDir>
+    <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(SolutionDir)\lib;$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)\projects\qengine\include;$(DXSDK_DIR)\Include;$(ProjectDir)\include;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)\build</OutDir>
+    <OutDir>$(SolutionDir)/build</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
