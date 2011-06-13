@@ -1,0 +1,37 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qengine", "projects\qengine\qengine.vcxproj", "{BAC6B782-2B93-4F1A-A848-5CDA6F450AD5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qdriver", "projects\qdriver\qdriver.vcxproj", "{853C2F52-3E3A-497D-9C28-AAB888C8DFFB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BAC6B782-2B93-4F1A-A848-5CDA6F450AD5} = {BAC6B782-2B93-4F1A-A848-5CDA6F450AD5}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{191E9EA8-9DC0-401D-A275-474A93386DAC}"
+	ProjectSection(SolutionItems) = preProject
+		Performance1.psess = Performance1.psess
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BAC6B782-2B93-4F1A-A848-5CDA6F450AD5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BAC6B782-2B93-4F1A-A848-5CDA6F450AD5}.Debug|Win32.Build.0 = Debug|Win32
+		{BAC6B782-2B93-4F1A-A848-5CDA6F450AD5}.Release|Win32.ActiveCfg = Release|Win32
+		{BAC6B782-2B93-4F1A-A848-5CDA6F450AD5}.Release|Win32.Build.0 = Release|Win32
+		{853C2F52-3E3A-497D-9C28-AAB888C8DFFB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{853C2F52-3E3A-497D-9C28-AAB888C8DFFB}.Debug|Win32.Build.0 = Debug|Win32
+		{853C2F52-3E3A-497D-9C28-AAB888C8DFFB}.Release|Win32.ActiveCfg = Release|Win32
+		{853C2F52-3E3A-497D-9C28-AAB888C8DFFB}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+EndGlobal
