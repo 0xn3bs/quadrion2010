@@ -65,7 +65,7 @@
     </CustomBuildStep>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>include;..\shared\include;..\qdriver\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;..\shared\include;..\qdriver\include;..\..\angelscript\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;UNICODE;_DEBUG;_WINDOWS;_USRDLL;QRENDER_EXPORTS;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_SECURE_SCL 0;_HAS_ITERATOR_DEBUGGING 0;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -76,9 +76,9 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;angelscriptd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)/build/qengine_d.dll</OutputFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/anglescript/lib;$(SolutionDir)/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>..\..\lib\qengine_d.lib</ImportLibrary>
@@ -93,7 +93,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>include;..\shared\include;..\qdriver\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\angelscript\include;include;..\shared\include;..\qdriver\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;UNICODE;NDEBUG;_WINDOWS;_USRDLL;QRENDER_EXPORTS;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_SECURE_SCL 0;_HAS_ITERATOR_DEBUGGING 0;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -103,7 +103,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;angelscript.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)/build/qengine.dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)/build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -120,6 +120,17 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptany\scriptany.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptarray\scriptarray.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptbuilder\scriptbuilder.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptdictionary\scriptdictionary.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptfile\scriptfile.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scripthelper\scripthelper.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptmath3d\scriptmath3d.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptmath\scriptmath.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptstdstring\scriptstdstring.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptstring\scriptstring.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptstring\scriptstring_utils.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\H2v2.cpp" />
     <ClCompile Include="src\idct.cpp" />
@@ -138,6 +149,10 @@
     <ClCompile Include="src\qmodel.cpp" />
     <ClCompile Include="src\qmodelobject.cpp" />
     <ClCompile Include="src\qrender.cpp" />
+    <ClCompile Include="src\qscriptable.cpp" />
+    <ClCompile Include="src\qscriptengine.cpp" />
+    <ClCompile Include="src\qscriptexec.cpp" />
+    <ClCompile Include="src\qscriptmodule.cpp" />
     <ClCompile Include="src\qtext.cpp" />
     <ClCompile Include="src\qtexture.cpp" />
     <ClCompile Include="src\qtimer.cpp" />
@@ -147,6 +162,16 @@
     <ClCompile Include="src\stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptany\scriptany.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptarray\scriptarray.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptbuilder\scriptbuilder.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptdictionary\scriptdictionary.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptfile\scriptfile.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scripthelper\scripthelper.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptmath3d\scriptmath3d.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptmath\scriptmath.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptstdstring\scriptstdstring.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptstring\scriptstring.h" />
     <ClInclude Include="include\jpegdecoder.h" />
     <ClInclude Include="include\jpegref.h" />
     <ClInclude Include="include\q3dsmodel.h" />
@@ -165,6 +190,10 @@
     <ClInclude Include="include\qmodelobject.h" />
     <ClInclude Include="include\qrender.h" />
     <ClInclude Include="include\qresource.h" />
+    <ClInclude Include="include\qscriptable.h" />
+    <ClInclude Include="include\qscriptengine.h" />
+    <ClInclude Include="include\qscriptexec.h" />
+    <ClInclude Include="include\qscriptmodule.h" />
     <ClInclude Include="include\qtext.h" />
     <ClInclude Include="include\qtexture.h" />
     <ClInclude Include="include\qtimer.h" />
