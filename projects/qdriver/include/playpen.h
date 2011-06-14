@@ -54,9 +54,9 @@ static void PlayInit()
 		"void main(float w, float h)				"
 		"{							"
 		"	dt += 0.001;"
-		"	tx = 10*cosf(dt);"
-		"	tz = 10*sinf(dt);"
-		"	cam.SetCamera( tx, 0.0f, tz, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f);"
+		"	tx = 7*cosf(dt);"
+		"	tz = 7*sinf(dt);"
+		"	cam.SetCamera( tx, 7*sinf(dt/1.3f), tz, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f);"
 		"	cam.Apply();		"
 		"}							";
 
@@ -106,7 +106,7 @@ static void PlayRender()
 	CQuadrionEffect* fx = g_pRender->GetEffect( g_hEffectHandle );
 	unsigned int mat = QRENDER_MATRIX_MODELVIEWPROJECTION;
 	mat4 modelMat, prev;
-	vec3f camPos = g_pCamera->GetPosition();
+	vec3f camPos = g_pCamera->GetPosition() + vec3f(500,500,500);
 
 	mdl->CreateFinalTransform( modelMat );
 	g_pRender->GetMatrix( QRENDER_MATRIX_MODEL, prev );
