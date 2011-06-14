@@ -62,7 +62,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			
 			g_pRender->BeginRendering();
 
-			g_pRender->ClearBuffers(QRENDER_CLEAR_BACKBUFFER,  QRENDER_MAKE_ARGB(0, 0, 0, 0), 0);
+			g_pRender->ClearBuffers(QRENDER_CLEAR_BACKBUFFER | QRENDER_CLEAR_ZBUFFER,  QRENDER_MAKE_ARGB(0, 0, 0, 0), 1.0f);
 			PlayRender();
 
 			g_pRender->EndRendering();
@@ -82,7 +82,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 	
 	PlayDestroy();
-	QMem_SafeDelete( g_pApp );
+	QMem_SafeDelete(g_pApp);
 
 	// Dump the leaks
 	//_CrtDumpMemoryLeaks();

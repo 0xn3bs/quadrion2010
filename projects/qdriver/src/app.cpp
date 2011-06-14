@@ -26,6 +26,7 @@ static LRESULT CALLBACK DefaultEventCallback(HWND hWnd, UINT uMsg, WPARAM wParam
 			return 0;
 		}
 
+
 		default:
 		{
 			return DefWindowProc(hWnd, uMsg, wParam, lParam);

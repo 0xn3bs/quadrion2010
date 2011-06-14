@@ -79,7 +79,7 @@ static void PlayInit()
 	g_pScriptExec->reset();
 
 	g_pCamera->SetCamera( 0.0f, 0.0f, -10.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f );
-	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 75.0f ), (float)w / (float)h, 0.01f, 500.0f );
+	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 75.0f ), (float)w / (float)h, 0.8f, 50.0f );
 	g_pCamera->Apply();
 
 	g_hModelHandle = g_pModelManager->AddModel( "land_gear_rear.3ds", "Media/Models/" );
