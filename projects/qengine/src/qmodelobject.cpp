@@ -152,6 +152,7 @@ int CModelManager::AddModel( const std::string& name, const std::string& path, b
 	if(name.find(".3ds") != std::string::npos || name.find(".3DS") != std::string::npos)
 	{
 		new_base = new c3DSModel(0, name, path);
+		new_base->SetTexturePath(m_texturePath);
 		new_base->SetFilePath( path );
 		if( !new_base->LoadModel( loadNormalmaps ) )
 		{

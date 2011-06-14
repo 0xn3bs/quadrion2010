@@ -48,6 +48,7 @@ class QMODELOBJECTEXPORT_API CModelObject
 		const inline void	SetModelPos(const vec3f& new_pos) { m_worldPos.set(new_pos); }
 		const inline vec3f	GetModelPos() { return m_worldPos; }
 		const inline void	SetFilePath( const std::string& path ) { m_filePath = path; }
+		const inline void	SetTexturePath(const std::string& path) { m_texturePath = path; }
 		
 		const inline void	SetModelOrientation(const mat4& new_pose) { QMATH_MATRIX_COPY(m_modelPose, new_pose); }
 		const inline void	GetModelOrientation(mat4& out_pose) { QMATH_MATRIX_COPY(out_pose, m_modelPose); }
@@ -74,6 +75,7 @@ class QMODELOBJECTEXPORT_API CModelObject
 	
 		std::string			m_fileName;
 		std::string			m_filePath;
+		std::string			m_texturePath;
 		bool				m_bIsLoaded;
 		bool				m_bIsRenderable;
 		bool				m_bHasNormalmaps;
@@ -138,6 +140,7 @@ class QMODELOBJECTEXPORT_API CModelManager
 		CModelObject*			GetModel(const std::string& name, const std::string& path, const int& handle);
 		
 		const inline void		SetEffectPath( const std::string& path ) { m_effectPath = path; }
+		const inline void		SetTexturePath(const std::string& path) { m_texturePath = path; }
 		const inline void		BindDiffuseTexture( const int& texUnit ) { m_diffuseBindPoint = texUnit; }
 		const inline void		BindNormalmapTexture( const int& texUnit ) { m_normalmapBindPoint = texUnit; }
 	
@@ -145,6 +148,7 @@ class QMODELOBJECTEXPORT_API CModelManager
 	
 		std::map <std::string, std::vector <CModelObject*>, ltstr>	m_modelMap;
 		std::string		m_effectPath;
+		std::string		m_texturePath;
 
 		int				m_diffuseBindPoint;
 		int				m_normalmapBindPoint;

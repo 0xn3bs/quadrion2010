@@ -53,7 +53,7 @@ static void PlayInit()
 		"float dt = 0;"
 		"void main(float w, float h)				"
 		"{							"
-		"	dt += 0.001;"
+		"	dt += 0.0001;"
 		"	tx = 7*cosf(dt);"
 		"	tz = 7*sinf(dt);"
 		"	cam.SetCamera( tx, 7*sinf(dt/1.3f), tz, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f);"
@@ -82,16 +82,17 @@ static void PlayInit()
 	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 75.0f ), (float)w / (float)h, 0.8f, 50.0f );
 	g_pCamera->Apply();
 
-	g_hModelHandle = g_pModelManager->AddModel( "land_gear_rear.3ds", "Media/Models/" );
+	g_pModelManager->SetTexturePath("Media/Textures/");
+	g_hModelHandle = g_pModelManager->AddModel( "glock18c.3DS", "Media/Models/" );
 	g_hEffectHandle = g_pRender->AddEffect( "Phong.fx", "Media/Effects/" );
 	
 	mat4 id;
 	QMATH_MATRIX_LOADIDENTITY( id );
-	CModelObject* mdl = g_pModelManager->GetModel( "land_gear_rear.3ds", "Media/Models/", g_hModelHandle );
+	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", g_hModelHandle );
 	mdl->SetModelPos( vec3f( 0.0f, 0.0f, 0.0f ) );
 	mdl->SetModelOrientation( id );
-	mdl->SetModelScale( vec3f( 0.01f, 0.01f, 0.01f ) );
-	mdl->BindDiffuseTexture( -1 );
+	mdl->SetModelScale( vec3f( 1.0f, 1.0f, 1.0f ) );
+	mdl->BindDiffuseTexture(0);
 	mdl->BindNormalmapTexture( -1 );
 }
 
@@ -101,12 +102,12 @@ static void PlayRender()
 {
 	PlayUpdate();
 
-	CModelObject* mdl = g_pModelManager->GetModel( "land_gear_rear.3ds", "Media/Models/", g_hModelHandle );
+	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", g_hModelHandle );
 	
 	CQuadrionEffect* fx = g_pRender->GetEffect( g_hEffectHandle );
 	unsigned int mat = QRENDER_MATRIX_MODELVIEWPROJECTION;
 	mat4 modelMat, prev;
-	vec3f camPos = g_pCamera->GetPosition() + vec3f(500,500,500);
+	vec3f camPos = g_pCamera->GetPosition();// + vec3f(500,500,500);
 
 	mdl->CreateFinalTransform( modelMat );
 	g_pRender->GetMatrix( QRENDER_MATRIX_MODEL, prev );

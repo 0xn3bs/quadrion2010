@@ -1470,20 +1470,20 @@ bool c3DSModel::LoadModel( bool loadNormalmaps )
 //		std::string insert( baseDir("models/") );
 //		strTex.insert( 0, insert );
 //		textureHandleList[i].fileName.assign( strTex );
-		strTex.insert(0, "Textures/");
+		strTex.insert(0, m_texturePath);
 		
 		memset(mdlData.materials[i].texture, 0, sizeof(char) * 32);
 		strcpy(mdlData.materials[i].texture, strTex.c_str());
 		
 		unsigned int tex_flags = QTEXTURE_FILTER_TRILINEAR;
-		textureHandleList[i].textureRef = g_pRender->AddTextureObject( tex_flags, strTex.c_str(), m_filePath );
+		textureHandleList[i].textureRef = g_pRender->AddTextureObject(tex_flags, strTex.c_str());  // m_filePath
 		if(QRENDER_IS_VALID(textureHandleList[i].textureRef))
 			textureHandleList[i].fileName.assign(strTex);
 			
 		if( loadNormalmaps )
 		{
 			tex_flags |= QTEXTURE_NORMALHEIGHTMAP;
-			textureHandleList[i].normalmapRef = g_pRender->AddTextureObject( tex_flags, strTex.c_str(), m_filePath );
+			textureHandleList[i].normalmapRef = g_pRender->AddTextureObject(tex_flags, strTex.c_str());   // m_filePath
 			if( QRENDER_IS_VALID( textureHandleList[i].normalmapRef ) )
 				m_bHasNormalmaps = true;
 		}
