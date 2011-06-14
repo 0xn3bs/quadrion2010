@@ -42,14 +42,13 @@ float4 PhongMainPS( Transformed3DS input ) : COLOR0
 	float3 P = input.objPos;
 	float3 N = normalize( input.norm );
 	float3 L = normalize( g_lightPos - P );
-	float3 lightColor = float3( 0.5f, 0.5f, 0.5f );
-	float3 Kd = float3( 0.2f, 0.2f, 0.2f );
+	float3 lightColor = float3( 0.8f, 1.0f, 1.0f );
+	float3 Kd = float3( 1.0f, 1.0f, 0.8f );
 	
 	float diffuse = max( dot( N, L ), 0 );
 	float3 diffuseLight = diffuse * lightColor * Kd;
 	
-	return float4(1, 1, 1, 1);
-//	return float4( diffuseLight, 1.0 );
+	return float4( diffuseLight, 1.0 );
 }
 
 

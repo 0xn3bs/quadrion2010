@@ -11,7 +11,7 @@
 
 #include <string>
 #include <assert.h>
-
+#include "angelscript.h"
 #include "qscriptable.h"
 
 #ifdef QRENDER_EXPORTS

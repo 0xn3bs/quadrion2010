@@ -1,5 +1,7 @@
 #include "qcamera.h"
 
+#include "qscriptengine.h"
+
 
 
 CCamera::CCamera()
@@ -410,4 +412,19 @@ void CCamera::Apply()
 
 		camHasChanged = false;
 	}
+}
+
+
+void CCamera::REGISTER_SCRIPTABLES(qscriptengine *engine)
+{
+	REGISTER_CLASS(engine, "CCamera", CCamera);
+
+	REGISTER_METHOD(engine, "CCamera", CCamera, "void Apply()", Apply);
+	// void CreatePerspective(float fov, float aspectRatio, float nearP, float farP);
+	REGISTER_METHOD(engine, "CCamera", CCamera,	"void CreatePerspective(float fov, float aspectRatio, float nearP, float farP)", CreatePerspective);
+	int r = 0;
+	r = engine->getEngine()->RegisterObjectMethod("CCamera",
+		"void SetCamera(float xPos, float qPos, float zPos, float xLoos, float yLook, float zLook, float xUp, float yUp, float zUp)", 
+		asMETHODPR(CCamera, SetCamera, (float, float, float, float, float, float, float, float, float), void), asCALL_THISCALL); assert( r >= 0 );
+
 }

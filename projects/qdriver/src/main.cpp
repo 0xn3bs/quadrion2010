@@ -58,6 +58,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		else if(!done) 
 		{
 			// Do updates //
+			PlayUpdate();
 			
 			g_pRender->BeginRendering();
 
@@ -68,6 +69,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 			// Main loop logic goes here //
+			
+
+
 		}
 
 		else

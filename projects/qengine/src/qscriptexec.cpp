@@ -7,7 +7,7 @@
 //
 
 //#include "angelscript.h"
-//#include "qscriptengine.h"
+#include "qscriptengine.h"
 #include "qscriptexec.h"
 #include "angelscript.h"
 
@@ -30,6 +30,7 @@ qscriptexec::~qscriptexec()
 
 int qscriptexec::exec()
 {
+	//exit(-1);
 	int r = this->ctx->Execute();
 	
 	if( r != asEXECUTION_FINISHED )
@@ -70,5 +71,5 @@ int qscriptexec::reset()
 
 void qscriptexec::REGISTER_SCRIPTABLES(qscriptengine *engine)
 {
-	//REGISTER_CLASS(engine, "qscriptexec", qscriptexec);
+	REGISTER_CLASS(engine, "qscriptexec", qscriptexec);
 }
