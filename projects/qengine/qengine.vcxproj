@@ -178,6 +178,7 @@
     <ClInclude Include="include\qalgorithm.h" />
     <ClInclude Include="include\qcamera.h" />
     <ClInclude Include="include\qeffect.h" />
+    <ClInclude Include="include\qevent.h" />
     <ClInclude Include="include\qfile.h" />
     <ClInclude Include="include\qgeom.h" />
     <ClInclude Include="include\qhash.h" />
@@ -188,6 +189,7 @@
     <ClInclude Include="include\qmem.h" />
     <ClInclude Include="include\qmodel.h" />
     <ClInclude Include="include\qmodelobject.h" />
+    <ClInclude Include="include\qobject.h" />
     <ClInclude Include="include\qrender.h" />
     <ClInclude Include="include\qresource.h" />
     <ClInclude Include="include\qscriptable.h" />

@@ -67,6 +67,7 @@ class CApplication
 		int		GetWindowHeight();
 
 		void	GetMousePosition( int& x, int& y );
+		void	SetMousePosition( int x, int y);
 
 	protected:
 

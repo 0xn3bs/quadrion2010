@@ -82,6 +82,9 @@ class QCAMERAEXPORT_API CCamera : public qscriptable<CCamera>
 		
 		// Set view matrix from vector position //
 		void SetCamera(const vec3f& pos);
+
+		// Move the camera relative to its orientation //
+		void MoveCameraRelative(float tx, float ty, float tz);
 		
 		// applies changes made before a frame render //
 		void Apply();

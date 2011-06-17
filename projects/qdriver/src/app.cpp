@@ -287,3 +287,8 @@ void CApplication::GetMousePosition( int& x, int& y )
 	else 
 		return;
 }
+
+void CApplication::SetMousePosition( int x, int y )
+{
+	SetCursorPos( x, y );
+}

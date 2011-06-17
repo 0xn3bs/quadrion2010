@@ -30,7 +30,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// Load settings from config.ini //
 	// Using a NULL callback (2nd param) uses a default system defined callback which only handles exits //
-	g_pApp = new CApplication( "Media/config.ini", NULL );
+	g_pApp = new CApplication( "Media/config.ini", PlaypenEventCallback );
 
 	// preset game loop //
 	MSG msg;

@@ -41,6 +41,15 @@ void CCamera::SetCamera(float xPos, float yPos, float zPos, float xLook, float y
 	lookPos.set(xLook, yLook, zLook);
 	upVec.set(xUp, yUp, zUp);
 	camHasChanged = true;
+
+	// get the strafe vector
+	vec3f cDir, cCross;
+	cDir = lookPos - camPos;
+	if(cDir.x != 0 && cDir.y != 0 && cDir.z != 0)
+		cDir.normalize();
+	cCross = cDir.crossProd(upVec);
+	strafeDir = cCross;
+	camHasChanged = true;
 	
 	// Set camera cone //
 	m_cameraCone.SetVertex(camPos);
@@ -75,6 +84,34 @@ void CCamera::SetCamera(const vec3f& pos)
 	
 	// Set camera cone //
 	m_cameraCone.SetVertex(camPos);
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+// MoveCamerRelative
+// Move the camera relative to its orientation
+void CCamera::MoveCameraRelative(float tx, float ty, float tz)
+{
+	vec3f currPos = this->GetPosition();
+	vec3f viewVec = this->GetViewVector();
+	viewVec.normalize();
+	vec3f upVec = this->GetUpVector();
+	upVec.normalize();
+	vec3f strafeVec = this->GetStrafeVector();
+	strafeVec.normalize();
+
+	currPos += viewVec*tz;
+	currPos += upVec*ty;
+	currPos += strafeVec*tx;
+
+	viewVec.x += viewVec.x*tx;
+	viewVec.y += viewVec.y*ty;
+	viewVec.z += viewVec.z*tz;
+
+	viewVec += this->lookPos;
+
+	this->SetCamera(currPos.x, currPos.y, currPos.z,
+					viewVec.x, viewVec.y, viewVec.z,
+					upVec.x, upVec.y, upVec.z);
 }
 
 
@@ -421,6 +458,7 @@ void CCamera::REGISTER_SCRIPTABLES(qscriptengine *engine)
 
 	REGISTER_METHOD(engine, "CCamera", CCamera, "void Apply()", Apply);
 	// void CreatePerspective(float fov, float aspectRatio, float nearP, float farP);
+	REGISTER_METHOD(engine, "CCamera", CCamera, "void MoveCameraRelative(float tx, float ty, float tz)", MoveCameraRelative);
 	REGISTER_METHOD(engine, "CCamera", CCamera,	"void CreatePerspective(float fov, float aspectRatio, float nearP, float farP)", CreatePerspective);
 	int r = 0;
 	r = engine->getEngine()->RegisterObjectMethod("CCamera",
