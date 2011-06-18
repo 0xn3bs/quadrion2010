@@ -1,6 +1,7 @@
 #include "qcamera.h"
 
 #include "qscriptengine.h"
+#include "qscriptable.h"
 
 
 
@@ -465,4 +466,5 @@ void CCamera::REGISTER_SCRIPTABLES(qscriptengine *engine)
 		"void SetCamera(float xPos, float qPos, float zPos, float xLoos, float yLook, float zLook, float xUp, float yUp, float zUp)", 
 		asMETHODPR(CCamera, SetCamera, (float, float, float, float, float, float, float, float, float), void), asCALL_THISCALL); assert( r >= 0 );
 
+	r = engine->getEngine()->RegisterObjectBehaviour("qobject", asBEHAVE_REF_CAST, "CCamera@ f()", asFUNCTION((refCast<qobject,CCamera>)), asCALL_CDECL_OBJLAST); assert( r >= 0 );
 }

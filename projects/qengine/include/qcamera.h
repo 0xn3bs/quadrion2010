@@ -17,6 +17,7 @@ class CCamera;
 #include "qgeom.h"
 
 #include "qscriptable.h"
+#include "qobject.h"
 class qscriptengine;
 
 #ifdef QRENDER_EXPORTS
@@ -55,7 +56,7 @@ const unsigned int			QCAMERA_CLIP_PLANE_ALL		= (QCAMERA_CLIP_PLANE_LEFT | QCAMER
 // Within you will also find functionality for various frustum plane tests 
 //
 ////////////////////////////////////////////////////////////////////////////////////
-class QCAMERAEXPORT_API CCamera : public qscriptable<CCamera>
+class QCAMERAEXPORT_API CCamera : public qobject//  qscriptable<CCamera>
 {
 	public:
 		
@@ -152,6 +153,7 @@ class QCAMERAEXPORT_API CCamera : public qscriptable<CCamera>
 
 		/// SCRIPTING
 		virtual void REGISTER_SCRIPTABLES(qscriptengine *engine);
+		
 	
 	private:
 		void Rotate(float ang, vec3f axis);

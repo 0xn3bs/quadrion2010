@@ -10,9 +10,11 @@
 #include <stdio.h>
 
 #include "add_ons/scriptstring/scriptstring.h"
+#include "add_ons/scriptany/scriptany.h"
 #include "qscriptengine.h"
 #include "qscriptmodule.h"
 #include "qscriptexec.h"
+
 
 qscriptengine::qscriptengine()
 {
@@ -20,6 +22,7 @@ qscriptengine::qscriptengine()
     this->p_engine->SetMessageCallback(asFUNCTION(qscriptengine::MESSAGE_CALLBACK), 0, asCALL_CDECL);
     
     RegisterScriptString(this->p_engine);
+	RegisterScriptAny(this->p_engine);
     
     REGISTER_GLOBAL_FUNCTION(this, "void Print(string &in)", qscriptengine::DEBUG_PRINT);
 }

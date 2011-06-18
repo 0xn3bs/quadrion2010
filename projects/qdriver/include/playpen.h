@@ -16,9 +16,23 @@
 #include "qscriptmodule.h"
 #include "angelscript.h"
 
+#include "qeventregistry.h"
+#include "qevent.h"
+#include "qeventlistener.h"
+#include "qeventhandler.h"
+#include "qkeyeventlistener.h"
+#include "qscripteventhandler.h"
+#include "qobject.h"
+
+#include "add_ons/scriptstring/scriptstring.h"
+#include "add_ons/scriptany/scriptany.h"
+
 qscriptengine *g_pScriptEngine;
 qscriptexec *g_pScriptExec;
+qscriptexec *event_script;
+qscriptexec *cam;
 qscriptmodule *g_pScriptModule;
+qeventregistry *g_pEventRegistry;
 
 static CCamera* g_pCamera = NULL;
 static CModelManager* g_pModelManager = NULL;
@@ -28,9 +42,23 @@ static int g_hEffectHandle = QRENDER_INVALID_HANDLE;
 
 char keys[256];
 
+short VK_KEY(CScriptString *str)
+{
+	return VkKeyScan(str->buffer.at(0));
+}
+
 void processKeys()
 {
-	if(keys[VkKeyScan('a')])//keys[0x41])
+
+	for(int a = 0;a < 256;a++)
+	{
+		if(keys[a] == 1)
+		{
+			g_pEventRegistry->push_event(qevent(a, KEY_DOWN, EVENT_KEY));
+		}
+	}
+	//g_pEventRegistry->process_events();
+	/*if(keys[VkKeyScan('a')])//keys[0x41])
 	{
 		g_pScriptExec->ctx->SetArgFloat(0, -0.1f);
 		g_pScriptExec->ctx->SetArgFloat(1, 0.0f);
@@ -64,7 +92,13 @@ void processKeys()
 		g_pScriptExec->ctx->SetArgFloat(2, -0.2f);
 		g_pScriptExec->exec();
 		g_pScriptExec->reset();
-	}
+	}*/
+}
+
+CCamera *OBJtoCAM(qobject *obj)
+{
+	CCamera *ret = dynamic_cast<CCamera*>(obj);
+	return ret;//dynamic_cast<CCamera*>(obj);//(CCamera*)obj;
 }
 
 static LRESULT CALLBACK PlaypenEventCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -79,6 +113,7 @@ static LRESULT CALLBACK PlaypenEventCallback(HWND hWnd, UINT uMsg, WPARAM wParam
 			case WM_KEYDOWN:
 			{
 				//g_pEventReg->push_event(qevent(wParam, Event::KEY_DOWN));
+				//g_pEventRegistry->push_event(qevent(wParam, KEY_DOWN, EVENT_KEY));
 				keys[wParam] = 1;
 				break;
 			}
@@ -122,31 +157,77 @@ static void PlayInit()
 
 	// scripting init //
 	g_pScriptEngine = new qscriptengine();
+	g_pScriptEngine->registerScriptable<qobject>();
+	g_pScriptEngine->registerScriptable<qevent>();
 	g_pScriptEngine->registerScriptable<CCamera>();
+
+	// event system //
+	g_pEventRegistry = new qeventregistry();
+
+	//g_pScriptEngine->registerScriptable<qobject>();
+	//g_pScriptEngine->registerScriptable<qevent>();
+
+	
 
 	// TODO : write overloaded wrappers to AS
 	int r = g_pScriptEngine->getEngine()->RegisterGlobalFunction("float cosf(float)",  asFUNCTIONPR(cos, (float), float), asCALL_CDECL); assert( r >= 0);
 	r = g_pScriptEngine->getEngine()->RegisterGlobalFunction("float sinf(float)",  asFUNCTIONPR(sin, (float), float), asCALL_CDECL); assert( r >= 0);
-	
+	//r = g_pScriptEngine->getEngine()->RegisterGlobalFunction("uint16 VK_KEY(uint8)",  asFUNCTIONPR(VkKeyScan, (float), float), asCALL_CDECL); assert( r >= 0);
+	REGISTER_GLOBAL_FUNCTION(g_pScriptEngine, "uint16 VK_KEY(string &in)", VK_KEY);
 	g_pScriptEngine->getEngine()->RegisterGlobalProperty("CCamera@ cam", &g_pCamera);
 
-	char *script = 
-		"void main(float x, float y, float z)				"
-		"{							"
-		//"	cam.SetCamera( tx, 7*sinf(dt/1.3f), tz, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f);"*/
-		"	cam.MoveCameraRelative(x, y, z);"
-		"	cam.Apply();		"
-		"}							";
-
+	char *on_event = 
+		"void ON_EVENT(qevent @evt, qobject @obj)			"
+		"{												"
+		"	CCamera @view = cast<CCamera>(@obj);								"
+		"	switch(evt.type())							"
+		"	{											"
+		"		case EVENT_KEY :						"
+		"		{										"
+		"			switch(evt.get_key_code())			"
+		"			{									"
+		"				case VK_A :						"
+		"				{								"
+		"					view.MoveCameraRelative(-0.1f, 0.0f, 0.0f);	"
+		"					break;						"
+		"				}								"
+		"				case VK_D :						"
+		"				{								"
+		"					view.MoveCameraRelative(0.1f, 0.0f, 0.0f);	"
+		"					break;						"
+		"				}								"
+		"				case VK_W :						"
+		"				{								"
+		"					view.MoveCameraRelative(0.0f, 0.0f, 0.2f);	"
+		"					break;						"
+		"				}								"
+		"				case VK_S :						"
+		"				{								"
+		"					view.MoveCameraRelative(0.0f, 0.0f, -0.2f);	"
+		"					break;						"
+		"				}								"
+		"			}									"
+		"			break;								"
+		"		}										"
+		"	}											"
+		"	view.Apply();								"
+		"}												";
 
 	g_pScriptModule = g_pScriptEngine->pGetScriptModule("script");
 
 	// TODO : fix the from file loader..
     //if(mod->addSectionFromFile("test.as") < 0) exit(-1);
-    if(g_pScriptModule->addSection(script) < 0) exit(-1);
+	if(g_pScriptModule->addSection(on_event) < 0) exit(-1);
 	if(g_pScriptModule->buildScript() < 0) exit(-1);
 
-	g_pScriptExec = g_pScriptEngine->pGetScriptExec("script", "void main(float x, float y, float z)");
+	event_script = g_pScriptEngine->pGetScriptExec("script", "void ON_EVENT(qevent @evt, qobject @obj)");
+
+	qeventlistener *L = new qkeyeventlistener();
+	L->set_key(KEY_DOWN);
+	qeventhandler *H = new qscripteventhandler();
+	((qscripteventhandler*)H)->set_script_exe(event_script);
+
+	g_pEventRegistry->register_pair(L, H, g_pCamera);
 
 	int w = g_pApp->GetWindowWidth();
 	int h = g_pApp->GetWindowHeight();
@@ -176,6 +257,7 @@ void PlayUpdate();
 static void PlayRender()
 {
 	processKeys();
+	g_pEventRegistry->process_events();
 	PlayUpdate();
 
 	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", g_hModelHandle );
@@ -207,6 +289,10 @@ static void PlayUpdate()
 	int my = 0;
 	int sx = g_pApp->GetWindowWidth();
 	int sy = g_pApp->GetWindowHeight();
+
+	//cam->ctx->SetArgObject(0, (CCamera*)g_pCamera);
+	//cam->exec();
+	//cam->reset();
 
 	g_pApp->GetMousePosition( mx, my );
 

@@ -11,6 +11,8 @@
 
 #include <new>
 
+#include "add_ons/scriptany/scriptany.h"
+
 #ifdef QRENDER_EXPORTS
 #define QSCRIPTEXPORT_API		__declspec(dllexport)
 #define QSCRIPT_TEMPLATE
@@ -44,6 +46,9 @@ public:
     
     static void regit(qscriptengine *engine);
     
+	int typeID;
+	CScriptAny *any;
+
 protected:
     int refCount;
 };
@@ -58,7 +63,7 @@ template<class T>
 qscriptable<T>::qscriptable(const T &other)
 :   refCount(1)
 {
-    //this = &other;
+    *this = other;
 }
 
 template<class T>
@@ -87,6 +92,7 @@ T &qscriptable<T>::operator=(const T &other)
     
     // Return a reference to this object
     return *((T*)this);
+	//return *this;
 	//return *dynamic_cast<T*>(this);
 }
 
@@ -119,6 +125,23 @@ template<typename T>
 void qscriptable<T>::regit(qscriptengine *engine)
 {
     //T::LIBRARY_REGISTER_SCRIPTABLES(engine);
+}
+
+// Example REF_CAST behaviour
+template<class A, class B>
+B* refCast(A* a)
+{
+    // If the handle already is a null handle, then just return the null handle
+    if( !a ) return 0;
+
+    // Now try to dynamically cast the pointer to the wanted type
+    B* b = dynamic_cast<B*>(a);
+    if( b != 0 )
+    {
+        // Since the cast was made, we need to increase the ref counter for the returned handle
+        b->addRef();
+    }
+    return b;
 }
 
 #endif
