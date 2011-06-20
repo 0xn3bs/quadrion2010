@@ -1,4 +1,4 @@
-
+float4x4		g_mWorld;
 float4x4		g_mMVP;
 float3			g_lightPos;
 float3			g_camPos;
@@ -29,9 +29,9 @@ Transformed3DS PhongMainVS( Vertex3DS vert )
 {
 	Transformed3DS output;
 	
-	output.objPos = vert.pos.xyz;
+	output.objPos = mul(g_mWorld, float4(vert.pos.xyz, 1.0)).xyz;
 	output.pos = mul( g_mMVP, vert.pos );
-	output.norm = vert.norm;
+	output.norm = mul(g_mWorld, float4(vert.norm, 0.0)).xyz;
 	output.tan = vert.tan;
 	output.tex = vert.tex;
 	
@@ -44,13 +44,13 @@ float4 PhongMainPS( Transformed3DS input ) : COLOR0
 	float3 P = input.objPos;
 	float3 N = normalize( input.norm );
 	float3 L = normalize( g_lightPos - P );
-	float3 V = L;
-	float3 H = L + V;
+	float3 V = normalize(g_camPos - P);
+	float3 H = normalize(L + V);
 	float3 lightColor = float3( 0.8f, 1.0f, 1.0f );
 	float3 Kd = tex2D(g_diffuseSampler, input.tex).rgb;
 	
 	float diffuse = max( dot( N, L ), 0 );
-	float specular = pow(max(dot(N, H), 0), 2.0);
+	float specular = pow(max(dot(N, H), 0), 20.0);
 	float3 diffuseLight = diffuse * lightColor * Kd;
 	float3 specularLight = specular * lightColor * Kd;
 	

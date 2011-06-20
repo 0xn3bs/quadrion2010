@@ -301,6 +301,7 @@ static void PlayRender()
 
 	CQuadrionEffect* fx = g_pRender->GetEffect( g_hEffectHandle );
 	unsigned int mat = QRENDER_MATRIX_MODELVIEWPROJECTION;
+	unsigned int worldMat = QRENDER_MATRIX_MODEL;
 	mat4 modelMat, prev;
 	vec3f camPos = g_pCamera->GetPosition();
 
@@ -319,6 +320,7 @@ static void PlayRender()
 	fx->BeginEffect( "Phong" );
 	
 	fx->UploadParameters( "g_mMVP", QEFFECT_VARIABLE_STATE_MATRIX, 1, &mat );
+	fx->UploadParameters("g_mWorld", QEFFECT_VARIABLE_STATE_MATRIX, 1, &worldMat);
 	fx->UploadParameters( "g_lightPos", QEFFECT_VARIABLE_FLOAT_ARRAY, 3, &camPos );
 	fx->UploadParameters( "g_camPos", QEFFECT_VARIABLE_FLOAT_ARRAY, 3, &camPos );
 	fx->RenderEffect( 0 );
