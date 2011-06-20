@@ -280,6 +280,8 @@ void GLtoDX(float *dxm, float *glm)
 			dxm[u*4+v] = glm[v*4+u];
 }
 
+float dx = 0.0f;
+
 static void PlayRender()
 {
 	g_pPhysicsWorld->step(1/60.0f);
@@ -295,24 +297,17 @@ static void PlayRender()
 	mat4 modelMat, prev;
 	vec3f camPos = g_pCamera->GetPosition();
 
+	g_pRender->GetMatrix( QRENDER_MATRIX_MODEL, prev );
 	btTransform trans;
     handle->getMotionState()->getWorldTransform(trans);
-
-	mdl->SetModelPos(vec3f(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ()));
-
-	btQuaternion quat = trans.getRotation();
-	mat4 id;
-	vec4f q(trans.getRotation().x(), trans.getRotation().y(), trans.getRotation().z(), trans.getRotation().w());
-
-	QMATH_QUATERNION_MAKEMATRIX(id, q);
-
-	mdl->SetModelOrientation( id );
-	///////////////
-
-
-	mdl->CreateFinalTransform( modelMat );
-	g_pRender->GetMatrix( QRENDER_MATRIX_MODEL, prev );
-	g_pRender->MulMatrix( QRENDER_MATRIX_MODEL, modelMat );
+	mat4 rot;
+	trans.getOpenGLMatrix(rot);
+	
+	dx += 0.01f;
+//	QMATH_MATRIX_LOADXROLL(rot, QMATH_DEG2RAD(dx));
+//	QMATH_MATRIX_TRANSPOSE(rot);
+	mdl->SetModelOrientation(rot);
+	mdl->CreateFinalTransform(rot);
 
 	fx->BeginEffect( "Phong" );
 	
@@ -345,7 +340,7 @@ static void PlayRender()
 	fx->EndRender( 0 );
 	fx->EndEffect();*/
 
-	//g_pRender->SetMatrix( QRENDER_MATRIX_MODEL, prev );
+	g_pRender->SetMatrix( QRENDER_MATRIX_MODEL, prev );
 }
 
 static void PlayUpdate()

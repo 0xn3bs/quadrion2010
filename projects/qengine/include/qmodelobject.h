@@ -5,6 +5,7 @@
 #include "qmd3.h"
 #include "qmath.h"
 #include "qeffect.h"
+#include "qrender.h"
 
 #ifndef __MODELOBJECT_H_
 #define __MODELOBJECT_H_
