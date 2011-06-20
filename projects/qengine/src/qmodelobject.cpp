@@ -59,11 +59,12 @@ void CModelObject::CreateFinalTransform(mat4& M)
 		
 //	QMATH_MATRIX_MULTIPLY(T, NT, TMP);
 	QMATH_MATRIX_MULTIPLY(TMP, m_modelPose, T);
-	QMATH_MATRIX_LOADTRANSLATION(NT, vec3f(-m_modelCenter.x, -m_modelCenter.y, -m_modelCenter.z));
+//	QMATH_MATRIX_LOADTRANSLATION(NT, vec3f(-m_modelCenter.x, -m_modelCenter.y, -m_modelCenter.z));
 //	QMATH_MATRIX_MULTIPLY(T, S, TMP);
-	QMATH_MATRIX_MULTIPLY(TMP, NT, NT);
+//	QMATH_MATRIX_MULTIPLY(T, NT, NT);
 	g_pRender->MulMatrix(QRENDER_MATRIX_MODEL, m_modelPose);
-	
+
+
 	QMATH_MATRIX_COPY(M, NT);
 }
 
