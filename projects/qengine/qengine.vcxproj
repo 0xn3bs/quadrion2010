@@ -162,6 +162,7 @@
     <ClCompile Include="src\qscripteventhandler.cpp" />
     <ClCompile Include="src\qscriptexec.cpp" />
     <ClCompile Include="src\qscriptmodule.cpp" />
+    <ClCompile Include="src\qswf.cpp" />
     <ClCompile Include="src\qtext.cpp" />
     <ClCompile Include="src\qtexture.cpp" />
     <ClCompile Include="src\qtimer.cpp" />
@@ -212,6 +213,8 @@
     <ClInclude Include="include\qscripteventhandler.h" />
     <ClInclude Include="include\qscriptexec.h" />
     <ClInclude Include="include\qscriptmodule.h" />
+    <ClInclude Include="include\qswf.h" />
+    <ClInclude Include="include\qswf_types.h" />
     <ClInclude Include="include\qtext.h" />
     <ClInclude Include="include\qtexture.h" />
     <ClInclude Include="include\qtimer.h" />

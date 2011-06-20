@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptany\scriptany.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptarray\scriptarray.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptbuilder\scriptbuilder.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptdictionary\scriptdictionary.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptfile\scriptfile.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scripthelper\scripthelper.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptmath3d\scriptmath3d.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptmath\scriptmath.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptstdstring\scriptstdstring.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptstring\scriptstring.cpp" />
+    <ClCompile Include="..\..\angelscript\include\add_ons\scriptstring\scriptstring_utils.cpp" />
+    <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\H2v2.cpp" />
+    <ClCompile Include="src\idct.cpp" />
+    <ClCompile Include="src\jidctfst.cpp" />
+    <ClCompile Include="src\jpegdecoder.cpp" />
+    <ClCompile Include="src\q3dsmodel.cpp" />
+    <ClCompile Include="src\qalgorithm.cpp" />
+    <ClCompile Include="src\qcamera.cpp" />
+    <ClCompile Include="src\qeffect.cpp" />
+    <ClCompile Include="src\qevent.cpp" />
+    <ClCompile Include="src\qeventhandler.cpp" />
+    <ClCompile Include="src\qeventlistener.cpp" />
+    <ClCompile Include="src\qeventregistry.cpp" />
+    <ClCompile Include="src\qfile.cpp" />
+    <ClCompile Include="src\qgeom.cpp" />
+    <ClCompile Include="src\qindex_t.cpp" />
+    <ClCompile Include="src\qindexbuffer.cpp" />
+    <ClCompile Include="src\qkeyeventlistener.cpp" />
+    <ClCompile Include="src\qmath.cpp" />
+    <ClCompile Include="src\qmd3.cpp" />
+    <ClCompile Include="src\qmodel.cpp" />
+    <ClCompile Include="src\qmodelobject.cpp" />
+    <ClCompile Include="src\qmotionstate.cpp" />
+    <ClCompile Include="src\qobject.cpp" />
+    <ClCompile Include="src\qphysics.cpp" />
+    <ClCompile Include="src\qrender.cpp" />
+    <ClCompile Include="src\qscriptable.cpp" />
+    <ClCompile Include="src\qscriptengine.cpp" />
+    <ClCompile Include="src\qscripteventhandler.cpp" />
+    <ClCompile Include="src\qscriptexec.cpp" />
+    <ClCompile Include="src\qscriptmodule.cpp" />
+    <ClCompile Include="src\qtext.cpp" />
+    <ClCompile Include="src\qtexture.cpp" />
+    <ClCompile Include="src\qtimer.cpp" />
+    <ClCompile Include="src\qTMS.cpp" />
+    <ClCompile Include="src\qvertexbuffer.cpp" />
+    <ClCompile Include="src\qxml.cpp" />
+    <ClCompile Include="src\stdafx.cpp" />
+    <ClCompile Include="src\qswf.cpp">
+      <Filter>SWF</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptany\scriptany.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptarray\scriptarray.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptbuilder\scriptbuilder.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptdictionary\scriptdictionary.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptfile\scriptfile.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scripthelper\scripthelper.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptmath3d\scriptmath3d.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptmath\scriptmath.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptstdstring\scriptstdstring.h" />
+    <ClInclude Include="..\..\angelscript\include\add_ons\scriptstring\scriptstring.h" />
+    <ClInclude Include="include\jpegdecoder.h" />
+    <ClInclude Include="include\jpegref.h" />
+    <ClInclude Include="include\q3dsmodel.h" />
+    <ClInclude Include="include\qalgorithm.h" />
+    <ClInclude Include="include\qcamera.h" />
+    <ClInclude Include="include\qeffect.h" />
+    <ClInclude Include="include\qevent.h" />
+    <ClInclude Include="include\qeventhandler.h" />
+    <ClInclude Include="include\qeventlistener.h" />
+    <ClInclude Include="include\qeventregistry.h" />
+    <ClInclude Include="include\qfile.h" />
+    <ClInclude Include="include\qgeom.h" />
+    <ClInclude Include="include\qhash.h" />
+    <ClInclude Include="include\qindex_t.h" />
+    <ClInclude Include="include\qindexbuffer.h" />
+    <ClInclude Include="include\qkeyeventlistener.h" />
+    <ClInclude Include="include\qmath.h" />
+    <ClInclude Include="include\qmd3.h" />
+    <ClInclude Include="include\qmem.h" />
+    <ClInclude Include="include\qmodel.h" />
+    <ClInclude Include="include\qmodelobject.h" />
+    <ClInclude Include="include\qmotionstate.h" />
+    <ClInclude Include="include\qobject.h" />
+    <ClInclude Include="include\qphysics.h" />
+    <ClInclude Include="include\qrender.h" />
+    <ClInclude Include="include\qresource.h" />
+    <ClInclude Include="include\qscriptable.h" />
+    <ClInclude Include="include\qscriptengine.h" />
+    <ClInclude Include="include\qscripteventhandler.h" />
+    <ClInclude Include="include\qscriptexec.h" />
+    <ClInclude Include="include\qscriptmodule.h" />
+    <ClInclude Include="include\qtext.h" />
+    <ClInclude Include="include\qtexture.h" />
+    <ClInclude Include="include\qtimer.h" />
+    <ClInclude Include="include\qTMS.h" />
+    <ClInclude Include="include\qvertexbuffer.h" />
+    <ClInclude Include="include\qxml.h" />
+    <ClInclude Include="include\stdafx.h" />
+    <ClInclude Include="include\targetver.h" />
+    <ClInclude Include="include\qswf.h">
+      <Filter>SWF</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qswf_types.h">
+      <Filter>SWF</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\jpegdecoder.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="SWF">
+      <UniqueIdentifier>{4ca2f27e-dfcd-4655-8ac0-5353057a97b5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

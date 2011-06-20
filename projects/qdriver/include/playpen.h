@@ -31,6 +31,8 @@
 #include "add_ons/scriptstring/scriptstring.h"
 #include "add_ons/scriptany/scriptany.h"
 
+#include "qswf.h"
+
 qscriptengine *g_pScriptEngine;
 qscriptexec *g_pScriptExec;
 qscriptexec *event_script;
@@ -38,6 +40,7 @@ qscriptexec *cam;
 qscriptmodule *g_pScriptModule;
 qeventregistry *g_pEventRegistry;
 qphysicsengine *g_pPhysicsWorld;
+SWF	*g_pSWF;
 
 CTimer *timer;
 
@@ -256,6 +259,9 @@ static void PlayInit()
 
 	handle = g_pPhysicsWorld->addCube(10.0f, vec3f(0.0f, 10.0f, 0.0f), mdl);
 
+	g_pSWF = new SWF;
+	g_pSWF->LoadSWF("Media/SWF/console.swf");
+
 	timer = new CTimer();
 	timer->Start();
 }
@@ -372,6 +378,7 @@ static void PlayDestroy()
 {
 	QMem_SafeDelete( g_pCamera );
 	QMem_SafeDelete( g_pModelManager );
+	QMem_SafeDelete( g_pSWF );
 }
 
 #endif
