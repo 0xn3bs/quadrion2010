@@ -129,6 +129,11 @@ static LRESULT CALLBACK PlaypenEventCallback(HWND hWnd, UINT uMsg, WPARAM wParam
 
 vec3f lightPos;
 
+void killApp()
+{
+	exit(1);
+}
+
 static void PlayInit()
 {
 	g_pCamera = new CCamera;
@@ -153,6 +158,7 @@ static void PlayInit()
 	r = g_pScriptEngine->getEngine()->RegisterGlobalFunction("float sinf(float)",  asFUNCTIONPR(sin, (float), float), asCALL_CDECL); assert( r >= 0);
 	//r = g_pScriptEngine->getEngine()->RegisterGlobalFunction("uint16 VK_KEY(uint8)",  asFUNCTIONPR(VkKeyScan, (float), float), asCALL_CDECL); assert( r >= 0);
 	REGISTER_GLOBAL_FUNCTION(g_pScriptEngine, "uint16 VK_KEY(string &in)", VK_KEY);
+	REGISTER_GLOBAL_FUNCTION(g_pScriptEngine, "void killApp()", killApp);
 	g_pScriptEngine->getEngine()->RegisterGlobalProperty("CCamera@ cam", &g_pCamera);
 
 	char *on_event = 
@@ -186,6 +192,11 @@ static void PlayInit()
 		"				case VK_S :						"
 		"				{								"
 		"					view.MoveCameraRelative(0.0f, 0.0f, -50000.0f*dt);	"
+		"					break;						"
+		"				}								"
+		"				case VK_Q :						"
+		"				{								"
+		"					killApp();					"
 		"					break;						"
 		"				}								"
 		"			}									"
@@ -287,14 +298,14 @@ static void PlayRender()
 	btTransform trans;
     handle->getMotionState()->getWorldTransform(trans);
 
-	//mdl->SetModelPos(vec3f(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ()));
+	mdl->SetModelPos(vec3f(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ()));
 
-	btScalar m[16];
-	trans.getOpenGLMatrix(&m[0]);
+	btQuaternion quat = trans.getRotation();
 	mat4 id;
-	//GLtoDX(id, m);
-	QMATH_MATRIX_COPY(id, *((mat4*)m));
-	//QMATH_MATRIX_TRANSPOSE(id);
+	vec4f q(trans.getRotation().x(), trans.getRotation().y(), trans.getRotation().z(), trans.getRotation().w());
+
+	QMATH_QUATERNION_MAKEMATRIX(id, q);
+
 	mdl->SetModelOrientation( id );
 	///////////////
 
