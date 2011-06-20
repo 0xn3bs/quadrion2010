@@ -39,6 +39,8 @@ qscriptmodule *g_pScriptModule;
 qeventregistry *g_pEventRegistry;
 qphysicsengine *g_pPhysicsWorld;
 
+CTimer *timer;
+
 btRigidBody *handle;
 
 static CCamera* g_pCamera = NULL;
@@ -253,6 +255,9 @@ static void PlayInit()
 	lightPos = vec3f(500.0f, 500.0f, 500.0f);
 
 	handle = g_pPhysicsWorld->addCube(10.0f, vec3f(0.0f, 10.0f, 0.0f), mdl);
+
+	timer = new CTimer();
+	timer->Start();
 }
 
 void PlayUpdate();
@@ -284,7 +289,9 @@ float dx = 0.0f;
 
 static void PlayRender()
 {
-	g_pPhysicsWorld->step(1/60.0f);
+	g_pPhysicsWorld->step(timer->GetElapsedSec());
+	timer->Reset();
+	timer->Start();
 	processKeys();
 	g_pEventRegistry->process_events();
 	PlayUpdate();

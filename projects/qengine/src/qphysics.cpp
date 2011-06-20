@@ -43,7 +43,7 @@ btRigidBody *qphysicsengine::addCube(float mass, vec3f pos, CModelObject *_handl
 {
 	bool isDynamic = true;//= (mass != 0.f);
 	
-	btCollisionShape *shape = new btBoxShape(btVector3(1,1,1));
+	btCollisionShape *shape = new btBoxShape(btVector3(10,6,1));
 
 	btScalar m = 1;
 	btVector3 localInertia(0,0,0);
