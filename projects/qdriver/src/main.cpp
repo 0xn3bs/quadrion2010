@@ -66,7 +66,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			g_pRender->BeginRendering();
 
 			g_pRender->ClearBuffers(QRENDER_CLEAR_BACKBUFFER | QRENDER_CLEAR_ZBUFFER,  QRENDER_MAKE_ARGB(0, 0, 0, 0), 1.0f);
+
+
 			PlayRender();
+	
 
 			g_pRender->EndRendering();
 
