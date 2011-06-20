@@ -47,7 +47,48 @@ int qscriptmodule::addSection(char *_script)
 
 int qscriptmodule::addSectionFromFile(const char *_file)
 {
-	int r;
+
+	//void LoadScriptFile(const char *fileName, string &script)
+	//{
+  // Open the file in binary mode
+	string script;
+  FILE *f = fopen(_file, "rb");
+  if(!f)
+  {
+	  printf("Could not find file.\n");
+	  return -1;
+  }
+  
+  // Determine the size of the file
+  fseek(f, 0, SEEK_END);
+  int len = ftell(f);
+  fseek(f, 0, SEEK_SET);
+  
+  // Load the entire file in one call
+  script.resize(len);
+  int c = fread(&script[0], len, 1, f);
+  
+  fclose(f);
+
+  if( c == 0 ) 
+	{
+		printf("Failed to load script file.\n");
+		return -1;
+	}
+	
+	//printf("%s\n", &script[0]);
+	int r = mod->AddScriptSection(this->name.c_str(), &script[0], len);
+	if( r < 0 ) 
+	{
+		printf("AddScriptSection() failed\n");
+		return -1;
+	}
+	printf("script loaded succesfully.\n");
+	return 1;
+
+
+//} 
+	/*int r;
 	
 	// We will load the script from a file on the disk.
 	FILE *f = fopen(_file, "rb");
@@ -87,7 +128,7 @@ int qscriptmodule::addSectionFromFile(const char *_file)
 		return -1;
 	}
 	printf("script loaded succesfully.\n");
-	return 1;
+	return 1;*/
 }
 
 int qscriptmodule::buildScript()

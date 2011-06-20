@@ -8,6 +8,7 @@
 #include "qmodelobject.h"
 #include "qmem.h"
 #include "app.h"
+#include "qtimer.h"
 #include "qmath.h"
 #include <math.h>
 
@@ -24,6 +25,9 @@
 #include "qscripteventhandler.h"
 #include "qobject.h"
 
+#include "qphysics.h"
+#include "btBulletDynamicsCommon.h"
+
 #include "add_ons/scriptstring/scriptstring.h"
 #include "add_ons/scriptany/scriptany.h"
 
@@ -33,6 +37,9 @@ qscriptexec *event_script;
 qscriptexec *cam;
 qscriptmodule *g_pScriptModule;
 qeventregistry *g_pEventRegistry;
+qphysicsengine *g_pPhysicsWorld;
+
+btRigidBody *handle;
 
 static CCamera* g_pCamera = NULL;
 static CModelManager* g_pModelManager = NULL;
@@ -49,7 +56,6 @@ short VK_KEY(CScriptString *str)
 
 void processKeys()
 {
-
 	for(int a = 0;a < 256;a++)
 	{
 		if(keys[a] == 1)
@@ -57,48 +63,11 @@ void processKeys()
 			g_pEventRegistry->push_event(qevent(a, KEY_DOWN, EVENT_KEY));
 		}
 	}
-	//g_pEventRegistry->process_events();
-	/*if(keys[VkKeyScan('a')])//keys[0x41])
-	{
-		g_pScriptExec->ctx->SetArgFloat(0, -0.1f);
-		g_pScriptExec->ctx->SetArgFloat(1, 0.0f);
-		g_pScriptExec->ctx->SetArgFloat(2, 0.0f);
-		g_pScriptExec->exec();
-		g_pScriptExec->reset();
-	}
 
-	if(keys[VkKeyScan('d')])//keys[0x41])
-	{
-		g_pScriptExec->ctx->SetArgFloat(0, 0.1f);
-		g_pScriptExec->ctx->SetArgFloat(1, 0.0f);
-		g_pScriptExec->ctx->SetArgFloat(2, 0.0f);
-		g_pScriptExec->exec();
-		g_pScriptExec->reset();
-	}
-
-	if(keys[VkKeyScan('w')])//keys[0x41])
-	{
-		g_pScriptExec->ctx->SetArgFloat(0, 0.0f);
-		g_pScriptExec->ctx->SetArgFloat(1, 0.0f);
-		g_pScriptExec->ctx->SetArgFloat(2, 0.2f);
-		g_pScriptExec->exec();
-		g_pScriptExec->reset();
-	}
-
-	if(keys[VkKeyScan('s')])//keys[0x41])
-	{
-		g_pScriptExec->ctx->SetArgFloat(0, 0.0f);
-		g_pScriptExec->ctx->SetArgFloat(1, 0.0f);
-		g_pScriptExec->ctx->SetArgFloat(2, -0.2f);
-		g_pScriptExec->exec();
-		g_pScriptExec->reset();
-	}*/
-}
-
-CCamera *OBJtoCAM(qobject *obj)
-{
-	CCamera *ret = dynamic_cast<CCamera*>(obj);
-	return ret;//dynamic_cast<CCamera*>(obj);//(CCamera*)obj;
+	int mx = 0;
+				int my = 0;
+				g_pApp->GetMousePosition(mx, my);
+				g_pEventRegistry->push_event(qevent(mx, my, EVENT_MOUSE));
 }
 
 static LRESULT CALLBACK PlaypenEventCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -123,7 +92,16 @@ static LRESULT CALLBACK PlaypenEventCallback(HWND hWnd, UINT uMsg, WPARAM wParam
 				keys[wParam] = 0;
 				break;
 			}
-	
+
+			case WM_MOUSEMOVE:
+			{
+				//POINTS curs;
+				//MAKEPOINTS(lParam);
+
+				//g_pEventRegistry->push_event(qevent(curs.x, curs.y, EVENT_MOUSE));
+				break;
+			}
+
 		case WM_SYSCOMMAND:
 		{
 			if(wParam == SC_SCREENSAVE || wParam == SC_MONITORPOWER)
@@ -149,9 +127,10 @@ static LRESULT CALLBACK PlaypenEventCallback(HWND hWnd, UINT uMsg, WPARAM wParam
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
+vec3f lightPos;
+
 static void PlayInit()
 {
-
 	g_pCamera = new CCamera;
 	g_pModelManager = new CModelManager;
 
@@ -160,14 +139,14 @@ static void PlayInit()
 	g_pScriptEngine->registerScriptable<qobject>();
 	g_pScriptEngine->registerScriptable<qevent>();
 	g_pScriptEngine->registerScriptable<CCamera>();
+	g_pScriptEngine->registerScriptable<CTimer>();
 
 	// event system //
 	g_pEventRegistry = new qeventregistry();
 
-	//g_pScriptEngine->registerScriptable<qobject>();
-	//g_pScriptEngine->registerScriptable<qevent>();
-
-	
+	// physics init //
+	g_pPhysicsWorld = new qphysicsengine();
+	g_pPhysicsWorld->setGravity(0.0f, -9.8f, 0.0f);
 
 	// TODO : write overloaded wrappers to AS
 	int r = g_pScriptEngine->getEngine()->RegisterGlobalFunction("float cosf(float)",  asFUNCTIONPR(cos, (float), float), asCALL_CDECL); assert( r >= 0);
@@ -177,9 +156,12 @@ static void PlayInit()
 	g_pScriptEngine->getEngine()->RegisterGlobalProperty("CCamera@ cam", &g_pCamera);
 
 	char *on_event = 
+		"CTimer time;										"
 		"void ON_EVENT(qevent @evt, qobject @obj)			"
 		"{												"
-		"	CCamera @view = cast<CCamera>(@obj);								"
+		"	time.Start();"
+		"	double dt = time.GetElapsedSec();		"
+		"	CCamera @view = cast<CCamera>(@obj);		"
 		"	switch(evt.type())							"
 		"	{											"
 		"		case EVENT_KEY :						"
@@ -188,35 +170,41 @@ static void PlayInit()
 		"			{									"
 		"				case VK_A :						"
 		"				{								"
-		"					view.MoveCameraRelative(-0.1f, 0.0f, 0.0f);	"
+		"					view.MoveCameraRelative(-50000.0f*dt, 0.0f, 0.0f);	"
 		"					break;						"
 		"				}								"
 		"				case VK_D :						"
 		"				{								"
-		"					view.MoveCameraRelative(0.1f, 0.0f, 0.0f);	"
+		"					view.MoveCameraRelative(50000.0f*dt, 0.0f, 0.0f);	"
 		"					break;						"
 		"				}								"
 		"				case VK_W :						"
 		"				{								"
-		"					view.MoveCameraRelative(0.0f, 0.0f, 0.2f);	"
+		"					view.MoveCameraRelative(0.0f, 0.0f, 50000.0f*dt);	"
 		"					break;						"
 		"				}								"
 		"				case VK_S :						"
 		"				{								"
-		"					view.MoveCameraRelative(0.0f, 0.0f, -0.2f);	"
+		"					view.MoveCameraRelative(0.0f, 0.0f, -50000.0f*dt);	"
 		"					break;						"
 		"				}								"
 		"			}									"
 		"			break;								"
 		"		}										"
+		"		case EVENT_MOUSE :						"
+		"		{										"
+		"			view.RotateByMouse( evt.get_mouse_x(), evt.get_mouse_y(), 1400 / 2, 900 / 2 );"	
+		"			break;								"
+		"		}										"
 		"	}											"
 		"	view.Apply();								"
+		"	time.Reset();								"
 		"}												";
 
 	g_pScriptModule = g_pScriptEngine->pGetScriptModule("script");
 
 	// TODO : fix the from file loader..
-    //if(mod->addSectionFromFile("test.as") < 0) exit(-1);
+    //if(g_pScriptModule->addSectionFromFile("C:\Users\avansc\Desktop\quad2010\Media\Scriptstest.as") < 0) exit(-1);
 	if(g_pScriptModule->addSection(on_event) < 0) exit(-1);
 	if(g_pScriptModule->buildScript() < 0) exit(-1);
 
@@ -234,7 +222,7 @@ static void PlayInit()
 
 	g_pApp->SetMousePosition( 1400/2, 1900/2 );
 
-	g_pCamera->SetCamera( 0.0f, 0.0f, -10.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f );
+	g_pCamera->SetCamera( 0.0f, 10.0f, -40.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f );
 	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 75.0f ), (float)w / (float)h, 0.8f, 500.0f );
 	g_pCamera->Apply();
 
@@ -245,42 +233,108 @@ static void PlayInit()
 	mat4 id;
 	QMATH_MATRIX_LOADIDENTITY( id );
 	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", g_hModelHandle );
-	mdl->SetModelPos( vec3f( 0.0f, 0.0f, 0.0f ) );
+	mdl->SetModelPos( vec3f( 0.0f, 5.0f, 0.0f ) );
 	mdl->SetModelOrientation( id );
 	mdl->SetModelScale( vec3f( 1.0f, 1.0f, 1.0f ) );
 	mdl->BindDiffuseTexture(0);
 	mdl->BindNormalmapTexture( -1 );
+
+	lightPos = vec3f(500.0f, 500.0f, 500.0f);
+
+	handle = g_pPhysicsWorld->addCube(10.0f, vec3f(0.0f, 10.0f, 0.0f), mdl);
 }
 
 void PlayUpdate();
 
+void RenderGrid()
+{
+
+
+	for(int x = -100;x < 100;x++)
+	{
+		//for(int y = -100;y < 100;y++)
+		//{
+			g_pRender->RenderLine(vec3f(x*2,0,-100*2), vec3f(x*2,0,100*2), QRENDER_MAKE_ARGB(0xFF, 10,100,10));
+			
+			g_pRender->RenderLine(vec3f(-100*2, 0, x*2), vec3f(100*2, 0, x*2), QRENDER_MAKE_ARGB(0xFF, 10,100,10));
+		//}
+	}
+	//g_pRender->RenderLine(vec3f(0,0,0), vec3f(1000,1000,1000), QRENDER_MAKE_ARGB(0xFF, 255,255,255));
+}
+
+void GLtoDX(float *dxm, float *glm)
+{
+	for(int u = 0;u < 4;u++)
+		for(int v = 0;v < 4;v++)
+			dxm[u*4+v] = glm[v*4+u];
+}
+
 static void PlayRender()
 {
+	g_pPhysicsWorld->step(1/60.0f);
 	processKeys();
 	g_pEventRegistry->process_events();
 	PlayUpdate();
 
 	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", g_hModelHandle );
 	
+
 	CQuadrionEffect* fx = g_pRender->GetEffect( g_hEffectHandle );
 	unsigned int mat = QRENDER_MATRIX_MODELVIEWPROJECTION;
 	mat4 modelMat, prev;
 	vec3f camPos = g_pCamera->GetPosition();
+
+	btTransform trans;
+    handle->getMotionState()->getWorldTransform(trans);
+
+	//mdl->SetModelPos(vec3f(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ()));
+
+	btScalar m[16];
+	trans.getOpenGLMatrix(&m[0]);
+	mat4 id;
+	//GLtoDX(id, m);
+	QMATH_MATRIX_COPY(id, *((mat4*)m));
+	//QMATH_MATRIX_TRANSPOSE(id);
+	mdl->SetModelOrientation( id );
+	///////////////
+
 
 	mdl->CreateFinalTransform( modelMat );
 	g_pRender->GetMatrix( QRENDER_MATRIX_MODEL, prev );
 	g_pRender->MulMatrix( QRENDER_MATRIX_MODEL, modelMat );
 
 	fx->BeginEffect( "Phong" );
+	
+	fx->UploadParameters( "g_mMVP", QEFFECT_VARIABLE_STATE_MATRIX, 1, &mat );
+	fx->UploadParameters( "g_lightPos", QEFFECT_VARIABLE_FLOAT_ARRAY, 3, &camPos );
+	fx->UploadParameters( "g_camPos", QEFFECT_VARIABLE_FLOAT_ARRAY, 3, &camPos );
+	fx->RenderEffect( 0 );
+
+	mdl->RenderModel();
+	fx->EndRender( 0 );
+	fx->EndEffect();
+
+	g_pRender->SetMatrix( QRENDER_MATRIX_MODEL, prev );
+
+	g_pRender->RenderBox(vec3f(-1,-1,-1), vec3f(1,1,1), QRENDER_MAKE_ARGB(0xFF, 255,255,255));
+
+	//g_pRender->GetMatrix( QRENDER_MATRIX_MODEL, prev );
+	//g_pRender->MulMatrix( QRENDER_MATRIX_MODEL, modelMat );
+
+	// attempt to render a green line.
+	RenderGrid();
+	//g_pRender->RenderLine(fromVec, toVec, QRENDER_MAKE_ARGB(0xFF, fromR, fromG, fromB)
+	//g_pRender->RenderLine(vec3f(0,0,0), vec3f(1000,1000,1000), QRENDER_MAKE_ARGB(0xFF, 255,255,255));
+	/*fx->BeginEffect( "Phong" );
 	fx->UploadParameters( "g_mMVP", QEFFECT_VARIABLE_STATE_MATRIX, 1, &mat );
 	fx->UploadParameters( "g_lightPos", QEFFECT_VARIABLE_FLOAT_ARRAY, 3, &camPos );
 	fx->UploadParameters( "g_camPos", QEFFECT_VARIABLE_FLOAT_ARRAY, 3, &camPos );
 	fx->RenderEffect( 0 );
 	mdl->RenderModel();
 	fx->EndRender( 0 );
-	fx->EndEffect();
+	fx->EndEffect();*/
 
-	g_pRender->SetMatrix( QRENDER_MATRIX_MODEL, prev );
+	//g_pRender->SetMatrix( QRENDER_MATRIX_MODEL, prev );
 }
 
 static void PlayUpdate()
@@ -289,10 +343,6 @@ static void PlayUpdate()
 	int my = 0;
 	int sx = g_pApp->GetWindowWidth();
 	int sy = g_pApp->GetWindowHeight();
-
-	//cam->ctx->SetArgObject(0, (CCamera*)g_pCamera);
-	//cam->exec();
-	//cam->reset();
 
 	g_pApp->GetMousePosition( mx, my );
 

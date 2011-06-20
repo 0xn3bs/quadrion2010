@@ -22,6 +22,8 @@
 #include <unistd.h>
 #endif
 
+#include "qscriptable.h"
+
 typedef struct QTIMEREXPORT_API _TIME
 {
 	double Years;
@@ -33,7 +35,7 @@ typedef struct QTIMEREXPORT_API _TIME
 	double Microseconds;
 } TIME;
 
-class QTIMEREXPORT_API CTimer
+class QTIMEREXPORT_API CTimer : public qscriptable<CTimer>
 {
 public:
 	CTimer()
@@ -63,6 +65,8 @@ public:
 	double GetElapsedSec();
 	TIME   GetElapsed();
 	bool IsRunning;
+
+	virtual void REGISTER_SCRIPTABLES(qscriptengine *engine);
 
 protected:
 private:

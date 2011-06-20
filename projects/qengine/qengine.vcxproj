@@ -65,7 +65,7 @@
     </CustomBuildStep>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>include;..\shared\include;..\qdriver\include;..\..\angelscript\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;..\shared\include;..\qdriver\include;..\..\bullet\include;..\..\angelscript\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;UNICODE;_DEBUG;_WINDOWS;_USRDLL;QRENDER_EXPORTS;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_SECURE_SCL 0;_HAS_ITERATOR_DEBUGGING 0;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -76,9 +76,9 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;angelscriptd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;angelscriptd.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)/build/qengine_d.dll</OutputFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)/anglescript/lib;$(SolutionDir)/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/anglescript/lib;$(SolutionDir)/lib;$(SolutionDir)/bullet/lib/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>..\..\lib\qengine_d.lib</ImportLibrary>
@@ -153,7 +153,9 @@
     <ClCompile Include="src\qmd3.cpp" />
     <ClCompile Include="src\qmodel.cpp" />
     <ClCompile Include="src\qmodelobject.cpp" />
+    <ClCompile Include="src\qmotionstate.cpp" />
     <ClCompile Include="src\qobject.cpp" />
+    <ClCompile Include="src\qphysics.cpp" />
     <ClCompile Include="src\qrender.cpp" />
     <ClCompile Include="src\qscriptable.cpp" />
     <ClCompile Include="src\qscriptengine.cpp" />
@@ -200,7 +202,9 @@
     <ClInclude Include="include\qmem.h" />
     <ClInclude Include="include\qmodel.h" />
     <ClInclude Include="include\qmodelobject.h" />
+    <ClInclude Include="include\qmotionstate.h" />
     <ClInclude Include="include\qobject.h" />
+    <ClInclude Include="include\qphysics.h" />
     <ClInclude Include="include\qrender.h" />
     <ClInclude Include="include\qresource.h" />
     <ClInclude Include="include\qscriptable.h" />

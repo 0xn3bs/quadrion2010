@@ -461,6 +461,7 @@ void CCamera::REGISTER_SCRIPTABLES(qscriptengine *engine)
 	// void CreatePerspective(float fov, float aspectRatio, float nearP, float farP);
 	REGISTER_METHOD(engine, "CCamera", CCamera, "void MoveCameraRelative(float tx, float ty, float tz)", MoveCameraRelative);
 	REGISTER_METHOD(engine, "CCamera", CCamera,	"void CreatePerspective(float fov, float aspectRatio, float nearP, float farP)", CreatePerspective);
+	REGISTER_METHOD(engine, "CCamera", CCamera,	"void RotateByMouse(int mouseX, int mouseY, int midScreenX, int midScreenY)", RotateByMouse);
 	int r = 0;
 	r = engine->getEngine()->RegisterObjectMethod("CCamera",
 		"void SetCamera(float xPos, float qPos, float zPos, float xLoos, float yLook, float zLook, float xUp, float yUp, float zUp)", 
