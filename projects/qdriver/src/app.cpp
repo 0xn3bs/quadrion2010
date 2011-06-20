@@ -152,7 +152,13 @@ void CApplicationWindow::LoadFromINI( cINI* ini, WNDPROC wndProc )
 
 	ShowWindow(handle, SW_SHOW);
 	SetForegroundWindow(handle);
-	SetFocus(handle);	
+	SetFocus(handle);
+	
+	
+	RECT winRect;
+	GetClientRect(handle, &winRect);
+	winWidth = winRect.right;
+	winHeight = winRect.bottom;
 }
 
 
@@ -216,6 +222,11 @@ void CApplicationWindow::LoadFromDefaults()
 	ShowWindow(handle, SW_SHOW);
 	SetForegroundWindow(handle);
 	SetFocus(handle);	
+
+	RECT winRect;
+	GetClientRect(handle, &winRect);
+	winWidth = winRect.right;
+	winHeight = winRect.bottom;
 }
 
 
