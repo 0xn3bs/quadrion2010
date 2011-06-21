@@ -1290,6 +1290,8 @@ bool CQuadrionRender::EnableAlphaBlending()
 	if(FAILED(m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, true)))
 		return false;
 	
+///*temp*/	m_pD3DDev->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+	
 	m_bAlphaBlendingEnabled = true;
 	return true;
 }
@@ -1347,6 +1349,10 @@ bool CQuadrionRender::ChangeAlphaBlendMode(const unsigned int& src, const unsign
 			s = D3DBLEND_SRCALPHA;
 			break;
 		
+		case 0x00200007:
+			s = D3DBLEND_DESTALPHA;
+			break;
+		
 		case 0x00200008:
 			s = D3DBLEND_DESTCOLOR;
 			break;
@@ -1377,7 +1383,11 @@ bool CQuadrionRender::ChangeAlphaBlendMode(const unsigned int& src, const unsign
 		case 0x00200006:
 			d = D3DBLEND_SRCALPHA;
 			break;
-		
+
+		case 0x00200007:
+			s = D3DBLEND_DESTALPHA;
+			break;
+
 		case 0x00200008:
 			d = D3DBLEND_DESTCOLOR;
 			break;	

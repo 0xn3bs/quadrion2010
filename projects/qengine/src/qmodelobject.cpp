@@ -54,6 +54,8 @@ void CModelObject::CreateFinalTransform(mat4& M)
 	mat4 T, S, NT, TMP;
 
 	QMATH_MATRIX_LOADTRANSLATION(T, vec3f(-m_modelCenter));
+	QMATH_MATRIX_LOADSCALE(S, vec3f(m_modelScale));
+	QMATH_MATRIX_MULTIPLY(S, T, T);
 	QMATH_MATRIX_MULTIPLY(m_modelPose, T, m_modelPose); 
 
 	g_pRender->MulMatrix(QRENDER_MATRIX_MODEL, m_modelPose);

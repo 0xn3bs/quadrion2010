@@ -1,6 +1,114 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <ClCompile Include="src\dllmain.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jpegdecoder.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H2v2.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\idct.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jidctfst.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\q3dsmodel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qalgorithm.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qcamera.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qeffect.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qfile.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qgeom.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qindex_t.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qindexbuffer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qmd3.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qmath.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qmodel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qmodelobject.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qrender.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qtexture.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qtext.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qtimer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qTMS.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qvertexbuffer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qxml.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qscriptable.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qscriptengine.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qscriptexec.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qscriptmodule.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qobject.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qevent.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qeventlistener.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qeventhandler.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qkeyeventlistener.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qscripteventhandler.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qeventregistry.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\angelscript\include\add_ons\scriptany\scriptany.cpp" />
     <ClCompile Include="..\..\angelscript\include\add_ons\scriptarray\scriptarray.cpp" />
     <ClCompile Include="..\..\angelscript\include\add_ons\scriptbuilder\scriptbuilder.cpp" />
@@ -12,49 +120,136 @@
     <ClCompile Include="..\..\angelscript\include\add_ons\scriptstdstring\scriptstdstring.cpp" />
     <ClCompile Include="..\..\angelscript\include\add_ons\scriptstring\scriptstring.cpp" />
     <ClCompile Include="..\..\angelscript\include\add_ons\scriptstring\scriptstring_utils.cpp" />
-    <ClCompile Include="src\dllmain.cpp" />
-    <ClCompile Include="src\H2v2.cpp" />
-    <ClCompile Include="src\idct.cpp" />
-    <ClCompile Include="src\jidctfst.cpp" />
-    <ClCompile Include="src\jpegdecoder.cpp" />
-    <ClCompile Include="src\q3dsmodel.cpp" />
-    <ClCompile Include="src\qalgorithm.cpp" />
-    <ClCompile Include="src\qcamera.cpp" />
-    <ClCompile Include="src\qeffect.cpp" />
-    <ClCompile Include="src\qevent.cpp" />
-    <ClCompile Include="src\qeventhandler.cpp" />
-    <ClCompile Include="src\qeventlistener.cpp" />
-    <ClCompile Include="src\qeventregistry.cpp" />
-    <ClCompile Include="src\qfile.cpp" />
-    <ClCompile Include="src\qgeom.cpp" />
-    <ClCompile Include="src\qindex_t.cpp" />
-    <ClCompile Include="src\qindexbuffer.cpp" />
-    <ClCompile Include="src\qkeyeventlistener.cpp" />
-    <ClCompile Include="src\qmath.cpp" />
-    <ClCompile Include="src\qmd3.cpp" />
-    <ClCompile Include="src\qmodel.cpp" />
-    <ClCompile Include="src\qmodelobject.cpp" />
-    <ClCompile Include="src\qmotionstate.cpp" />
-    <ClCompile Include="src\qobject.cpp" />
     <ClCompile Include="src\qphysics.cpp" />
-    <ClCompile Include="src\qrender.cpp" />
-    <ClCompile Include="src\qscriptable.cpp" />
-    <ClCompile Include="src\qscriptengine.cpp" />
-    <ClCompile Include="src\qscripteventhandler.cpp" />
-    <ClCompile Include="src\qscriptexec.cpp" />
-    <ClCompile Include="src\qscriptmodule.cpp" />
-    <ClCompile Include="src\qtext.cpp" />
-    <ClCompile Include="src\qtexture.cpp" />
-    <ClCompile Include="src\qtimer.cpp" />
-    <ClCompile Include="src\qTMS.cpp" />
-    <ClCompile Include="src\qvertexbuffer.cpp" />
-    <ClCompile Include="src\qxml.cpp" />
-    <ClCompile Include="src\stdafx.cpp" />
-    <ClCompile Include="src\qswf.cpp">
-      <Filter>SWF</Filter>
-    </ClCompile>
+    <ClCompile Include="src\qmotionstate.cpp" />
+    <ClCompile Include="src\qphysicsmesh.cpp" />
+    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\bestfit.cpp" />
+    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\bestfitobb.cpp" />
+    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\cd_hull.cpp" />
+    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\cd_wavefront.cpp" />
+    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\concavity.cpp" />
+    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\ConvexBuilder.cpp" />
+    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\ConvexDecomposition.cpp" />
+    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\fitsphere.cpp" />
+    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\float_math.cpp" />
+    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\meshvolume.cpp" />
+    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\planetri.cpp" />
+    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\raytri.cpp" />
+    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\splitplane.cpp" />
+    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\vlookup.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\jpegdecoder.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\targetver.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jpegref.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\q3dsmodel.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qalgorithm.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qcamera.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qeffect.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qfile.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qgeom.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qhash.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qindex_t.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qindexbuffer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qmath.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qmd3.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qmem.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qmodel.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qmodelobject.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qrender.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qresource.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qtext.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qtexture.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qtimer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qTMS.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qvertexbuffer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qxml.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stdafx.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qscriptable.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qscriptengine.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qscriptexec.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qscriptmodule.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qevent.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qobject.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qeventregistry.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qeventlistener.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qeventhandler.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qkeyeventlistener.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qscripteventhandler.h">
+      <Filter>include</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\angelscript\include\add_ons\scriptany\scriptany.h" />
     <ClInclude Include="..\..\angelscript\include\add_ons\scriptarray\scriptarray.h" />
     <ClInclude Include="..\..\angelscript\include\add_ons\scriptbuilder\scriptbuilder.h" />
@@ -65,58 +260,37 @@
     <ClInclude Include="..\..\angelscript\include\add_ons\scriptmath\scriptmath.h" />
     <ClInclude Include="..\..\angelscript\include\add_ons\scriptstdstring\scriptstdstring.h" />
     <ClInclude Include="..\..\angelscript\include\add_ons\scriptstring\scriptstring.h" />
-    <ClInclude Include="include\jpegdecoder.h" />
-    <ClInclude Include="include\jpegref.h" />
-    <ClInclude Include="include\q3dsmodel.h" />
-    <ClInclude Include="include\qalgorithm.h" />
-    <ClInclude Include="include\qcamera.h" />
-    <ClInclude Include="include\qeffect.h" />
-    <ClInclude Include="include\qevent.h" />
-    <ClInclude Include="include\qeventhandler.h" />
-    <ClInclude Include="include\qeventlistener.h" />
-    <ClInclude Include="include\qeventregistry.h" />
-    <ClInclude Include="include\qfile.h" />
-    <ClInclude Include="include\qgeom.h" />
-    <ClInclude Include="include\qhash.h" />
-    <ClInclude Include="include\qindex_t.h" />
-    <ClInclude Include="include\qindexbuffer.h" />
-    <ClInclude Include="include\qkeyeventlistener.h" />
-    <ClInclude Include="include\qmath.h" />
-    <ClInclude Include="include\qmd3.h" />
-    <ClInclude Include="include\qmem.h" />
-    <ClInclude Include="include\qmodel.h" />
-    <ClInclude Include="include\qmodelobject.h" />
-    <ClInclude Include="include\qmotionstate.h" />
-    <ClInclude Include="include\qobject.h" />
     <ClInclude Include="include\qphysics.h" />
-    <ClInclude Include="include\qrender.h" />
-    <ClInclude Include="include\qresource.h" />
-    <ClInclude Include="include\qscriptable.h" />
-    <ClInclude Include="include\qscriptengine.h" />
-    <ClInclude Include="include\qscripteventhandler.h" />
-    <ClInclude Include="include\qscriptexec.h" />
-    <ClInclude Include="include\qscriptmodule.h" />
-    <ClInclude Include="include\qtext.h" />
-    <ClInclude Include="include\qtexture.h" />
-    <ClInclude Include="include\qtimer.h" />
-    <ClInclude Include="include\qTMS.h" />
-    <ClInclude Include="include\qvertexbuffer.h" />
-    <ClInclude Include="include\qxml.h" />
-    <ClInclude Include="include\stdafx.h" />
-    <ClInclude Include="include\targetver.h" />
-    <ClInclude Include="include\qswf.h">
-      <Filter>SWF</Filter>
-    </ClInclude>
-    <ClInclude Include="include\qswf_types.h">
-      <Filter>SWF</Filter>
-    </ClInclude>
+    <ClInclude Include="include\qmotionstate.h" />
+    <ClInclude Include="include\qphysicsmesh.h" />
+    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\bestfit.h" />
+    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\bestfitobb.h" />
+    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\cd_hull.h" />
+    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\cd_vector.h" />
+    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\cd_wavefront.h" />
+    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\concavity.h" />
+    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\ConvexBuilder.h" />
+    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\ConvexDecomposition.h" />
+    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\fitsphere.h" />
+    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\float_math.h" />
+    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\meshvolume.h" />
+    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\planetri.h" />
+    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\raytri.h" />
+    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\splitplane.h" />
+    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\vlookup.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\jpegdecoder.inl" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="SWF">
-      <UniqueIdentifier>{4ca2f27e-dfcd-4655-8ac0-5353057a97b5}</UniqueIdentifier>
+    <Filter Include="include">
+      <UniqueIdentifier>{f9117f00-35d9-4cbc-b202-58e7a8148c70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{a9f8a615-6838-42b1-92f5-7243b65a7676}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons">
+      <UniqueIdentifier>{0e36c3ae-cf3b-483d-adf5-2b087cc4cdff}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -221,6 +221,7 @@ class Q3DSMODELEXPORT_API c3DSModel : public CModelObject
 		
 		// Get models overall position //																				
 		inline vec3f			getModelCenter() { return vec3f(mdlData.center[0], mdlData.center[1], mdlData.center[2]); }
+		inline chunk_data3ds*	getModelData() { return &mdlData; }
 		void					GetModelCenter(vec3f& center) { center.set(mdlData.center[0], mdlData.center[1], mdlData.center[2]); }
 		
 		// Get number of meshes in model //

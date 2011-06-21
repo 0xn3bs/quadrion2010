@@ -11,6 +11,7 @@
 #include "qtimer.h"
 #include "qmath.h"
 #include <math.h>
+#include <list>
 
 #include "qscriptengine.h"
 #include "qscriptexec.h"
@@ -26,6 +27,7 @@
 #include "qobject.h"
 
 #include "qphysics.h"
+#include "qphysicsmesh.h"
 #include "btBulletDynamicsCommon.h"
 
 #include "add_ons/scriptstring/scriptstring.h"
@@ -40,6 +42,8 @@ qscriptexec *cam;
 qscriptmodule *g_pScriptModule;
 qeventregistry *g_pEventRegistry;
 qphysicsengine *g_pPhysicsWorld;
+
+qPhysicsMesh *convex_mesh;
 SWF	*g_pSWF;
 
 CTimer *timer;
@@ -88,6 +92,12 @@ static LRESULT CALLBACK PlaypenEventCallback(HWND hWnd, UINT uMsg, WPARAM wParam
 			{
 				//g_pEventReg->push_event(qevent(wParam, Event::KEY_DOWN));
 				//g_pEventRegistry->push_event(qevent(wParam, KEY_DOWN, EVENT_KEY));
+				if(keys[VkKeyScan('n')])
+				{
+				//phymod *t = new phymod();
+				//model_list.push_back(t);
+				}
+
 				keys[wParam] = 1;
 				break;
 			}
@@ -139,6 +149,8 @@ void killApp()
 	exit(1);
 }
 
+
+
 static void PlayInit()
 {
 	g_pCamera = new CCamera;
@@ -156,7 +168,7 @@ static void PlayInit()
 
 	// physics init //
 	g_pPhysicsWorld = new qphysicsengine();
-	g_pPhysicsWorld->setGravity(0.0f, -9.8f, 0.0f);
+	g_pPhysicsWorld->setGravity(0.0f, -32.2f, 0.0f);
 
 	// TODO : write overloaded wrappers to AS
 	int r = g_pScriptEngine->getEngine()->RegisterGlobalFunction("float cosf(float)",  asFUNCTIONPR(cos, (float), float), asCALL_CDECL); assert( r >= 0);
@@ -213,7 +225,7 @@ static void PlayInit()
 		"			break;								"
 		"		}										"
 		"	}											"
-		"	view.Apply();								"
+		//"	view.Apply();								"
 		"	time.Reset();								"
 		"}												";
 
@@ -238,8 +250,8 @@ static void PlayInit()
 
 	g_pApp->SetMousePosition( 1400/2, 1900/2 );
 
-	g_pCamera->SetCamera( 0.0f, 10.0f, -40.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f );
-	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 75.0f ), (float)w / (float)h, 0.8f, 500.0f );
+	g_pCamera->SetCamera( 60.0f, 20.0f, 60.0f, 0.0f, 100.0f, 0.0f, 0.0f, 1.0f, 0.0f );
+	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 55.0f ), (float)w / (float)h, 0.8f, 500.0f );
 	g_pCamera->Apply();
 
 	g_pModelManager->SetTexturePath("Media/Textures/");
@@ -249,16 +261,28 @@ static void PlayInit()
 	mat4 id;
 	QMATH_MATRIX_LOADIDENTITY( id );
 	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", g_hModelHandle );
-	mdl->SetModelPos( vec3f( 0.0f, 5.0f, 0.0f ) );
-	mdl->SetModelOrientation( id );
+	mdl->SetModelPos( vec3f( 0.0f, 00.0f, 0.0f ) );
+	//mdl->SetModelScale( vec3f( 0.5f, 0.5f, 0.5f ) );
 	mdl->SetModelScale( vec3f( 1.0f, 1.0f, 1.0f ) );
+	mdl->SetModelOrientation( id );
 	mdl->BindDiffuseTexture(0);
 	mdl->BindNormalmapTexture( -1 );
+	//mdl->CreateFinalTransform(id);
 
-	lightPos = vec3f(500.0f, 500.0f, 500.0f);
+	//lightPos = vec3f(500.0f, 500.0f, 500.0f);
+	vec3f min, max, center;
+	mdl->GetAABB(min, max);
+	mdl->GetModelCenter(center);
+	//pos = mdl->GetModelPos();
+	//center = center - pos;
 
-	handle = g_pPhysicsWorld->addCube(10.0f, vec3f(0.0f, 10.0f, 0.0f), mdl);
-
+	/// physics convex decomposition mesh ///
+	convex_mesh = new qPhysicsMesh3DS(mdl);
+	convex_mesh->processMesh();
+	handle = g_pPhysicsWorld->addCompoundShape(20.0f, vec3f(0.0f, 10.0f, 0.0f), max - center, convex_mesh->getCompoundShape());
+	//handle = g_pPhysicsWorld->addBox(20.0f, vec3f(0.0f, 60.0f, 0.0f), max - center, mdl);
+	//handle->applyTorqueImpulse(btVector3(100,100,-50));
+	
 	g_pSWF = new SWF;
 	g_pSWF->LoadSWF("Media/SWF/console.swf");
 
@@ -270,18 +294,45 @@ void PlayUpdate();
 
 void RenderGrid()
 {
-
-
 	for(int x = -100;x < 100;x++)
 	{
 		//for(int y = -100;y < 100;y++)
 		//{
-			g_pRender->RenderLine(vec3f(x*2,0,-100*2), vec3f(x*2,0,100*2), QRENDER_MAKE_ARGB(0xFF, 10,100,10));
+			g_pRender->RenderLine(vec3f(x*2,0,-100*2), vec3f(x*2,0,100*2), QRENDER_MAKE_ARGB(0x80, 10,100,10));
 			
-			g_pRender->RenderLine(vec3f(-100*2, 0, x*2), vec3f(100*2, 0, x*2), QRENDER_MAKE_ARGB(0xFF, 10,100,10));
+			g_pRender->RenderLine(vec3f(-100*2, 0, x*2), vec3f(100*2, 0, x*2), QRENDER_MAKE_ARGB(0x80, 10,100,10));
 		//}
 	}
 	//g_pRender->RenderLine(vec3f(0,0,0), vec3f(1000,1000,1000), QRENDER_MAKE_ARGB(0xFF, 255,255,255));
+}
+
+void RenderBox(vec3f min, vec3f max, unsigned int color)
+{
+	vec3f minx(min.x,0,0);
+	vec3f miny(0,min.y,0);
+	vec3f minz(0,0,min.z);
+
+	vec3f maxx(max.x,0,0);
+	vec3f maxy(0,max.y,0);
+	vec3f maxz(0,0,max.z);
+
+	//for(int a = 0;a < 8;a++)
+	//g_pRender->RenderLine(minx - maxx/2, maxx - maxx/2, color);
+	//g_pRender->RenderLine(minx - maxy/2, maxx - maxy/2, color);
+
+	//X-AXIS
+	/*g_pRender->RenderLine(minx - maxy - maxz/2, maxx - maxy - maxz/2, color);
+	g_pRender->RenderLine(minx + maxy + maxz/2, maxx + maxy + maxz/2, color);
+
+	g_pRender->RenderLine(minx - maxz/2, maxx - maxz/2, color);
+	g_pRender->RenderLine(minx + maxz/2, maxx + maxz/2, color);
+
+	//g_pRender->RenderLine(miny, maxy, color);
+	//g_pRender->RenderLine(minz, maxz, color);*/
+
+	/*g_pRender->RenderLine(x-x/2, -x, color);
+	g_pRender->RenderLine(y, -y, color);
+	g_pRender->RenderLine(z, -z, color);*/
 }
 
 void GLtoDX(float *dxm, float *glm)
@@ -303,23 +354,24 @@ static void PlayRender()
 	PlayUpdate();
 
 	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", g_hModelHandle );
-	
+
+	g_pPhysicsWorld->updateCenterOfMassOffest(handle, mdl);
 
 	CQuadrionEffect* fx = g_pRender->GetEffect( g_hEffectHandle );
 	unsigned int mat = QRENDER_MATRIX_MODELVIEWPROJECTION;
 	unsigned int worldMat = QRENDER_MATRIX_MODEL;
 	mat4 modelMat, prev;
-	vec3f camPos = g_pCamera->GetPosition();
+	vec3f p = g_pCamera->GetPosition();
+	vec3f camPos = vec3f(p.x, p.y, p.z);
 
 	g_pRender->GetMatrix( QRENDER_MATRIX_MODEL, prev );
+	
 	btTransform trans;
     handle->getMotionState()->getWorldTransform(trans);
 	mat4 rot;
+	
 	trans.getOpenGLMatrix(rot);
 	
-	dx += 0.01f;
-//	QMATH_MATRIX_LOADXROLL(rot, QMATH_DEG2RAD(dx));
-//	QMATH_MATRIX_TRANSPOSE(rot);
 	mdl->SetModelOrientation(rot);
 	mdl->CreateFinalTransform(rot);
 
@@ -332,30 +384,28 @@ static void PlayRender()
 	fx->RenderEffect( 0 );
 
 	mdl->RenderModel();
+	
 	fx->EndRender( 0 );
 	fx->EndEffect();
 
+	vec3f bound_low, bound_high;
+	mdl->GetAABB(bound_low, bound_high);
+
+	btVector3 min, max;
+	g_pPhysicsWorld->getAABB(handle, min, max);
+
+	vec3f mint(min.getX(), min.getY(), min.getZ());
+	vec3f maxt(max.getX(), max.getY(), max.getZ());
+
+	g_pRender->EnableAlphaBlending();
+	g_pRender->ChangeAlphaBlendMode(QRENDER_ALPHABLEND_SRCALPHA, QRENDER_ALPHABLEND_ONE);
+
 	g_pRender->SetMatrix( QRENDER_MATRIX_MODEL, prev );
 
-	g_pRender->RenderBox(vec3f(-1,-1,-1), vec3f(1,1,1), QRENDER_MAKE_ARGB(0xFF, 255,255,255));
-
-	//g_pRender->GetMatrix( QRENDER_MATRIX_MODEL, prev );
-	//g_pRender->MulMatrix( QRENDER_MATRIX_MODEL, modelMat );
-
-	// attempt to render a green line.
 	RenderGrid();
-	//g_pRender->RenderLine(fromVec, toVec, QRENDER_MAKE_ARGB(0xFF, fromR, fromG, fromB)
-	//g_pRender->RenderLine(vec3f(0,0,0), vec3f(1000,1000,1000), QRENDER_MAKE_ARGB(0xFF, 255,255,255));
-	/*fx->BeginEffect( "Phong" );
-	fx->UploadParameters( "g_mMVP", QEFFECT_VARIABLE_STATE_MATRIX, 1, &mat );
-	fx->UploadParameters( "g_lightPos", QEFFECT_VARIABLE_FLOAT_ARRAY, 3, &camPos );
-	fx->UploadParameters( "g_camPos", QEFFECT_VARIABLE_FLOAT_ARRAY, 3, &camPos );
-	fx->RenderEffect( 0 );
-	mdl->RenderModel();
-	fx->EndRender( 0 );
-	fx->EndEffect();*/
 
 	g_pRender->SetMatrix( QRENDER_MATRIX_MODEL, prev );
+	g_pRender->DisableAlphaBlending();
 }
 
 static void PlayUpdate()

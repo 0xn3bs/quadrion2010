@@ -24,6 +24,9 @@ class btCollisionDispatcher;
 class btSequentialImpulseConstraintSolver;
 class btDiscreteDynamicsWorld;
 class btRigidBody;
+class btVector3;
+class CModelObject;
+class btCompoundShape;
 
 class QPHYSICSEXPORT_API qphysicsengine : public qobject
 {
@@ -34,9 +37,13 @@ public:
 	void setGravity(vec3f const& _g);
 	void setGravity(float const& x, float const& y, float const& z);
 
-	btRigidBody *addCube(float mass, vec3f pos, CModelObject *_handle);
+	btRigidBody *addBox(float mass, vec3f pos, vec3f size, CModelObject *_handle);
+	btRigidBody *addCompoundShape(float mass, vec3f pos, vec3f size, btCompoundShape *shape);
 
 	void step(float const& dt);
+
+	void getAABB(btRigidBody *body, btVector3 &min, btVector3 &max);
+	void updateCenterOfMassOffest(btRigidBody *body, CModelObject *mdl);
 
 	virtual void REGISTER_SCRIPTABLES(qscriptengine *engine);
 private:
