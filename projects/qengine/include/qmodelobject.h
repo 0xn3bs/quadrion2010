@@ -11,7 +11,7 @@
 #define __MODELOBJECT_H_
 
 
-#define	MAX_MODEL_INSTANCES		48
+#define	MAX_MODEL_INSTANCES		2048
 
 #ifdef QRENDER_EXPORTS
 #define QMODELOBJECTEXPORT_API		__declspec(dllexport)
@@ -51,8 +51,8 @@ class QMODELOBJECTEXPORT_API CModelObject
 		const inline void	SetFilePath( const std::string& path ) { m_filePath = path; }
 		const inline void	SetTexturePath(const std::string& path) { m_texturePath = path; }
 		
-		const inline void	SetModelOrientation(const mat4& new_pose) { QMATH_MATRIX_COPY(m_modelPose, new_pose); }
-		const inline void	GetModelOrientation(mat4& out_pose) { QMATH_MATRIX_COPY(out_pose, m_modelPose); }
+		virtual void		SetModelOrientation(const mat4& new_pose) { QMATH_MATRIX_COPY(m_modelPose, new_pose); }
+		virtual void		GetModelOrientation(mat4& out_pose) { QMATH_MATRIX_COPY(out_pose, m_modelPose); }
 
 		
 		const inline std::string	GetFileName() { return m_fileName; }
@@ -85,6 +85,11 @@ class QMODELOBJECTEXPORT_API CModelObject
 		
 		int					m_handle;
 		
+		std::vector<int>	m_vertexBufferHandles;
+		std::vector<int>	m_indexBufferHandles;
+		float*				m_modelInstanceMatrices;
+
+		int				m_nModelInstances;
 		int				m_diffuseBindPoint;			// Diffuse texture's current sampler unit
 		int				m_normalmapBindPoint;		// The Normalmap's current sampler unit
 	
@@ -100,17 +105,25 @@ class QMODELOBJECTEXPORT_API CModelObjectInstance : public CModelObject
 		CModelObjectInstance(const unsigned int handle, const std::string& name, const std::string& path = "./");
 		~CModelObjectInstance();
 		
+		void		SetModelOrientation(const mat4& m);
+		void		GetModelOrientation(mat4& out);
 		
 		void		RenderModel();
 		
 		bool		IsInstance() { return true; }
+		bool		IsActive() { return m_bIsActive; }
 	
 	protected:
 	
 	private:
-	
+
+		
+		
 		friend class		CModelManager;
 	
+		bool				m_bIsActive;
+		mat4				m_orientation;
+
 		CModelObject*		m_pRootModel;
 };
 
@@ -139,7 +152,9 @@ class QMODELOBJECTEXPORT_API CModelManager
 
 		
 		CModelObject*			GetModel(const std::string& name, const std::string& path, const int& handle);
-		
+		void					UpdateModelOrientation(const std::string& name, const std::string& path, int handle, const mat4& newPose);
+		void					PushInstances(const std::string& name, const std::string& path);
+
 		const inline void		SetEffectPath( const std::string& path ) { m_effectPath = path; }
 		const inline void		SetTexturePath(const std::string& path) { m_texturePath = path; }
 		const inline void		BindDiffuseTexture( const int& texUnit ) { m_diffuseBindPoint = texUnit; }

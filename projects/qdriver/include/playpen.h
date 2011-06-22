@@ -251,11 +251,12 @@ static void PlayInit()
 	g_pApp->SetMousePosition( 1400/2, 1900/2 );
 
 	g_pCamera->SetCamera( 60.0f, 20.0f, 60.0f, 0.0f, 100.0f, 0.0f, 0.0f, 1.0f, 0.0f );
-	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 55.0f ), (float)w / (float)h, 0.8f, 500.0f );
+	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 55.0f ), (float)w / (float)h, 0.8f, 400.0f );
 	g_pCamera->Apply();
 
 	g_pModelManager->SetTexturePath("Media/Textures/");
 	g_hModelHandle = g_pModelManager->AddModel( "glock18c.3DS", "Media/Models/" );
+	int tst = g_pModelManager->AddModel("glock18c.3DS", "Media/Models/");
 	g_hEffectHandle = g_pRender->AddEffect( "Phong.fx", "Media/Effects/" );
 	
 	mat4 id;
@@ -355,28 +356,27 @@ static void PlayRender()
 
 	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", g_hModelHandle );
 
-	g_pPhysicsWorld->updateCenterOfMassOffest(handle, mdl);
+//	g_pPhysicsWorld->updateCenterOfMassOffest(handle, mdl);
 
 	CQuadrionEffect* fx = g_pRender->GetEffect( g_hEffectHandle );
 	unsigned int mat = QRENDER_MATRIX_MODELVIEWPROJECTION;
 	unsigned int worldMat = QRENDER_MATRIX_MODEL;
+	unsigned int vp = QRENDER_MATRIX_VIEWPROJECTION;
 	mat4 modelMat, prev;
 	vec3f p = g_pCamera->GetPosition();
 	vec3f camPos = vec3f(p.x, p.y, p.z);
-
-	g_pRender->GetMatrix( QRENDER_MATRIX_MODEL, prev );
 	
 	btTransform trans;
     handle->getMotionState()->getWorldTransform(trans);
 	mat4 rot;
-	
 	trans.getOpenGLMatrix(rot);
-	
-	mdl->SetModelOrientation(rot);
-	mdl->CreateFinalTransform(rot);
+	QMATH_MATRIX_TRANSPOSE(rot);
+	g_pModelManager->UpdateModelOrientation("glock18c.3DS", "Media/Models/", g_hModelHandle, rot);
+	g_pModelManager->PushInstances("glock18c.3DS", "Media/Models/");
 
 	fx->BeginEffect( "Phong" );
 	
+	fx->UploadParameters("g_mVP", QEFFECT_VARIABLE_STATE_MATRIX, 1, &vp);
 	fx->UploadParameters( "g_mMVP", QEFFECT_VARIABLE_STATE_MATRIX, 1, &mat );
 	fx->UploadParameters("g_mWorld", QEFFECT_VARIABLE_STATE_MATRIX, 1, &worldMat);
 	fx->UploadParameters( "g_lightPos", QEFFECT_VARIABLE_FLOAT_ARRAY, 3, &camPos );
@@ -400,11 +400,8 @@ static void PlayRender()
 	g_pRender->EnableAlphaBlending();
 	g_pRender->ChangeAlphaBlendMode(QRENDER_ALPHABLEND_SRCALPHA, QRENDER_ALPHABLEND_ONE);
 
-	g_pRender->SetMatrix( QRENDER_MATRIX_MODEL, prev );
-
 	RenderGrid();
 
-	g_pRender->SetMatrix( QRENDER_MATRIX_MODEL, prev );
 	g_pRender->DisableAlphaBlending();
 }
 

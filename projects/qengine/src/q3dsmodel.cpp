@@ -1379,20 +1379,20 @@ c3DSModel::~c3DSModel()
 			g_pRender->UnloadTextureObject(textureHandleList[i].textureRef);
 	}
 	
-	for(int i = 0; i < meshRenderHandles.size(); ++i)
-	{
-		if(QRENDER_IS_VALID(meshRenderHandles[i].iboRef))
-			g_pRender->UnloadIndexBuffer(meshRenderHandles[i].iboRef);
+//	for(int i = 0; i < meshRenderHandles.size(); ++i)
+//	{
+//		if(QRENDER_IS_VALID(meshRenderHandles[i].iboRef))
+//			g_pRender->UnloadIndexBuffer(meshRenderHandles[i].iboRef);
 	
-		if(QRENDER_IS_VALID(meshRenderHandles[i].vboRef))
-			g_pRender->UnloadInstancedVertexBuffer(meshRenderHandles[i].vboRef);
+//		if(QRENDER_IS_VALID(meshRenderHandles[i].vboRef))
+//			g_pRender->UnloadInstancedVertexBuffer(meshRenderHandles[i].vboRef);
 		
 //		if( meshRenderHandles[i].lowLODMesh != -1 )
 //			g_pRender->deleteOptimizedMeshObject( meshRenderHandles[i].lowLODMesh );
 		
 //		if( meshRenderHandles[i].medLODMesh != -1 )
 //			g_pRender->deleteOptimizedMeshObject( meshRenderHandles[i].medLODMesh );
-	}
+//	}
 	
 //	if( vertexFormatHandle != QRENDER_INVALID_VERTEX_FORMAT )
 //		g_pRender->deleteVertexFormat( vertexFormatHandle );
@@ -1458,18 +1458,12 @@ bool c3DSModel::LoadModel( bool loadNormalmaps )
 			textureHandleList[i].normalmapRef = QRENDER_INVALID_HANDLE;
 			textureHandleList[i].fileName.assign( mdlData.materials[i].name );
 			continue;
-//			textureHandleList[i].fileName.assign( "NULL" );
-//			textureHandleList[i].textureRef = QRENDER_INVALID_HANDLE;
-//			continue;
 		}
 	
 		// check for duplicate textures //
 		std::string strTex( mdlData.materials[i].texture );
 		
 		// now prepend texture/ to the file name //
-//		std::string insert( baseDir("models/") );
-//		strTex.insert( 0, insert );
-//		textureHandleList[i].fileName.assign( strTex );
 		strTex.insert(0, m_texturePath);
 		
 		memset(mdlData.materials[i].texture, 0, sizeof(char) * 32);
@@ -1565,42 +1559,24 @@ bool c3DSModel::LoadModel( bool loadNormalmaps )
 			mesh_indices[c * 3 + 2] = (unsigned short)mdlData.meshes[i].tris[c][2];
 		}
 
-		meshRenderHandles[i].vboRef = g_pRender->AddVertexBuffer();
-		meshRenderHandles[i].iboRef = g_pRender->AddIndexBuffer();
+		int vboHandle = g_pRender->AddInstancedVertexBuffer();
+		int iboHandle = g_pRender->AddIndexBuffer();
 		
-		CQuadrionVertexBuffer* vb = g_pRender->GetVertexBuffer(meshRenderHandles[i].vboRef);
-//		EQuadrionVertexAttribUsage geom[5] = {QVERTEXFORMAT_USAGE_POSITION, QVERTEXFORMAT_USAGE_NORMAL, QVERTEXFORMAT_USAGE_TANGENT, 
-//											  QVERTEXFORMAT_USAGE_TEXCOORD, QVERTEXFORMAT_USAGE_END};
-//		EQuadrionVertexAttribUsage instance[5] = {QVERTEXFORMAT_USAGE_TEXCOORD, QVERTEXFORMAT_USAGE_TEXCOORD, QVERTEXFORMAT_USAGE_TEXCOORD, 
-//												  QVERTEXFORMAT_USAGE_TEXCOORD, QVERTEXFORMAT_USAGE_END};
-//		vb->SetVertexStreams(geom, instance, NULL, NULL);
-		vb->CreateVertexBuffer(mverts, v_desc, mdlData.meshes[i].vertCount, false);
-		
-		CQuadrionIndexBuffer* ib = g_pRender->GetIndexBuffer(meshRenderHandles[i].iboRef);
+//		mat4 basicInstance;
+//		mat4 testInstance, testInstance1, testInstance2;
+//		QMATH_MATRIX_LOADIDENTITY(basicInstance);
+//		float* buf = new float[16];
+//		memcpy(buf, basicInstance, sizeof(float) * 16);
+		CQuadrionInstancedVertexBuffer *vb = g_pRender->GetInstancedVertexBuffer(vboHandle);
+		vb->	CreateGeometryBuffer(mverts, v_desc, mdlData.meshes[i].vertCount);
+//		vb->CreateInstanceBuffer(buf, 1);
+//		delete[] buf;
+	
+		CQuadrionIndexBuffer* ib = g_pRender->GetIndexBuffer(iboHandle);
 		ib->CreateIndexBuffer(QINDEXBUFFER_MEMORY_STATIC, QINDEXBUFFER_SIZE_USHORT, num_indices, mesh_indices);
-		
-//		meshRenderHandles[i].vboRef = g_pRender->addVertexBuffer( sizeof(s3DSVertexFormat) * mdlData.meshes[i].vertCount, mverts, QRENDER_DATA_STATIC );
-//		meshRenderHandles[i].iboRef = g_pRender->addIndexBuffer( mdlData.meshes[i].triCount * 3, QRENDER_INDEX_USHORT, mindices, QRENDER_DATA_STATIC );
-		
-//		if( loadLODModel ) 
-//		{
-//			int mesh = g_pRender->addMeshObject( mdlData.meshes[i].triCount, mdlData.meshes[i].vertCount, vertexFormatHandle, SMS_MESH_DYNAMIC );
-//			g_pRender->copyIndicesToMesh( mesh, (void*)&mindices[0] );
-//			g_pRender->copyVerticesToMesh( mesh, (void*)&mverts[0].x );
-//			int optimizedMesh = g_pRender->createOptimizedMeshFromMesh( mesh, 0.01F );
-			
-//			int nMediumFaces, nLowFaces;
-//			nMediumFaces = (int) ( mdlData.meshes[i].triCount / 2 );
-//			nLowFaces = (int) ( mdlData.meshes[i].triCount / 5 );
-//			g_pRender->reduceOptimizedMeshFaces( optimizedMesh, nMediumFaces );
-			
-//			meshRenderHandles[i].medLODMesh = g_pRender->createMeshFromOptimizedMesh( optimizedMesh, SMS_MESH_DYNAMIC );
-//			g_pRender->reduceOptimizedMeshFaces( optimizedMesh, nLowFaces );
-//			meshRenderHandles[i].lowLODMesh = g_pRender->createMeshFromOptimizedMesh( optimizedMesh, SMS_MESH_DYNAMIC );
-			
-//			g_pRender->deleteMeshObject( mesh );
-//			g_pRender->deleteOptimizedMeshObject( optimizedMesh );
-//		}
+
+		m_vertexBufferHandles.push_back(vboHandle);
+		m_indexBufferHandles.push_back(iboHandle);
 
 		if(mverts) delete[] mverts; mverts = NULL;
 		if(mesh_indices) free(mesh_indices); mesh_indices = NULL;
@@ -1742,8 +1718,8 @@ void c3DSModel::RenderModel()
 {	
 	g_pRender->ChangeCullMode(QRENDER_CULL_CW);
 
-	CQuadrionVertexBuffer* mesh_vbo = NULL;
-	CQuadrionIndexBuffer* mesh_ibo = NULL;
+//	CQuadrionVertexBuffer* mesh_vbo = NULL;
+//	CQuadrionIndexBuffer* mesh_ibo = NULL;
 	
 	for(int i = 0; i < mdlData.meshCount; ++i)
 	{
@@ -1815,16 +1791,22 @@ void c3DSModel::RenderModel()
 			}
 		}
 				
-		mesh_vbo = g_pRender->GetVertexBuffer(meshRenderHandles[i].vboRef);
-		mesh_vbo->BindBuffer();
-		mesh_ibo = g_pRender->GetIndexBuffer(meshRenderHandles[i].iboRef);
-		mesh_ibo->BindBuffer();
+//		mesh_vbo = g_pRender->GetVertexBuffer(meshRenderHandles[i].vboRef);
+//		mesh_vbo->BindBuffer();
+//		mesh_ibo = g_pRender->GetIndexBuffer(meshRenderHandles[i].iboRef);
+//		mesh_ibo->BindBuffer();
 		
+		CQuadrionInstancedVertexBuffer *vb = g_pRender->GetInstancedVertexBuffer(m_vertexBufferHandles[i]);
+		CQuadrionIndexBuffer *ib = g_pRender->GetIndexBuffer(m_indexBufferHandles[i]);
+		vb->BindBuffer(m_nModelInstances);
+		ib->BindBuffer();
+
 		g_pRender->RenderIndexedList(QRENDER_PRIM_TRIANGLES, 0, 0, cur_mesh.vertCount, cur_mesh.triCount * 3);
 		
-		mesh_vbo->UnbindBuffer();
-		mesh_ibo->UnbindBuffer();
-//		g_pRender->EvictTextures();
+		vb->UnbindBuffer();
+		ib->UnbindBuffer();
+//		mesh_vbo->UnbindBuffer();
+//		mesh_ibo->UnbindBuffer();
 	}	
 	
 	g_pRender->EvictTextures();

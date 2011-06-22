@@ -16,12 +16,36 @@ CModelObject::CModelObject(const unsigned int handle, const std::string& name, c
 	
 	m_diffuseBindPoint = 0;
 	m_normalmapBindPoint = 2;
+
+	m_modelInstanceMatrices = new float[16 * MAX_MODEL_INSTANCES];
+	m_nModelInstances = 1;
 }
 
 CModelObject::~CModelObject()
 {
 	if(QRENDER_IS_VALID(m_effectHandle))
 		g_pRender->UnloadEffect(m_effectHandle);
+
+	int i = 0;
+	for(i = 0; i < m_vertexBufferHandles.size(); ++i)
+	{
+		if(QRENDER_IS_VALID(m_vertexBufferHandles[i]))
+			g_pRender->UnloadInstancedVertexBuffer(m_vertexBufferHandles[i]);
+	}
+	m_vertexBufferHandles.clear();
+
+	for(i = 0; i < m_indexBufferHandles.size(); ++i)
+	{
+		if(QRENDER_IS_VALID(m_indexBufferHandles[i]))
+			g_pRender->UnloadIndexBuffer(m_indexBufferHandles[i]);
+	}
+	m_indexBufferHandles.clear();
+
+	if(m_modelInstanceMatrices)
+	{
+		delete[] m_modelInstanceMatrices;
+		m_modelInstanceMatrices = 0;
+	}
 }
 
 void CModelObject::BindDiffuseTexture( const int& texUnit )
@@ -58,9 +82,20 @@ void CModelObject::CreateFinalTransform(mat4& M)
 	QMATH_MATRIX_MULTIPLY(S, T, T);
 	QMATH_MATRIX_MULTIPLY(m_modelPose, T, m_modelPose); 
 
-	g_pRender->MulMatrix(QRENDER_MATRIX_MODEL, m_modelPose);
+//	g_pRender->MulMatrix(QRENDER_MATRIX_MODEL, m_modelPose);
+//
+//	QMATH_MATRIX_COPY(M, m_modelPose);
 
-	QMATH_MATRIX_COPY(M, m_modelPose);
+/*
+	CQuadrionInstancedVertexBuffer* vb = NULL;
+	for(int i = 0; i < m_vertexBufferHandles.size(); ++i)
+	{
+		vb = g_pRender->GetInstancedVertexBuffer(m_vertexBufferHandles[i]);
+		QMATH_MATRIX_TRANSPOSE(m_modelPose);
+		vb->UpdateInstanceBuffer(m_modelPose, 1);
+		QMATH_MATRIX_TRANSPOSE(m_modelPose);
+	}
+*/
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -73,19 +108,35 @@ CModelObjectInstance::CModelObjectInstance(const unsigned int handle, const std:
 	m_handle = handle;
 	m_fileName = path + name;
 	m_pRootModel = NULL;
+	m_bIsActive = true;
+
+	QMATH_MATRIX_LOADIDENTITY(m_orientation);
 }
 
 CModelObjectInstance::~CModelObjectInstance()
 {
 	m_pRootModel = NULL;
+	m_bIsActive = false;
 }
 
 
 void CModelObjectInstance::RenderModel()
 {
-	if(m_pRootModel)
-		m_pRootModel->RenderModel();
+//	if(m_pRootModel)
+//		m_pRootModel->RenderModel();
 }
+
+void CModelObjectInstance::SetModelOrientation(const mat4& m)
+{
+	QMATH_MATRIX_COPY(m_orientation, m);
+}
+
+void CModelObjectInstance::GetModelOrientation(mat4& out)
+{
+	QMATH_MATRIX_COPY(out, m_orientation);
+}
+
+
 
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -133,14 +184,15 @@ int CModelManager::AddModel( const std::string& name, const std::string& path, b
 			{
 				new_model = new CModelObjectInstance(i, name, path);
 				m_modelMap[file_name][i] = new_model;
+				m_modelMap[file_name][0]->m_nModelInstances++;
 				return i;
 			}
 		}
 		
 		// Otherwise tack it on the end //
-
 		new_model = new CModelObjectInstance(size, name, path);
 		m_modelMap[file_name].push_back(new_model);
+		m_modelMap[file_name][0]->m_nModelInstances++;
 		return size;
 	}
 	
@@ -158,6 +210,21 @@ int CModelManager::AddModel( const std::string& name, const std::string& path, b
 				delete new_base; 
 				new_base = NULL;
 				return -1;
+			}
+		}
+
+		// If the model was created, go ahead and allocate the instance buffers
+		// for the VBO.
+		if(new_base->m_vertexBufferHandles.size() > 0)
+		{
+			mat4 id;
+			QMATH_MATRIX_LOADIDENTITY(id);
+			memcpy(new_base->m_modelInstanceMatrices, id, sizeof(float) * 16);
+
+			for(int i = 0; i < new_base->m_vertexBufferHandles.size(); ++i)
+			{
+				CQuadrionInstancedVertexBuffer *vb = g_pRender->GetInstancedVertexBuffer(new_base->m_vertexBufferHandles[i]);
+				vb->CreateInstanceBuffer(new_base->m_modelInstanceMatrices, MAX_MODEL_INSTANCES);
 			}
 		}
 		
@@ -237,7 +304,43 @@ CModelObject* CModelManager::GetModel(const std::string& name, const std::string
 	return NULL;
 }
 
+void CModelManager::UpdateModelOrientation(const std::string& name, const std::string& path, int handle, const mat4& newPose)
+{
+	std::string concat = path + name;
+	if(handle < m_modelMap[concat].size())
+	{
+		if(handle == 0)
+		{
+			CModelObject* root = m_modelMap[concat][0];
+			root->SetModelOrientation(newPose);
+		}
 
+		else
+		{
+			CModelObjectInstance* inst = (CModelObjectInstance*)(m_modelMap[concat][handle]);
+			inst->SetModelOrientation(newPose);
+		}
+	}
+}
+
+void CModelManager::PushInstances(const std::string& name, const std::string& path)
+{
+	std::string concat = path + name;
+	CModelObject* root = m_modelMap[concat][0];
+	memcpy(root->m_modelInstanceMatrices, root->m_modelPose, sizeof(float) * 16);
+	for(int i = 1; i < m_modelMap[concat].size(); ++i)
+	{
+		CModelObjectInstance* inst = (CModelObjectInstance*)(m_modelMap[concat][i]);
+		memcpy((void*)&(root->m_modelInstanceMatrices[i * 16]), inst->m_orientation, sizeof(float) * 16);
+	}
+
+	CQuadrionInstancedVertexBuffer* vb = NULL;
+	for(int i = 0; i < root->m_vertexBufferHandles.size(); ++i)
+	{
+		vb = g_pRender->GetInstancedVertexBuffer(root->m_vertexBufferHandles[i]);
+		vb->UpdateInstanceBuffer(root->m_modelInstanceMatrices, root->m_nModelInstances);
+	}
+} 
 
 
 void CModelManager::RemoveModel(const std::string& name, const std::string& path, const int& handle)

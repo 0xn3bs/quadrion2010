@@ -288,8 +288,8 @@ class QVERTEXBUFFEREXPORT_API CQuadrionInstancedVertexBuffer : public CQuadrionR
 	
 		
 		bool		CreateGeometryBuffer(const void* pVertices, const SQuadrionVertexDescriptor& desc, const int& nVerts);
-		bool		CreateInstanceBuffer(const void* pVertices, const int& nInstances);
-		bool		UpdateInstanceBuffer(const void* pVertices, const int& nInstances);
+		bool		CreateInstanceBuffer(const void* pInstances, const int& nInstances);
+		bool		UpdateInstanceBuffer(const void* pInstances, const int& nInstances);
 		
 		bool		BindBuffer(const unsigned int& nInstances);
 		bool		UnbindBuffer();

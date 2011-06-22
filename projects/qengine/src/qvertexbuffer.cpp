@@ -1093,7 +1093,7 @@ bool CQuadrionVertexBuffer::CreateInstanceBuffer(mat4* pInstances, const int& nI
 	int size = m_vertexSize[1] = sizeof(mat4) * nInstances;
 	
 	// Create instance buffer in system memory //
-	if(FAILED(m_pRenderDevice->CreateVertexBuffer(size, D3DUSAGE_WRITEONLY, 0, D3DPOOL_MANAGED, &m_pVertexBuffer1, NULL)))
+	if(FAILED(m_pRenderDevice->CreateVertexBuffer(size, D3DUSAGE_DYNAMIC, 0, D3DPOOL_DEFAULT, &m_pVertexBuffer1, NULL)))
 		return false;
 	
 	// Copy instance data to buffer //
@@ -1440,8 +1440,8 @@ bool CQuadrionInstancedVertexBuffer::UpdateInstanceBuffer(const void* pVertices,
 
 bool CQuadrionInstancedVertexBuffer::BindBuffer(const unsigned int& nInstances)
 {
-	if(FAILED(m_pRenderDevice->SetVertexDeclaration(m_pVertexDeclaration)))
-		return false;
+//	if(FAILED(m_pRenderDevice->SetVertexDeclaration(m_pVertexDeclaration)))
+//		return false;
 		
 	// Bind Geometry Buffer //
 	if(FAILED(m_pRenderDevice->SetStreamSourceFreq(0, (D3DSTREAMSOURCE_INDEXEDDATA | nInstances))))
@@ -1457,7 +1457,9 @@ bool CQuadrionInstancedVertexBuffer::BindBuffer(const unsigned int& nInstances)
 	if(FAILED(m_pRenderDevice->SetStreamSource(1, m_pInstanceBuffer, 0, sizeof(mat4))))
 		return false;
 
-	
+	if(FAILED(m_pRenderDevice->SetVertexDeclaration(m_pVertexDeclaration)))
+		return false;
+
 	return true;
 }
 

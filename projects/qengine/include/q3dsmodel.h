@@ -163,6 +163,7 @@ struct Q3DSMODELEXPORT_API s3DSVBOIBO
 
 	int		vboRef;					// vertex buffer object handle
 	int		iboRef;					// index buffer object handle
+	int		instanceRef;			
 				
 	int		lowLODMesh;				// low level of detail mesh handle
 	int		medLODMesh;				// medium level of detail mesh handle

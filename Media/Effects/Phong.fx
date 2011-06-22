@@ -1,5 +1,6 @@
 float4x4		g_mWorld;
 float4x4		g_mMVP;
+float4x4        g_mVP;
 float3			g_lightPos;
 float3			g_camPos;
 
@@ -11,6 +12,11 @@ struct Vertex3DS
 	float3 norm		: NORMAL;
 	float3 tan		: TANGENT;
 	float2 tex		: TEXCOORD0;
+	
+	float4 mat1	    : TEXCOORD1;
+	float4 mat2     : TEXCOORD2;
+	float4 mat3	    : TEXCOORD3;
+	float4 mat4     : TEXCOORD4;
 };
 
 
@@ -20,7 +26,7 @@ struct Transformed3DS
 	float3 norm		: TEXCOORD0;
 	float3 tan		: TEXCOORD1;
 	float2 tex		: TEXCOORD2;
-	float3 objPos		: TEXCOORD3;
+	float3 objPos	: TEXCOORD3;
 };
 
 
@@ -29,9 +35,20 @@ Transformed3DS PhongMainVS( Vertex3DS vert )
 {
 	Transformed3DS output;
 	
-	output.objPos = mul(g_mWorld, float4(vert.pos.xyz, 1.0)).xyz;
-	output.pos = mul( g_mMVP, vert.pos );
-	output.norm = mul(g_mWorld, float4(vert.norm, 0.0)).xyz;
+	float4x4 modelMat = 
+	{
+		vert.mat1,
+		vert.mat2,
+		vert.mat3,
+		vert.mat4
+	};
+	
+	float4 wPos = mul(modelMat, vert.pos);
+	float3 wNorm = mul(modelMat, vert.norm);
+	
+	output.objPos = wPos.xyz;
+	output.pos = mul( g_mVP, wPos );
+	output.norm = wNorm.xyz;
 	output.tan = vert.tan;
 	output.tex = vert.tex;
 	
