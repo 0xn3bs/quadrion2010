@@ -17,6 +17,7 @@
 #include "qscriptexec.h"
 #include "qscriptmodule.h"
 #include "angelscript.h"
+//#include "../../../angelscript/include/angelscript.h"
 
 #include "qeventregistry.h"
 #include "qevent.h"
@@ -57,6 +58,20 @@ static int g_hModelHandle = QRENDER_INVALID_HANDLE;
 static int g_hEffectHandle = QRENDER_INVALID_HANDLE;
 
 char keys[256];
+
+
+//// completely temporary solution ///
+
+struct glockObject
+{
+	btRigidBody*	bodyHandle;
+	int				modelHandle;
+};
+
+std::vector<glockObject> glockObjectList;
+
+//// completely temporary solution ///
+
 
 short VK_KEY(CScriptString *str)
 {
@@ -182,8 +197,8 @@ static void PlayInit()
 		"CTimer time;										"
 		"void ON_EVENT(qevent @evt, qobject @obj)			"
 		"{												"
-		"	time.Start();"
-		"	double dt = time.GetElapsedSec();		"
+		//"	time.Start();"
+		"	double dt = time.GetElapsedMicroSec();		"
 		"	CCamera @view = cast<CCamera>(@obj);		"
 		"	switch(evt.type())							"
 		"	{											"
@@ -193,22 +208,22 @@ static void PlayInit()
 		"			{									"
 		"				case VK_A :						"
 		"				{								"
-		"					view.MoveCameraRelative(-50000.0f*dt, 0.0f, 0.0f);	"
+		"					view.MoveCameraRelative(-100000.0f/dt, 0.0f, 0.0f);	"
 		"					break;						"
 		"				}								"
 		"				case VK_D :						"
 		"				{								"
-		"					view.MoveCameraRelative(50000.0f*dt, 0.0f, 0.0f);	"
+		"					view.MoveCameraRelative(100000.0f/dt, 0.0f, 0.0f);	"
 		"					break;						"
 		"				}								"
 		"				case VK_W :						"
 		"				{								"
-		"					view.MoveCameraRelative(0.0f, 0.0f, 50000.0f*dt);	"
+		"					view.MoveCameraRelative(0.0f, 0.0f, 100000.0f/dt);	"
 		"					break;						"
 		"				}								"
 		"				case VK_S :						"
 		"				{								"
-		"					view.MoveCameraRelative(0.0f, 0.0f, -50000.0f*dt);	"
+		"					view.MoveCameraRelative(0.0f, 0.0f, -100000.0f/dt);	"
 		"					break;						"
 		"				}								"
 		"				case VK_Q :						"
@@ -226,7 +241,8 @@ static void PlayInit()
 		"		}										"
 		"	}											"
 		//"	view.Apply();								"
-		"	time.Reset();								"
+		//"	time.Reset();								"
+		"	time.Start();								"
 		"}												";
 
 	g_pScriptModule = g_pScriptEngine->pGetScriptModule("script");
@@ -255,32 +271,74 @@ static void PlayInit()
 	g_pCamera->Apply();
 
 	g_pModelManager->SetTexturePath("Media/Textures/");
-	g_hModelHandle = g_pModelManager->AddModel( "glock18c.3DS", "Media/Models/" );
-	int tst = g_pModelManager->AddModel("glock18c.3DS", "Media/Models/");
-	g_hEffectHandle = g_pRender->AddEffect( "Phong.fx", "Media/Effects/" );
-	
+
+	// adding a root model and one instance model;
+	//g_hModelHandle = g_pModelManager->AddModel( "glock18c.3DS", "Media/Models/" );
+	int mHandle = g_pModelManager->AddModel( "glock18c.3DS", "Media/Models/" );
+	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", mHandle );
+	/// physics convex decomposition mesh ///
+	convex_mesh = new qPhysicsMesh3DS(mdl);
+	convex_mesh->processMesh();
+
 	mat4 id;
 	QMATH_MATRIX_LOADIDENTITY( id );
-	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", g_hModelHandle );
-	mdl->SetModelPos( vec3f( 0.0f, 00.0f, 0.0f ) );
-	//mdl->SetModelScale( vec3f( 0.5f, 0.5f, 0.5f ) );
+	mdl->SetModelPos( vec3f( 0.0f, 50.0f, 0.0f ) );
 	mdl->SetModelScale( vec3f( 1.0f, 1.0f, 1.0f ) );
 	mdl->SetModelOrientation( id );
 	mdl->BindDiffuseTexture(0);
 	mdl->BindNormalmapTexture( -1 );
-	//mdl->CreateFinalTransform(id);
+	mdl->CreateFinalTransform(id);
 
-	//lightPos = vec3f(500.0f, 500.0f, 500.0f);
-	vec3f min, max, center;
-	mdl->GetAABB(min, max);
-	mdl->GetModelCenter(center);
-	//pos = mdl->GetModelPos();
-	//center = center - pos;
+	btRigidBody* bHandle = g_pPhysicsWorld->addRigidBody(20.0f, mdl, convex_mesh->getCollisionShape());
 
-	/// physics convex decomposition mesh ///
-	convex_mesh = new qPhysicsMesh3DS(mdl);
-	convex_mesh->processMesh();
-	handle = g_pPhysicsWorld->addCompoundShape(20.0f, vec3f(0.0f, 10.0f, 0.0f), max - center, convex_mesh->getCompoundShape());
+	glockObject GO = {bHandle, mHandle};
+	glockObjectList.push_back(GO);
+
+	for(int a = 0;a < 10;a++)
+	{
+		mHandle = g_pModelManager->AddModel( "glock18c.3DS", "Media/Models/" );
+
+		mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", mHandle );
+
+		mat4 id;
+		QMATH_MATRIX_LOADIDENTITY( id );
+		mdl->SetModelPos( vec3f( rand()%50-25, rand()%100+100.0f, rand()%50-25 ) );
+		mdl->SetModelScale( vec3f( 1.0f, 1.0f, 1.0f ) );
+		mdl->SetModelOrientation( id );
+		mdl->BindDiffuseTexture(0);
+		mdl->BindNormalmapTexture( -1 );
+		mdl->CreateFinalTransform(id);
+
+		//g_pModelManager->UpdateModelOrientation("glock18c.3DS", "Media/Models/", mHandle, id);
+
+		bHandle = g_pPhysicsWorld->addRigidBody(20.0f, mdl, convex_mesh->getCollisionShape());
+		bHandle->applyTorqueImpulse(btVector3(rand()%400-200, rand()%400-200, rand()%400-200));
+
+		glockObject GO = {bHandle, mHandle};
+		glockObjectList.push_back(GO);
+	}
+	//g_pModelManager->PushInstances("glock18c.3DS", "Media/Models/");
+
+	
+	
+	/*mat4 id;
+	QMATH_MATRIX_LOADIDENTITY( id );
+	mdl->SetModelPos( vec3f( 0.0f, 50.0f, 0.0f ) );
+	mdl->SetModelScale( vec3f( 1.0f, 1.0f, 1.0f ) );
+	mdl->SetModelOrientation( id );
+	mdl->BindDiffuseTexture(0);
+	mdl->BindNormalmapTexture( -1 );
+	mdl->CreateFinalTransform(id);*/
+
+
+	g_hEffectHandle = g_pRender->AddEffect( "Phong.fx", "Media/Effects/" );
+
+	
+	//handle = g_pPhysicsWorld->addRigidBody(20.0f, vec3f(0.0f, 10.0f, 0.0f), max - center, convex_mesh->getCollisionShape());
+
+	// btRigidBody *addRigidBody(float mass, CModelObject *model, btCollisionShape *shape);
+	//handle = g_pPhysicsWorld->addRigidBody(20.0f, mdl, convex_mesh->getCollisionShape());
+	
 	//handle = g_pPhysicsWorld->addBox(20.0f, vec3f(0.0f, 60.0f, 0.0f), max - center, mdl);
 	//handle->applyTorqueImpulse(btVector3(100,100,-50));
 	
@@ -348,13 +406,14 @@ float dx = 0.0f;
 static void PlayRender()
 {
 	g_pPhysicsWorld->step(timer->GetElapsedSec());
-	timer->Reset();
+	//timer->Reset();
 	timer->Start();
-	processKeys();
+	//processKeys();
 	g_pEventRegistry->process_events();
 	PlayUpdate();
 
-	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", g_hModelHandle );
+	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", 0 );
+	 
 
 //	g_pPhysicsWorld->updateCenterOfMassOffest(handle, mdl);
 
@@ -367,11 +426,26 @@ static void PlayRender()
 	vec3f camPos = vec3f(p.x, p.y, p.z);
 	
 	btTransform trans;
-    handle->getMotionState()->getWorldTransform(trans);
 	mat4 rot;
+	std::vector<glockObject>::iterator it;
+	for(it = glockObjectList.begin(); it != glockObjectList.end(); it++)
+	{
+		(*it).bodyHandle->getMotionState()->getWorldTransform(trans);
+		trans.getOpenGLMatrix(rot);
+		QMATH_MATRIX_TRANSPOSE(rot);
+		g_pModelManager->UpdateModelOrientation("glock18c.3DS", "Media/Models/", (*it).modelHandle, rot);
+	}
+	g_pModelManager->PushInstances("glock18c.3DS", "Media/Models/");
+	
+    /*
+	handle->getMotionState()->getWorldTransform(trans);
 	trans.getOpenGLMatrix(rot);
 	QMATH_MATRIX_TRANSPOSE(rot);
 	g_pModelManager->UpdateModelOrientation("glock18c.3DS", "Media/Models/", g_hModelHandle, rot);
+	g_pModelManager->PushInstances("glock18c.3DS", "Media/Models/");
+	}
+	*/
+
 	g_pModelManager->PushInstances("glock18c.3DS", "Media/Models/");
 
 	fx->BeginEffect( "Phong" );
@@ -384,18 +458,19 @@ static void PlayRender()
 	fx->RenderEffect( 0 );
 
 	mdl->RenderModel();
-	
+
 	fx->EndRender( 0 );
 	fx->EndEffect();
 
-	vec3f bound_low, bound_high;
-	mdl->GetAABB(bound_low, bound_high);
+	/*
+	//vec3f bound_low, bound_high;
+	//mdl->GetAABB(bound_low, bound_high);
 
-	btVector3 min, max;
-	g_pPhysicsWorld->getAABB(handle, min, max);
+	//btVector3 min, max;
+	//g_pPhysicsWorld->getLocalAABB(handle, min, max);
 
 	vec3f mint(min.getX(), min.getY(), min.getZ());
-	vec3f maxt(max.getX(), max.getY(), max.getZ());
+	vec3f maxt(max.getX(), max.getY(), max.getZ());*/
 
 	g_pRender->EnableAlphaBlending();
 	g_pRender->ChangeAlphaBlendMode(QRENDER_ALPHABLEND_SRCALPHA, QRENDER_ALPHABLEND_ONE);

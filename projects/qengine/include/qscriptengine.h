@@ -11,8 +11,12 @@
 
 #include <string>
 #include <assert.h>
-#include "angelscript.h"
+#include "../../../angelscript/include/angelscript.h"
 #include "qscriptable.h"
+
+#include <windows.h>
+#include <fstream>
+#include <sstream>
 
 #ifdef QRENDER_EXPORTS
 #define QSCRIPTEXPORT_API		__declspec(dllexport)
@@ -21,6 +25,9 @@
 #define QSCRIPTEXPORT_API		__declspec(dllimport)
 #define QSCRIPT_TEMPLATE extern
 #endif
+
+
+void QSCRIPTEXPORT_API SCRIPT_ERROR(const char *format, ...);
 
 ///////////////////////
 #define REGISTER_CLASS(ENGINE, NAME, CLASS)																									\

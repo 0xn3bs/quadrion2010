@@ -20,37 +20,43 @@
 #include "qmodelobject.h"
 #include "q3dsmodel.h"
 
-
-
-
-
-
-
-
-#include <Windows.h>
-
-#include <ostream>
-
-#include <sstream>
-
-#include <string>
-
+struct QPHYSICSMESHEXPORT_API qPhysicsMeshVBOIBO
+{
+	qPhysicsMeshVBOIBO()
+	{
+		vboRef = QRENDER_INVALID_HANDLE;
+		iboRef = QRENDER_INVALID_HANDLE;
+	}
+	int		vboRef;					// vertex buffer object handle
+	int		iboRef;					// index buffer object handle
+};
 
 class QPHYSICSMESHEXPORT_API qPhysicsMesh
 {
 public:
 	qPhysicsMesh();
 	qPhysicsMesh(CModelObject *mdl);
+	qPhysicsMesh(btCollisionShape *_shape);
 	virtual ~qPhysicsMesh(){}
 	virtual void setModel(CModelObject *mdl);
 	virtual void processMesh();
-	btCompoundShape *getCompoundShape();
+	btCollisionShape *getCollisionShape();
+
+	bool save(const std::string& name, const std::string& path);
+	bool load(const std::string& name, const std::string& path);
+
+	void intiVBOIBO();
 
 //protected:
 	friend class CModelObject;
 	CModelObject *mdl_handle;
 	ConvexDecomposition::DecompDesc desc;
-	btCompoundShape *compound;
+	//btCompoundShape *compound;
+	btCollisionShape *shape;
+
+	// rendering stuff //
+	std::vector<qPhysicsMeshVBOIBO>		meshRenderHandles;
+
 };
 
 
@@ -86,14 +92,21 @@ protected:
 };
 
 
-class QPHYSICSMESHEXPORT_API qPhysicsMeshLoader
+class btDynamicsWorld;
+class btBulletWorldImporter;
+
+class QPHYSICSMESHEXPORT_API qPhysicsLoader
 {
 public:
-	qPhysicsMeshLoader();
-	virtual ~qPhysicsMeshLoader(){}
+	qPhysicsLoader(btDynamicsWorld *world);
+	virtual ~qPhysicsLoader(){}
 
+	bool loadFile(const std::string& file, const std::string& path);
+
+	btCollisionShape *getCollisionShapeByName(const std::string& name);
 
 private:
+	btBulletWorldImporter* fileLoader;
 };
 
 #endif

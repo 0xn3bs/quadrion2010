@@ -10,11 +10,33 @@
 #include <stdio.h>
 
 #include "add_ons/scriptstring/scriptstring.h"
-#include "add_ons/scriptany/scriptany.h"
+//#include "add_ons/scriptany/scriptany.h"
 #include "qscriptengine.h"
 #include "qscriptmodule.h"
 #include "qscriptexec.h"
 
+void SCRIPT_ERROR(const char *format, ...) {
+	char buf[32767], *p = buf;
+	va_list args;
+
+       va_start(args, format);
+       p += _vsnprintf(p, sizeof buf - 1, format, args);
+       va_end(args);
+
+        while ( p > buf  &&  isspace(p[-1]) )
+                *--p = '\0';
+
+        *p++ = '\n';
+        *p   = '\0';
+         
+        //m_ofelog.open("error.log", std::ios::out | std::ios::app);
+        //m_ofelog << CurrentTime() << buf;
+       // m_ofelog.close();
+
+		std::stringstream strBuf;
+		strBuf << "DEBUG: " << buf << std::endl;
+		::OutputDebugStringA(strBuf.str().c_str());
+}
 
 qscriptengine::qscriptengine()
 {
@@ -22,7 +44,7 @@ qscriptengine::qscriptengine()
     this->p_engine->SetMessageCallback(asFUNCTION(qscriptengine::MESSAGE_CALLBACK), 0, asCALL_CDECL);
     
     RegisterScriptString(this->p_engine);
-	RegisterScriptAny(this->p_engine);
+	//RegisterScriptAny(this->p_engine);
     
     REGISTER_GLOBAL_FUNCTION(this, "void Print(string &in)", qscriptengine::DEBUG_PRINT);
 }
@@ -132,7 +154,8 @@ void qscriptengine::MESSAGE_CALLBACK(const asSMessageInfo *msg, void *param)
 		type = "WARN";
 	else if( msg->type == asMSGTYPE_INFORMATION ) 
 		type = "INFO";
-	printf("%s (%d, %d) : %s : %s\n", msg->section, msg->row, msg->col, type, msg->message);
+	//printf("%s (%d, %d) : %s : %s\n", msg->section, msg->row, msg->col, type, msg->message);
+	SCRIPT_ERROR("%s (%d, %d) : %s : %s\n", msg->section, msg->row, msg->col, type, msg->message);
 }
 
 bool qscriptengine::strcmp_ws(char *str1, char *str2)

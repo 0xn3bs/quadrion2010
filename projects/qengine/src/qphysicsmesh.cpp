@@ -1,11 +1,14 @@
 #include "Extras/ConvexDecomposition/ConvexBuilder.h"
 
+#include "Extras/Serialize/BulletWorldImporter/btBulletWorldImporter.h"
+
 #include "btBulletDynamicsCommon.h"
 
 #include "LinearMath/btQuickprof.h"
 #include "LinearMath/btIDebugDraw.h"
 #include "LinearMath/btGeometryUtil.h"
 #include "BulletCollision/CollisionShapes/btShapeHull.h"
+
 #include "qscriptable.h"
 
 #include "qmodelobject.h"
@@ -26,6 +29,12 @@ qPhysicsMesh::qPhysicsMesh(CModelObject *mdl)
 	this->setModel(mdl);
 }
 
+qPhysicsMesh::qPhysicsMesh(btCollisionShape *_shape)
+{
+	this->mdl_handle = NULL;
+	this->shape = _shape;
+}
+
 void qPhysicsMesh::setModel(CModelObject *mdl)
 {
 	this->mdl_handle = mdl;
@@ -36,11 +45,44 @@ void qPhysicsMesh::processMesh()
 {
 }
 
-btCompoundShape *qPhysicsMesh::getCompoundShape()
+btCollisionShape *qPhysicsMesh::getCollisionShape()
 {
-	return this->compound;
+	return this->shape;
 }
 
+bool qPhysicsMesh::save(const std::string& name, const std::string& path)
+{
+	std::string final = path + name;
+	if(this->shape == NULL) return false;
+	FILE* file = fopen(final.c_str(),"wb");
+	if(!file) return false;
+
+	int maxSerializeBufferSize = 1024*1024*5;
+	btDefaultSerializer*	serializer = new btDefaultSerializer(maxSerializeBufferSize);
+ 
+	serializer->startSerialization();
+	this->shape->serializeSingleShape(serializer);
+	serializer->registerNameForPointer(this->shape, name.c_str());
+	serializer->finishSerialization();
+ 
+	fwrite(serializer->getBufferPointer(),serializer->getCurrentBufferSize(),1, file);
+	fclose(file);
+
+	return true;
+}
+
+bool qPhysicsMesh::load(const std::string& name, const std::string& path)
+{
+	std::string final = path + name;
+	FILE* file = fopen(final.c_str(),"wb");
+	if(!file) return false;
+
+	return true;
+}
+
+void qPhysicsMesh::intiVBOIBO()
+{
+};
 
 ///////////// qMeshDecomposition3DS ////////////////
 
@@ -185,11 +227,11 @@ void qPhysicsMesh3DS::setModel(CModelObject *mdl)
 
 void qPhysicsMesh3DS::processMesh()
 {
-	unsigned int depth = 4;
+	unsigned int depth = 5;
     float cpercent     = 5;
-	float ppercent     = 10;
-	unsigned int maxv  = 10;
-	float skinWidth    = 0.5;
+	float ppercent     = 15;
+	unsigned int maxv  = 16;
+	float skinWidth    = 0.0;
 
 	ConvexDecomposition::DecompDesc desc;
 	chunk_data3ds *DATA = this->mdl_handle->getModelData();
@@ -209,18 +251,39 @@ void qPhysicsMesh3DS::processMesh()
 	ConvexBuilder cb(desc.mCallback);
 	cb.process(desc);
 
-	this->compound = new btCompoundShape();
+	this->shape = new btCompoundShape();
+
 	btTransform trans;
 	trans.setIdentity();
 
 	for(int i = 0;i < decomp.m_convexShapes.size();i++)
 	{
+		//qDebug::Instance().print("hello");
 		btVector3 centroid = decomp.m_convexCentroids[i];
 		trans.setOrigin(centroid);
 		btConvexHullShape* convexShape = decomp.m_convexShapes[i];
-		compound->addChildShape(trans,convexShape);
+		((btCompoundShape*)shape)->addChildShape(trans,convexShape);
 
 		//btRigidBody* body;
 		//body = localCreateRigidBody( 1.0, trans,convexShape);
 	}
+}
+
+
+/////////////  qPhysicsLoader /////////////
+
+qPhysicsLoader::qPhysicsLoader(btDynamicsWorld *world)
+{
+	this->fileLoader = new btBulletWorldImporter(world);
+}
+
+bool qPhysicsLoader::loadFile(const std::string& file, const std::string& path)
+{
+	std::string final = path + file;
+	return this->fileLoader->loadFile(final.c_str());
+}
+
+btCollisionShape *qPhysicsLoader::getCollisionShapeByName(const std::string& name)
+{
+	return this->fileLoader->getCollisionShapeByName(name.c_str());
 }
