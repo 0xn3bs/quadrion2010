@@ -208,22 +208,22 @@ static void PlayInit()
 		"			{									"
 		"				case VK_A :						"
 		"				{								"
-		"					view.MoveCameraRelative(-100000.0f/dt, 0.0f, 0.0f);	"
+		"					view.MoveCameraRelative(-10000.0f/dt, 0.0f, 0.0f);	"
 		"					break;						"
 		"				}								"
 		"				case VK_D :						"
 		"				{								"
-		"					view.MoveCameraRelative(100000.0f/dt, 0.0f, 0.0f);	"
+		"					view.MoveCameraRelative(10000.0f/dt, 0.0f, 0.0f);	"
 		"					break;						"
 		"				}								"
 		"				case VK_W :						"
 		"				{								"
-		"					view.MoveCameraRelative(0.0f, 0.0f, 100000.0f/dt);	"
+		"					view.MoveCameraRelative(0.0f, 0.0f, 10000.0f/dt);	"
 		"					break;						"
 		"				}								"
 		"				case VK_S :						"
 		"				{								"
-		"					view.MoveCameraRelative(0.0f, 0.0f, -100000.0f/dt);	"
+		"					view.MoveCameraRelative(0.0f, 0.0f, -10000.0f/dt);	"
 		"					break;						"
 		"				}								"
 		"				case VK_Q :						"
@@ -408,7 +408,7 @@ static void PlayRender()
 	g_pPhysicsWorld->step(timer->GetElapsedSec());
 	//timer->Reset();
 	timer->Start();
-	//processKeys();
+	processKeys();
 	g_pEventRegistry->process_events();
 	PlayUpdate();
 

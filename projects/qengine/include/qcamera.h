@@ -192,9 +192,4 @@ class QCAMERAEXPORT_API CCamera : public qobject//  qscriptable<CCamera>
 		vec4f			m_frustumPlanesWS[6];		// Current camera frustum planes in world space
 };
 
-
-
-
-
-
 #endif

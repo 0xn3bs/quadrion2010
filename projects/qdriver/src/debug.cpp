@@ -37,7 +37,7 @@ void __cdecl cErrorLog::WriteError(const char *format, ...) {
 
 		std::stringstream strBuf;
 		strBuf << "DEBUG: " << buf << std::endl;
-		OutputDebugString(strBuf.str().c_str());
+		::OutputDebugStringA(strBuf.str().c_str());
 }
 
 ////////////
