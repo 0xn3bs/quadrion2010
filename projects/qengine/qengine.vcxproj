@@ -76,9 +76,9 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;angelscriptd.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;angelscriptd.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BulletFileLoader.lib;BulletWorldImporter.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)/build/qengine_d.dll</OutputFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)/anglescript/lib;$(SolutionDir)/lib;$(SolutionDir)/bullet/lib/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/angelscript/lib;$(SolutionDir)/lib;$(SolutionDir)/bullet/lib/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>..\..\lib\qengine_d.lib</ImportLibrary>
@@ -93,7 +93,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\angelscript\include;include;..\shared\include;..\qdriver\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;..\shared\include;..\..\angelscript\include;..\..\bullet\include;..\qdriver\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;UNICODE;NDEBUG;_WINDOWS;_USRDLL;QRENDER_EXPORTS;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_SECURE_SCL 0;_HAS_ITERATOR_DEBUGGING 0;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -103,9 +103,9 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;angelscript.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;angelscript.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BulletFileLoader.lib;BulletWorldImporter.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)/build/qengine.dll</OutputFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)/build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/angelscript/lib;$(SolutionDir)/bullet/lib/Release;$(SolutionDir)/build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -120,7 +120,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\angelscript\include\add_ons\scriptany\scriptany.cpp" />
     <ClCompile Include="..\..\angelscript\include\add_ons\scriptarray\scriptarray.cpp" />
     <ClCompile Include="..\..\angelscript\include\add_ons\scriptbuilder\scriptbuilder.cpp" />
     <ClCompile Include="..\..\angelscript\include\add_ons\scriptdictionary\scriptdictionary.cpp" />
@@ -171,6 +170,7 @@
     <ClCompile Include="src\qobject.cpp" />
     <ClCompile Include="src\qphysics.cpp" />
     <ClCompile Include="src\qphysicsmesh.cpp" />
+    <ClCompile Include="src\qphysicsshapedrawer.cpp" />
     <ClCompile Include="src\qrender.cpp" />
     <ClCompile Include="src\qscriptable.cpp" />
     <ClCompile Include="src\qscriptengine.cpp" />
@@ -187,7 +187,6 @@
     <ClCompile Include="src\stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\angelscript\include\add_ons\scriptany\scriptany.h" />
     <ClInclude Include="..\..\angelscript\include\add_ons\scriptarray\scriptarray.h" />
     <ClInclude Include="..\..\angelscript\include\add_ons\scriptbuilder\scriptbuilder.h" />
     <ClInclude Include="..\..\angelscript\include\add_ons\scriptdictionary\scriptdictionary.h" />
@@ -237,6 +236,7 @@
     <ClInclude Include="include\qobject.h" />
     <ClInclude Include="include\qphysics.h" />
     <ClInclude Include="include\qphysicsmesh.h" />
+    <ClInclude Include="include\qphysicsshapedrawer.h" />
     <ClInclude Include="include\qrender.h" />
     <ClInclude Include="include\qresource.h" />
     <ClInclude Include="include\qscriptable.h" />
