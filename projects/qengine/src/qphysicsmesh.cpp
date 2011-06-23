@@ -227,11 +227,11 @@ void qPhysicsMesh3DS::setModel(CModelObject *mdl)
 
 void qPhysicsMesh3DS::processMesh()
 {
-	unsigned int depth = 5;
-    float cpercent     = 5;
-	float ppercent     = 15;
-	unsigned int maxv  = 16;
-	float skinWidth    = 0.0;
+	unsigned int depth = 0;
+    float cpercent     = 0;
+	float ppercent     = 0;
+	unsigned int maxv  = 0;
+	float skinWidth    = 0;
 
 	ConvexDecomposition::DecompDesc desc;
 	chunk_data3ds *DATA = this->mdl_handle->getModelData();
@@ -256,6 +256,14 @@ void qPhysicsMesh3DS::processMesh()
 	btTransform trans;
 	trans.setIdentity();
 
+	/*
+	for(int i = 0; i < decomp.m_convexShapes.size(); ++i)
+	{
+		for(int j = 0; j < decomp.m_convexShapes.size(); ++i)
+			if(cb.canMerge(decomp.))
+	}
+	*/
+
 	for(int i = 0;i < decomp.m_convexShapes.size();i++)
 	{
 		//qDebug::Instance().print("hello");
@@ -267,6 +275,8 @@ void qPhysicsMesh3DS::processMesh()
 		//btRigidBody* body;
 		//body = localCreateRigidBody( 1.0, trans,convexShape);
 	}
+
+	
 }
 
 

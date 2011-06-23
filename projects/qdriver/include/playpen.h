@@ -294,7 +294,7 @@ static void PlayInit()
 	glockObject GO = {bHandle, mHandle};
 	glockObjectList.push_back(GO);
 
-	for(int a = 0;a < 10;a++)
+	for(int a = 0;a < 100;a++)
 	{
 		mHandle = g_pModelManager->AddModel( "glock18c.3DS", "Media/Models/" );
 

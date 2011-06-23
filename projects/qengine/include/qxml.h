@@ -27,8 +27,10 @@ const unsigned int QXML_PARSE_ERROR_UNKNOWN	= 0x000004;
 
 #ifdef QRENDER_EXPORTS
 #define QXML_API		__declspec(dllexport)
+#define EXPIMP_TEMPLATE
 #else
 #define QXML_API		__declspec(dllimport)
+#define EXPIMP_TEMPLATE extern
 #endif
 
 typedef stdext::hash_map <std::string, std::string> HashMapStrings;
@@ -147,5 +149,7 @@ private:
 #define XML_QUOTE			"&quot;"
 #define XML_LESSTHANSIGN	"&lt;"
 #define XML_GREATERTHANSIGN "&gt;"
+
+EXPIMP_TEMPLATE template class QXML_API std::vector<CXMLNode*>;
 
 #endif
