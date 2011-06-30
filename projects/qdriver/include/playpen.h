@@ -489,9 +489,10 @@ static void PlayRender()
 	g_pModelManager->PushInstances("glock18c.3DS", "Media/Models/");
 	}
 	*/
-
 	g_pModelManager->PushInstances("glock18c.3DS", "Media/Models/");
 
+	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_ENABLEWRITE);
+	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_LEQUAL);
 	fx->BeginEffect( "Phong" );
 	
 	fx->UploadParameters("g_mVP", QEFFECT_VARIABLE_STATE_MATRIX, 1, &vp);
@@ -505,6 +506,9 @@ static void PlayRender()
 
 	fx->EndRender( 0 );
 	fx->EndEffect();
+	
+	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DEFAULT);
+	g_pRender->EnableColorWrites();
 
 	/*
 	//vec3f bound_low, bound_high;
@@ -516,14 +520,16 @@ static void PlayRender()
 	vec3f mint(min.getX(), min.getY(), min.getZ());
 	vec3f maxt(max.getX(), max.getY(), max.getZ());*/
 
-	g_pRender->EnableAlphaBlending();
-	g_pRender->ChangeAlphaBlendMode(QRENDER_ALPHABLEND_SRCALPHA, QRENDER_ALPHABLEND_ONE);
-
 	RenderGrid(camPos);
 
-	g_pRender->DisableAlphaBlending();
 
+	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DISABLE);
+	g_pRender->EnableAlphaBlending();
+	g_pRender->ChangeAlphaBlendMode(QRENDER_ALPHABLEND_SRCALPHA, QRENDER_ALPHABLEND_ONE);
 	font->WriteText("test", vec2f(100,100), vec2f(0,0), FONT_ALIGN_LEFT, QRENDER_MAKE_ARGB(0xFF, 255,0,0));
+	//g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DEFAULT);
+	g_pRender->DisableAlphaBlending();
+	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DEFAULT);	
 }
 
 static void PlayUpdate()
