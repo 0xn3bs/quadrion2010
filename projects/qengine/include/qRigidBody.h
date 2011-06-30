@@ -9,13 +9,17 @@
 
 #include "qmath.h"
 
-class QRIGIDBODYEXPORT_API qRigidBody
+#include "qobject.h"
+
+class QRIGIDBODYEXPORT_API qRigidBody : public qobject
 {
 public:
 	qRigidBody(){};
 	virtual ~qRigidBody(){};
 
 	virtual void getPose(mat4& pose) = 0;
+
+	virtual void REGISTER_SCRIPTABLES(qscriptengine *engine);
 
 private:
 };

@@ -174,6 +174,7 @@
     <ClCompile Include="src\qphysicsshapedrawer.cpp" />
     <ClCompile Include="src\qPhysXEngine.cpp" />
     <ClCompile Include="src\qrender.cpp" />
+    <ClCompile Include="src\qRigidBody.cpp" />
     <ClCompile Include="src\qRigidBodyPhysX.cpp" />
     <ClCompile Include="src\qscriptable.cpp" />
     <ClCompile Include="src\qscriptengine.cpp" />
