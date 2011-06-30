@@ -159,6 +159,7 @@
     <ClCompile Include="src\qeventlistener.cpp" />
     <ClCompile Include="src\qeventregistry.cpp" />
     <ClCompile Include="src\qfile.cpp" />
+    <ClCompile Include="src\qfont.cpp" />
     <ClCompile Include="src\qgeom.cpp" />
     <ClCompile Include="src\qindex_t.cpp" />
     <ClCompile Include="src\qindexbuffer.cpp" />
@@ -227,6 +228,7 @@
     <ClInclude Include="include\qeventlistener.h" />
     <ClInclude Include="include\qeventregistry.h" />
     <ClInclude Include="include\qfile.h" />
+    <ClInclude Include="include\qfont.h" />
     <ClInclude Include="include\qgeom.h" />
     <ClInclude Include="include\qhash.h" />
     <ClInclude Include="include\qindex_t.h" />

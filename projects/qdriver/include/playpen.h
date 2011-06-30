@@ -19,6 +19,7 @@
 #include "angelscript.h"
 //#include "../../../angelscript/include/angelscript.h"
 
+#include "qerrorlog.h"
 #include "qeventregistry.h"
 #include "qevent.h"
 #include "qeventlistener.h"
@@ -46,6 +47,8 @@ qRigidBody *box;
 
 #include "qswf.h"
 
+#include "qfont.h"
+
 qscriptengine *g_pScriptEngine;
 qscriptexec *g_pScriptExec;
 qscriptexec *event_script;
@@ -59,6 +62,7 @@ qscriptexec*	keysUpdate;
 
 qPhysicsEngine *PE;
 
+CFont *font;
 
 qPhysicsMesh *convex_mesh;
 SWF	*g_pSWF;
@@ -351,6 +355,10 @@ static void PlayInit()
 
 	timer = new CTimer();
 	timer->Start();
+
+	font = new CFont();
+	if(!font->LoadFont("arial.tga", "Media/Textures/", false))
+		QUIT_ERROR("Could not load font!", "Font Loading Error!");
 }
 
 void PlayUpdate();
@@ -514,6 +522,8 @@ static void PlayRender()
 	RenderGrid(camPos);
 
 	g_pRender->DisableAlphaBlending();
+
+	font->WriteText("test", vec2f(100,100), vec2f(0,0), FONT_ALIGN_LEFT, QRENDER_MAKE_ARGB(0xFF, 255,0,0));
 }
 
 static void PlayUpdate()

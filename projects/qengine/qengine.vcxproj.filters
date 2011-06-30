@@ -236,6 +236,9 @@
     <ClInclude Include="include\qRigidBodyPhysX.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\qfont.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -443,6 +446,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\qRigidBody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qfont.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

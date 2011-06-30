@@ -1,18 +1,30 @@
 #ifndef __QFONT_H_
 #define __QFONT_H_
 
+#ifdef QRENDER_EXPORTS
+	#define QFONTEXPORT_API  __declspec(dllexport)
+#else
+	#define QFONTEXPORT_API  __declspec(dllimport)
+#endif
+
 #include <vector>
 
 #include "qrender.h"
 #include "qtexture.h"
 
-struct SCharacterOffset
+struct QFONTEXPORT_API texture_vertex_format
+{
+ float x, y, z;
+ float u, v;
+};
+
+struct QFONTEXPORT_API SCharacterOffset
 {
 	float u1, v1, u2, v2;
 	float xScale, yScale;
 };
 
-enum ETextAlignment
+enum QFONTEXPORT_API ETextAlignment
 {
 	FONT_ALIGN_LEFT		= 0x000000001,
 	FONT_ALIGN_RIGHT	= 0x000000002,
@@ -22,7 +34,7 @@ enum ETextAlignment
 	FONT_ALIGN_MIDDLE	= 0x000000040
 };
 
-class CFont
+class QFONTEXPORT_API CFont
 {
 private:
 	int m_iTextureHandle;

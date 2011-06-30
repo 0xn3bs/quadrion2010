@@ -1,7 +1,7 @@
 #include "qfont.h"
-#include "fps.h"
+//#include "fps.h"
 
-#include "cGUI.h"
+//#include "cGUI.h"
 
 CFont::CFont()
 {
@@ -188,7 +188,7 @@ void CFont::WriteText(const std::string& str, vec2f pos, vec2f bounds, ETextAlig
 	int curWidth = 0;
 	SCharacterOffset* charOffset;
 	//gGUI->reSetGlobalTextureShift();
-	texture_vertex_format *vert = gGUI->getGlobalTextureShiftPtr();
+	texture_vertex_format vert[6];// = gGUI->getGlobalTextureShiftPtr();
 
 	//tex = g_pRender->GetTextureObject(m_sPath + m_sName, _BASE_DIR);
 	tex = g_pRender->GetTextureObject(m_iTextureHandle);
@@ -240,7 +240,7 @@ void CFont::WriteText(const std::string& str, vec2f pos, vec2f bounds, ETextAlig
 		curWidth += (int)( charOffset->xScale + 1 ); // TODO: verify these casts.
 	}
 
-	gGUI->reSetGlobalTextureShift();	
+//	gGUI->reSetGlobalTextureShift();	
 	
 	tex->UnbindTexture();
 }
