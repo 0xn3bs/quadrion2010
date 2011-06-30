@@ -31,6 +31,16 @@
 #include "qphysicsmesh.h"
 #include "btBulletDynamicsCommon.h"
 
+// new physics interface //
+#include "qphysicsengine.h"
+#include "qRigidBody.h"
+
+// PhysX physics implementation //
+#include "qPhysXEngine.h"
+#include "qRigidBodyPhysX.h"
+
+qRigidBody *box;
+
 #include "add_ons/scriptstring/scriptstring.h"
 #include "add_ons/scriptany/scriptany.h"
 
@@ -43,6 +53,12 @@ qscriptexec *cam;
 qscriptmodule *g_pScriptModule;
 qeventregistry *g_pEventRegistry;
 qphysicsengine *g_pPhysicsWorld;
+
+qscriptexec*	camMovement;
+qscriptexec*	keysUpdate;
+
+qPhysicsEngine *PE;
+
 
 qPhysicsMesh *convex_mesh;
 SWF	*g_pSWF;
@@ -57,14 +73,14 @@ static CModelManager* g_pModelManager = NULL;
 static int g_hModelHandle = QRENDER_INVALID_HANDLE;
 static int g_hEffectHandle = QRENDER_INVALID_HANDLE;
 
-char keys[256];
+unsigned char keys[256];
 
 
 //// completely temporary solution ///
 
 struct glockObject
 {
-	btRigidBody*	bodyHandle;
+	qRigidBody*		bodyHandle;
 	int				modelHandle;
 };
 
@@ -164,10 +180,29 @@ void killApp()
 	exit(1);
 }
 
+bool isKeyDown(unsigned char key)
+{
+	return (keys[key] == 1);
+}
 
+void GetMousePosition( int& x, int& y )
+{
+	POINT pt;
+	if( GetCursorPos( &pt ) )
+	{
+		x = pt.x;
+		y = pt.y;
+		return;
+	}
 
+	else 
+		return;
+}
 static void PlayInit()
 {
+	for(int a = 0;a < 256;a++)
+		keys[a] = 0;
+
 	g_pCamera = new CCamera;
 	g_pModelManager = new CModelManager;
 
@@ -185,72 +220,35 @@ static void PlayInit()
 	g_pPhysicsWorld = new qphysicsengine();
 	g_pPhysicsWorld->setGravity(0.0f, -32.2f, 0.0f);
 
+	// new physics init //
+	PE = new qPhysXEngine();
+	PE->init();
+
+	//box = PE->addRigidBody(10.0f, NULL, qPhysicsShape());
+
 	// TODO : write overloaded wrappers to AS
 	int r = g_pScriptEngine->getEngine()->RegisterGlobalFunction("float cosf(float)",  asFUNCTIONPR(cos, (float), float), asCALL_CDECL); assert( r >= 0);
 	r = g_pScriptEngine->getEngine()->RegisterGlobalFunction("float sinf(float)",  asFUNCTIONPR(sin, (float), float), asCALL_CDECL); assert( r >= 0);
 	//r = g_pScriptEngine->getEngine()->RegisterGlobalFunction("uint16 VK_KEY(uint8)",  asFUNCTIONPR(VkKeyScan, (float), float), asCALL_CDECL); assert( r >= 0);
 	REGISTER_GLOBAL_FUNCTION(g_pScriptEngine, "uint16 VK_KEY(string &in)", VK_KEY);
 	REGISTER_GLOBAL_FUNCTION(g_pScriptEngine, "void killApp()", killApp);
-	g_pScriptEngine->getEngine()->RegisterGlobalProperty("CCamera@ cam", &g_pCamera);
-
-	char *on_event = 
-		"CTimer time;										"
-		"void ON_EVENT(qevent @evt, qobject @obj)			"
-		"{												"
-		//"	time.Start();"
-		"	double dt = time.GetElapsedMicroSec();		"
-		"	CCamera @view = cast<CCamera>(@obj);		"
-		"	switch(evt.type())							"
-		"	{											"
-		"		case EVENT_KEY :						"
-		"		{										"
-		"			switch(evt.get_key_code())			"
-		"			{									"
-		"				case VK_A :						"
-		"				{								"
-		"					view.MoveCameraRelative(-10000.0f/dt, 0.0f, 0.0f);	"
-		"					break;						"
-		"				}								"
-		"				case VK_D :						"
-		"				{								"
-		"					view.MoveCameraRelative(10000.0f/dt, 0.0f, 0.0f);	"
-		"					break;						"
-		"				}								"
-		"				case VK_W :						"
-		"				{								"
-		"					view.MoveCameraRelative(0.0f, 0.0f, 10000.0f/dt);	"
-		"					break;						"
-		"				}								"
-		"				case VK_S :						"
-		"				{								"
-		"					view.MoveCameraRelative(0.0f, 0.0f, -10000.0f/dt);	"
-		"					break;						"
-		"				}								"
-		"				case VK_Q :						"
-		"				{								"
-		"					killApp();					"
-		"					break;						"
-		"				}								"
-		"			}									"
-		"			break;								"
-		"		}										"
-		"		case EVENT_MOUSE :						"
-		"		{										"
-		"			view.RotateByMouse( evt.get_mouse_x(), evt.get_mouse_y(), 1400 / 2, 900 / 2 );"	
-		"			break;								"
-		"		}										"
-		"	}											"
-		//"	view.Apply();								"
-		//"	time.Reset();								"
-		"	time.Start();								"
-		"}												";
+	REGISTER_GLOBAL_FUNCTION(g_pScriptEngine, "bool isKeyDown(uint8 key)", isKeyDown);
+	REGISTER_GLOBAL_FUNCTION(g_pScriptEngine, "void GetMousePosition(int &out, int &out)", GetMousePosition);
+	r = g_pScriptEngine->getEngine()->RegisterGlobalProperty("CCamera@ cam", &g_pCamera); assert( r >= 0);
+	
 
 	g_pScriptModule = g_pScriptEngine->pGetScriptModule("script");
 
 	// TODO : fix the from file loader..
     //if(g_pScriptModule->addSectionFromFile("C:\Users\avansc\Desktop\quad2010\Media\Scriptstest.as") < 0) exit(-1);
-	if(g_pScriptModule->addSection(on_event) < 0) exit(-1);
+	//if(g_pScriptModule->addSection(on_event) < 0) exit(-1);
+
+	if(g_pScriptModule->addSectionFromFile("main.as", "Media/Scripts/") < 0) exit(-1);
+
 	if(g_pScriptModule->buildScript() < 0) exit(-1);
+
+	keysUpdate	= g_pScriptEngine->pGetScriptExec("script", "void updateKeyboard()");
+	camMovement	= g_pScriptEngine->pGetScriptExec("script", "void updateMovement(CCamera @cam)");
 
 	event_script = g_pScriptEngine->pGetScriptExec("script", "void ON_EVENT(qevent @evt, qobject @obj)");
 
@@ -267,7 +265,7 @@ static void PlayInit()
 	g_pApp->SetMousePosition( 1400/2, 1900/2 );
 
 	g_pCamera->SetCamera( 60.0f, 20.0f, 60.0f, 0.0f, 100.0f, 0.0f, 0.0f, 1.0f, 0.0f );
-	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 55.0f ), (float)w / (float)h, 0.8f, 400.0f );
+	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 55.0f ), (float)w / (float)h, 0.8f, 1000.0f );
 	g_pCamera->Apply();
 
 	g_pModelManager->SetTexturePath("Media/Textures/");
@@ -276,9 +274,13 @@ static void PlayInit()
 	//g_hModelHandle = g_pModelManager->AddModel( "glock18c.3DS", "Media/Models/" );
 	int mHandle = g_pModelManager->AddModel( "glock18c.3DS", "Media/Models/" );
 	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", mHandle );
+
+	vec3f min, max, center;
+	mdl->GetAABB(min, max);
+	mdl->GetModelCenter(center);
 	/// physics convex decomposition mesh ///
-	convex_mesh = new qPhysicsMesh3DS(mdl);
-	convex_mesh->processMesh();
+	//convex_mesh = new qPhysicsMesh3DS(mdl);
+	//convex_mesh->processMesh();
 
 	mat4 id;
 	QMATH_MATRIX_LOADIDENTITY( id );
@@ -289,8 +291,9 @@ static void PlayInit()
 	mdl->BindNormalmapTexture( -1 );
 	mdl->CreateFinalTransform(id);
 
-	btRigidBody* bHandle = g_pPhysicsWorld->addRigidBody(20.0f, mdl, convex_mesh->getCollisionShape());
-
+	//btRigidBody* bHandle = g_pPhysicsWorld->addRigidBody(20.0f, mdl, convex_mesh->getCollisionShape());
+	//btRigidBody* bHandle = g_pPhysicsWorld->addBox(20.0f, vec3f(0.0f, 60.0f, 0.0f), max - center, mdl);
+	qRigidBody* bHandle = PE->addRigidBody(10.0f, mdl, qPhysicsShape());
 	glockObject GO = {bHandle, mHandle};
 	glockObjectList.push_back(GO);
 
@@ -302,7 +305,7 @@ static void PlayInit()
 
 		mat4 id;
 		QMATH_MATRIX_LOADIDENTITY( id );
-		mdl->SetModelPos( vec3f( rand()%50-25, rand()%100+100.0f, rand()%50-25 ) );
+		mdl->SetModelPos( vec3f( rand()%500-250, rand()%100+100.0f, rand()%500-250 ) );
 		mdl->SetModelScale( vec3f( 1.0f, 1.0f, 1.0f ) );
 		mdl->SetModelOrientation( id );
 		mdl->BindDiffuseTexture(0);
@@ -311,15 +314,16 @@ static void PlayInit()
 
 		//g_pModelManager->UpdateModelOrientation("glock18c.3DS", "Media/Models/", mHandle, id);
 
-		bHandle = g_pPhysicsWorld->addRigidBody(20.0f, mdl, convex_mesh->getCollisionShape());
-		bHandle->applyTorqueImpulse(btVector3(rand()%400-200, rand()%400-200, rand()%400-200));
+		//bHandle = g_pPhysicsWorld->addRigidBody(20.0f, mdl, convex_mesh->getCollisionShape());
+		//bHandle = g_pPhysicsWorld->addBox(20.0f, vec3f(0.0f, 60.0f, 0.0f), max - center, mdl);
+		 bHandle = PE->addRigidBody(10.0f, mdl, qPhysicsShape());
+		//bHandle->applyTorqueImpulse(btVector3(rand()%400-200, rand()%400-200, rand()%400-200));
 
 		glockObject GO = {bHandle, mHandle};
 		glockObjectList.push_back(GO);
 	}
 	//g_pModelManager->PushInstances("glock18c.3DS", "Media/Models/");
 
-	
 	
 	/*mat4 id;
 	QMATH_MATRIX_LOADIDENTITY( id );
@@ -351,15 +355,24 @@ static void PlayInit()
 
 void PlayUpdate();
 
-void RenderGrid()
+void RenderGrid(vec3f pos)
 {
-	for(int x = -100;x < 100;x++)
+	pos.y = 0;
+	//pos.x = (int)(pos.x/5);
+	//pos.z = (int)(pos.z/5);
+	int tx = ((int)(pos.x))%5;
+	pos.x = pos.x/1 + tx;
+	int tz = ((int)(pos.z))%5;
+	pos.z = pos.z/1 + tz;
+
+	int size = 500;
+	for(int x = -size;x < size;x++)
 	{
 		//for(int y = -100;y < 100;y++)
 		//{
-			g_pRender->RenderLine(vec3f(x*2,0,-100*2), vec3f(x*2,0,100*2), QRENDER_MAKE_ARGB(0x80, 10,100,10));
+			g_pRender->RenderLine(vec3f(x*5,0,-size*5), vec3f(x*5,0,size*5), QRENDER_MAKE_ARGB(0x80, 10,100,10));
 			
-			g_pRender->RenderLine(vec3f(-100*2, 0, x*2), vec3f(100*2, 0, x*2), QRENDER_MAKE_ARGB(0x80, 10,100,10));
+			g_pRender->RenderLine(vec3f(-size*5, 0, x*5), vec3f(size*5, 0, x*5), QRENDER_MAKE_ARGB(0x80, 10,100,10));
 		//}
 	}
 	//g_pRender->RenderLine(vec3f(0,0,0), vec3f(1000,1000,1000), QRENDER_MAKE_ARGB(0xFF, 255,255,255));
@@ -405,11 +418,25 @@ float dx = 0.0f;
 
 static void PlayRender()
 {
-	g_pPhysicsWorld->step(timer->GetElapsedSec());
-	//timer->Reset();
+	//g_pPhysicsWorld->renderBodies(g_pCamera);
+	//g_pPhysicsWorld->step(timer->GetElapsedSec());
+
+	PE->step(timer->GetElapsedMicroSec()/1000000.0f);
 	timer->Start();
-	processKeys();
-	g_pEventRegistry->process_events();
+	//g_pPhysicsWorld->step(1/60.0f);
+	
+	//timer->Reset();
+	
+	//keysUpdate->ctx->SetArgObject(0, &keys[0]);
+	keysUpdate->exec();
+	keysUpdate->reset();
+
+	camMovement->ctx->SetArgObject(0, g_pCamera);
+	camMovement->exec();
+	camMovement->reset();
+	
+	//processKeys();
+	//g_pEventRegistry->process_events();
 	PlayUpdate();
 
 	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", 0 );
@@ -430,12 +457,21 @@ static void PlayRender()
 	std::vector<glockObject>::iterator it;
 	for(it = glockObjectList.begin(); it != glockObjectList.end(); it++)
 	{
-		(*it).bodyHandle->getMotionState()->getWorldTransform(trans);
-		trans.getOpenGLMatrix(rot);
-		QMATH_MATRIX_TRANSPOSE(rot);
+		//(*it).bodyHandle->getMotionState()->getWorldTransform(trans);
+		(*it).bodyHandle->getPose(rot);
+		//trans.getOpenGLMatrix(rot);
+		//QMATH_MATRIX_TRANSPOSE(rot);
 		g_pModelManager->UpdateModelOrientation("glock18c.3DS", "Media/Models/", (*it).modelHandle, rot);
 	}
-	g_pModelManager->PushInstances("glock18c.3DS", "Media/Models/");
+
+	//mat4 pose;
+	//box->getPose(pose);
+
+	//QMATH_MATRIX_LOADIDENTITY(pose);
+
+	//g_pModelManager->UpdateModelOrientation("glock18c.3DS", "Media/Models/", 0, pose);
+
+	//g_pModelManager->PushInstances("glock18c.3DS", "Media/Models/");
 	
     /*
 	handle->getMotionState()->getWorldTransform(trans);
@@ -475,7 +511,7 @@ static void PlayRender()
 	g_pRender->EnableAlphaBlending();
 	g_pRender->ChangeAlphaBlendMode(QRENDER_ALPHABLEND_SRCALPHA, QRENDER_ALPHABLEND_ONE);
 
-	RenderGrid();
+	RenderGrid(camPos);
 
 	g_pRender->DisableAlphaBlending();
 }

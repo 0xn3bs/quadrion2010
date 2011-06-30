@@ -16,6 +16,7 @@
 #include "qmodelobject.h"
 #include "qobject.h"
 #include "qphysicsshapedrawer.h"
+#include "qphysicsengine.h"
 
 class qscriptengine;
 
@@ -31,11 +32,15 @@ class CModelObject;
 class btCompoundShape;
 class btCollisionShape;
 
-class QPHYSICSEXPORT_API qphysicsengine : public qobject
+class QPHYSICSEXPORT_API qphysicsengine// : public qPhysicsEngine
 {
 public:
 	qphysicsengine();
-	~qphysicsengine();
+	virtual ~qphysicsengine(){}
+
+	virtual void	init();
+	virtual void	step(float dt);
+	virtual void*	addRigidBody(float mass, CModelObject *mdl, qPhysicsShape shape);
 
 	btDynamicsWorld *getWorld();
 
@@ -46,7 +51,6 @@ public:
 	btRigidBody *addRigidBody(float mass, vec3f pos, vec3f size, btCollisionShape *shape);
 	btRigidBody *addRigidBody(float mass, CModelObject *model, btCollisionShape *shape);
 
-	void step(float const& dt);
 	void renderBodies(CCamera *cam);
 
 	void getWorldAABB(btRigidBody *body, btVector3 &min, btVector3 &max);
@@ -55,12 +59,20 @@ public:
 
 	virtual void REGISTER_SCRIPTABLES(qscriptengine *engine);
 private:
+
+	btAlignedObjectArray<btCollisionShape*>	m_collisionShapes;
+
+	class	btThreadSupportInterface*		m_threadSupportCollision;
+	class	btThreadSupportInterface*		m_threadSupportSolver;
+
+	btCollisionAlgorithmCreateFunc*	m_boxBoxCF;
+
 	btBroadphaseInterface				*broadphase;
 	btDefaultCollisionConfiguration		*collisionConfiguration;
 	btCollisionDispatcher				*dispatcher;
 	btSequentialImpulseConstraintSolver	*solver;
-	//btDiscreteDynamicsWorld				*world;
-	btDynamicsWorld						*world;
+	btDiscreteDynamicsWorld				*world;
+	//btDynamicsWorld						*world;
 
 	qPhysicsShapeDrawer					*mShapeDrawer;
 };

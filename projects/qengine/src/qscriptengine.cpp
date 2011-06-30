@@ -10,10 +10,21 @@
 #include <stdio.h>
 
 #include "add_ons/scriptstring/scriptstring.h"
+#include "add_ons/scriptarray/scriptarray.h"
 //#include "add_ons/scriptany/scriptany.h"
 #include "qscriptengine.h"
 #include "qscriptmodule.h"
 #include "qscriptexec.h"
+
+SYSTEMTIME m_st;
+char m_szdate[26];
+
+inline char* CurrentTime() {
+        GetSystemTime(&m_st);
+        sprintf(m_szdate, "%02d/%02d/%d %02d:%02d:%02d.%03d | ", m_st.wMonth, m_st.wDay, m_st.wYear,
+            m_st.wHour, m_st.wMinute, m_st.wSecond, m_st.wMilliseconds);
+        return m_szdate;
+    } 
 
 void SCRIPT_ERROR(const char *format, ...) {
 	char buf[32767], *p = buf;
@@ -34,7 +45,7 @@ void SCRIPT_ERROR(const char *format, ...) {
        // m_ofelog.close();
 
 		std::stringstream strBuf;
-		strBuf << "DEBUG: " << buf << std::endl;
+		strBuf <<  CurrentTime() << buf << std::endl;
 		::OutputDebugStringA(strBuf.str().c_str());
 }
 
@@ -43,6 +54,7 @@ qscriptengine::qscriptengine()
     this->p_engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
     this->p_engine->SetMessageCallback(asFUNCTION(qscriptengine::MESSAGE_CALLBACK), 0, asCALL_CDECL);
     
+	RegisterScriptArray(this->p_engine, true); 
     RegisterScriptString(this->p_engine);
 	//RegisterScriptAny(this->p_engine);
     
@@ -155,7 +167,7 @@ void qscriptengine::MESSAGE_CALLBACK(const asSMessageInfo *msg, void *param)
 	else if( msg->type == asMSGTYPE_INFORMATION ) 
 		type = "INFO";
 	//printf("%s (%d, %d) : %s : %s\n", msg->section, msg->row, msg->col, type, msg->message);
-	SCRIPT_ERROR("%s (%d, %d) : %s : %s\n", msg->section, msg->row, msg->col, type, msg->message);
+	SCRIPT_ERROR("%s (%d, %d) : %s : %s", msg->section, msg->row, msg->col, type, msg->message);
 }
 
 bool qscriptengine::strcmp_ws(char *str1, char *str2)

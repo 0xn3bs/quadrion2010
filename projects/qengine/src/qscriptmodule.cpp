@@ -12,6 +12,8 @@
 #include <fstream>
 #include <string>
 
+#include "qerrorlog.h"
+
 #include "qscriptmodule.h"
 
 #include "angelscript.h"
@@ -129,6 +131,36 @@ int qscriptmodule::addSectionFromFile(const char *_file)
 	}
 	printf("script loaded succesfully.\n");
 	return 1;*/
+}
+
+int qscriptmodule::addSectionFromFile(const std::string& file, const std::string& path)
+{
+	std::string tPath = path + file;
+
+	char * memblock;
+	ifstream::pos_type size;
+
+	ifstream fileH (tPath, ios::in|ios::binary|ios::ate);
+	if (fileH.is_open())
+	{
+		size = fileH.tellg();
+		memblock = new char [size];
+		fileH.seekg (0, ios::beg);
+		fileH.read (memblock, size);
+		fileH.close();
+
+		//delete[] memblock;
+	}
+
+	int r = mod->AddScriptSection(this->name.c_str(), memblock, size);
+	if( r < 0 ) 
+	{
+		printf("AddScriptSection() failed\n");
+		return -1;
+	}
+	printf("script loaded succesfully.\n");
+	delete[] memblock;
+	return 1;
 }
 
 int qscriptmodule::buildScript()

@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="checked|Win32">
+      <Configuration>checked</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="debug|Win32">
+      <Configuration>debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="profile|Win32">
+      <Configuration>profile</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="release|Win32">
+      <Configuration>release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='profile|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='checked|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='profile|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='checked|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../lib/win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Win32/PxToolkit/debug\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='checked|Win32'">../../lib/win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='checked|Win32'">Win32/PxToolkit/checked\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='profile|Win32'">../../lib/win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='profile|Win32'">Win32/PxToolkit/profile\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='release|Win32'">../../lib/win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Win32/PxToolkit/release\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\..\SDKs\PhysXAPI\foundation;..\..\..\..\SDKs\PhysXAPI\foundation\internal\include;..\..\..\..\SDKs\PhysXProfileSDK\sdk\include;..\..\..\..\SDKs\PhysXVisualDebuggerSDK\PVDCommLayer\Public;../../include;..\..\..\..\SDKs\PhysXAPI\common;..\..\..\..\SDKs\PhysXAPI\geometry;..\..\..\..\SDKs\PhysXAPI\pvd;..\..\..\..\SDKs\PhysXAPI\deformable;..\..\..\..\SDKs\PhysXAPI\particles;..\..\..\..\SDKs\PhysXAPI\cooking;..\..\..\..\SDKs\PhysXAPI\extensions;..\..\..\..\SDKs\PhysXAPI\vehicle;..\..\..\..\SDKs\PhysXAPI;..\..\..\..\SDKs\GeomUtils\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_DEBUG;PX_CHECKED;PX_PHYSX_DLL_NAME_POSTFIX=DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalOptions>/GR- /GF /WX /fp:fast /arch:SSE2 /MP /Od /Zi  %(AdditionalOptions)</AdditionalOptions>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName)DEBUG.lib</OutputFile>
+      <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='checked|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\..\SDKs\PhysXAPI\foundation;..\..\..\..\SDKs\PhysXAPI\foundation\internal\include;..\..\..\..\SDKs\PhysXProfileSDK\sdk\include;..\..\..\..\SDKs\PhysXVisualDebuggerSDK\PVDCommLayer\Public;../../include;..\..\..\..\SDKs\PhysXAPI\common;..\..\..\..\SDKs\PhysXAPI\geometry;..\..\..\..\SDKs\PhysXAPI\pvd;..\..\..\..\SDKs\PhysXAPI\deformable;..\..\..\..\SDKs\PhysXAPI\particles;..\..\..\..\SDKs\PhysXAPI\cooking;..\..\..\..\SDKs\PhysXAPI\extensions;..\..\..\..\SDKs\PhysXAPI\vehicle;..\..\..\..\SDKs\PhysXAPI;..\..\..\..\SDKs\GeomUtils\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;NDEBUG;PX_CHECKED;PX_PHYSX_DLL_NAME_POSTFIX=CHECKED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalOptions>/GR- /GF /WX /fp:fast /arch:SSE2 /MP /Ox  %(AdditionalOptions)</AdditionalOptions>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName)CHECKED.lib</OutputFile>
+      <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='profile|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\..\SDKs\PhysXAPI\foundation;..\..\..\..\SDKs\PhysXAPI\foundation\internal\include;..\..\..\..\SDKs\PhysXProfileSDK\sdk\include;..\..\..\..\SDKs\PhysXVisualDebuggerSDK\PVDCommLayer\Public;../../include;..\..\..\..\SDKs\PhysXAPI\common;..\..\..\..\SDKs\PhysXAPI\geometry;..\..\..\..\SDKs\PhysXAPI\pvd;..\..\..\..\SDKs\PhysXAPI\deformable;..\..\..\..\SDKs\PhysXAPI\particles;..\..\..\..\SDKs\PhysXAPI\cooking;..\..\..\..\SDKs\PhysXAPI\extensions;..\..\..\..\SDKs\PhysXAPI\vehicle;..\..\..\..\SDKs\PhysXAPI;..\..\..\..\SDKs\GeomUtils\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;NDEBUG;PX_PROFILE;PX_PHYSX_DLL_NAME_POSTFIX=PROFILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalOptions>/GR- /GF /WX /fp:fast /arch:SSE2 /MP /Ox  %(AdditionalOptions)</AdditionalOptions>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName)PROFILE.lib</OutputFile>
+      <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\..\SDKs\PhysXAPI\foundation;..\..\..\..\SDKs\PhysXAPI\foundation\internal\include;..\..\..\..\SDKs\PhysXProfileSDK\sdk\include;..\..\..\..\SDKs\PhysXVisualDebuggerSDK\PVDCommLayer\Public;../../include;..\..\..\..\SDKs\PhysXAPI\common;..\..\..\..\SDKs\PhysXAPI\geometry;..\..\..\..\SDKs\PhysXAPI\pvd;..\..\..\..\SDKs\PhysXAPI\deformable;..\..\..\..\SDKs\PhysXAPI\particles;..\..\..\..\SDKs\PhysXAPI\cooking;..\..\..\..\SDKs\PhysXAPI\extensions;..\..\..\..\SDKs\PhysXAPI\vehicle;..\..\..\..\SDKs\PhysXAPI;..\..\..\..\SDKs\GeomUtils\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalOptions>/GR- /GF /WX /fp:fast /arch:SSE2 /MP /Ox  %(AdditionalOptions)</AdditionalOptions>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+      <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\PxTkBmpLoader.h" />
+    <ClInclude Include="..\..\include\PxTkFactory.h" />
+    <ClInclude Include="..\..\include\PxTkFPS.h" />
+    <ClInclude Include="..\..\include\PxTkNamespaceMangle.h" />
+    <ClInclude Include="..\..\include\PxTkRandom.h" />
+    <ClInclude Include="..\..\include\PxTkStream.h" />
+    <ClInclude Include="..\..\include\PxToolkit.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\PxTkBmpLoader.cpp" />
+    <ClCompile Include="..\..\src\PxTkFactory.cpp" />
+    <ClCompile Include="..\..\src\PxTkFPS.cpp" />
+    <ClCompile Include="..\..\src\PxTkRandom.cpp" />
+    <ClCompile Include="..\..\src\PxTkStream.cpp" />
+    <ClCompile Include="..\..\src\PxToolkit.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

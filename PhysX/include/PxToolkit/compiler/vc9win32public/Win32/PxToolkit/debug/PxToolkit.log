@@ -1,0 +1,12 @@
+﻿cl : Command line warning D9025: overriding '/WX-' with '/WX'
+cl : Command line warning D9025: overriding '/fp:precise' with '/fp:fast'
+cl : Command line warning D9025: overriding '/WX-' with '/WX'
+cl : Command line warning D9025: overriding '/fp:precise' with '/fp:fast'
+cl : Command line warning D9025: overriding '/WX-' with '/WX'
+cl : Command line warning D9025: overriding '/fp:precise' with '/fp:fast'
+C:\Users\avansc\Desktop\quad2010\PhysX\include\PxToolkit\include\PxTkFactory.h(33): fatal error C1083: Cannot open include file: 'common/PxPhysXCommon.h': No such file or directory
+..\..\src\PxTkBmpLoader.cpp(34): fatal error C1083: Cannot open include file: 'PsFile.h': No such file or directory
+C:\Users\avansc\Desktop\quad2010\PhysX\include\PxToolkit\include\PxTkFPS.h(33): fatal error C1083: Cannot open include file: 'common/PxPhysXCommon.h': No such file or directory
+C:\Users\avansc\Desktop\quad2010\PhysX\include\PxToolkit\include\PxTkRandom.h(33): fatal error C1083: Cannot open include file: 'common/PxPhysXCommon.h': No such file or directory
+C:\Users\avansc\Desktop\quad2010\PhysX\include\PxToolkit\include\PxTkStream.h(33): fatal error C1083: Cannot open include file: 'common/PxStream.h': No such file or directory
+C:\Users\avansc\Desktop\quad2010\PhysX\include\PxToolkit\include\PxTkFactory.h(33): fatal error C1083: Cannot open include file: 'common/PxPhysXCommon.h': No such file or directory

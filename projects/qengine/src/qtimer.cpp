@@ -95,7 +95,6 @@ TIME CTimer::GetElapsed()
 	return temp;
 }
 
-
 void CTimer::REGISTER_SCRIPTABLES(qscriptengine *engine)
 {
 	REGISTER_CLASS(engine, "CTimer", CTimer);

@@ -30,10 +30,9 @@ qphysicsengine::qphysicsengine()
 	this->mShapeDrawer = new qPhysicsShapeDrawer();
 }
 
-qphysicsengine::~qphysicsengine()
-{
-}
-
+ void qphysicsengine::init()
+ {
+ }
 
 btDynamicsWorld *qphysicsengine::getWorld()
 {
@@ -54,7 +53,7 @@ btRigidBody *qphysicsengine::addBox(float mass, vec3f pos, vec3f size, CModelObj
 {
 	bool isDynamic = (mass != 0.f);
 	//size.z /= 2.0f;
-	//size.z -= size.z/2.0f;
+	//size.z -= size.z/2.0f;w
 
 	btCollisionShape *shape = new btBoxShape(btVector3(size.x, size.y, size.z));
 
@@ -76,6 +75,11 @@ btRigidBody *qphysicsengine::addBox(float mass, vec3f pos, vec3f size, CModelObj
 	this->world->addRigidBody(body);
 
 	return body;
+}
+
+void* qphysicsengine::addRigidBody(float mass, CModelObject *mdl, qPhysicsShape shape)
+{
+	return NULL;
 }
 
 btRigidBody *qphysicsengine::addRigidBody(float mass, vec3f pos, vec3f size, btCollisionShape *shape)
@@ -139,7 +143,7 @@ btRigidBody *qphysicsengine::addRigidBody(float mass, CModelObject *model, btCol
 	return body;
 }
 
-void qphysicsengine::step(float const& dt)
+void qphysicsengine::step(float dt)
 {
 	this->world->stepSimulation(dt, 10);// might want to change the 5 to something calculated.
 }

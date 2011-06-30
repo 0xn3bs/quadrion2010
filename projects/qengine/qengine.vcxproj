@@ -65,7 +65,7 @@
     </CustomBuildStep>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>include;..\shared\include;..\qdriver\include;..\..\bullet\include;..\..\angelscript\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;..\shared\include;..\qdriver\include;..\..\bullet\include;..\..\angelscript\include;..\..\PhysX\include\PhysXAPI;..\..\PhysX\include\PxToolkit\include;..\..\PhysX\include\;..\..\PhysX\include\PhysXAPI\common;..\..\PhysX\include\PhysXAPI\cooking;..\..\PhysX\include\PhysXAPI\deformable;..\..\PhysX\include\PhysXAPI\deprecated;..\..\PhysX\include\PhysXAPI\extensions;..\..\PhysX\include\PhysXAPI\foundation;..\..\PhysX\include\PhysXAPI\foundation\internal\include;..\..\PhysX\include\PhysXAPI\geometry;..\..\PhysX\include\PhysXAPI\gpu;..\..\PhysX\include\PhysXAPI\patricles;..\..\PhysX\include\PhysXAPI\pvd;..\..\PhysX\include\PhysXAPI\pxtask\include;..\..\PhysX\include\PhysXAPI\vehicle;..\..\PhysX\include\PhysXAPI\foundation\windows;..\..\PhysX\include\PhysXCommon\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;UNICODE;_DEBUG;_WINDOWS;_USRDLL;QRENDER_EXPORTS;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_SECURE_SCL 0;_HAS_ITERATOR_DEBUGGING 0;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -76,9 +76,9 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;angelscriptd.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BulletFileLoader.lib;BulletWorldImporter.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;angelscriptd.lib;BulletCollision.lib;BulletDynamics.lib;BulletMultiThreaded.lib;LinearMath.lib;BulletFileLoader.lib;BulletWorldImporter.lib;PhysX3Cooking_x86.lib;PhysX3_x86.lib;SimulationController.lib;LowLevel.lib;PhysXProfileSDK.lib;PhysX3Extensions.lib;Foundation.lib;SceneQuery.lib;GeomUtils.lib;PhysX3Common.lib;PhysX3CharacterKinematic.lib;PvdRuntime.lib;PhysX3MetaData.lib;RepX3.lib;PxTask.lib;PhysX3Vehicle.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)/build/qengine_d.dll</OutputFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)/angelscript/lib;$(SolutionDir)/lib;$(SolutionDir)/bullet/lib/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/PhysX/lib/win32/;$(SolutionDir)/angelscript/lib;$(SolutionDir)/lib;$(SolutionDir)/bullet/lib/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>..\..\lib\qengine_d.lib</ImportLibrary>
@@ -153,6 +153,7 @@
     <ClCompile Include="src\qalgorithm.cpp" />
     <ClCompile Include="src\qcamera.cpp" />
     <ClCompile Include="src\qeffect.cpp" />
+    <ClCompile Include="src\qerrorlog.cpp" />
     <ClCompile Include="src\qevent.cpp" />
     <ClCompile Include="src\qeventhandler.cpp" />
     <ClCompile Include="src\qeventlistener.cpp" />
@@ -171,7 +172,9 @@
     <ClCompile Include="src\qphysics.cpp" />
     <ClCompile Include="src\qphysicsmesh.cpp" />
     <ClCompile Include="src\qphysicsshapedrawer.cpp" />
+    <ClCompile Include="src\qPhysXEngine.cpp" />
     <ClCompile Include="src\qrender.cpp" />
+    <ClCompile Include="src\qRigidBodyPhysX.cpp" />
     <ClCompile Include="src\qscriptable.cpp" />
     <ClCompile Include="src\qscriptengine.cpp" />
     <ClCompile Include="src\qscripteventhandler.cpp" />
@@ -217,6 +220,7 @@
     <ClInclude Include="include\qalgorithm.h" />
     <ClInclude Include="include\qcamera.h" />
     <ClInclude Include="include\qeffect.h" />
+    <ClInclude Include="include\qerrorlog.h" />
     <ClInclude Include="include\qevent.h" />
     <ClInclude Include="include\qeventhandler.h" />
     <ClInclude Include="include\qeventlistener.h" />
@@ -235,10 +239,14 @@
     <ClInclude Include="include\qmotionstate.h" />
     <ClInclude Include="include\qobject.h" />
     <ClInclude Include="include\qphysics.h" />
+    <ClInclude Include="include\qphysicsengine.h" />
     <ClInclude Include="include\qphysicsmesh.h" />
     <ClInclude Include="include\qphysicsshapedrawer.h" />
+    <ClInclude Include="include\qPhysXEngine.h" />
     <ClInclude Include="include\qrender.h" />
     <ClInclude Include="include\qresource.h" />
+    <ClInclude Include="include\qRigidBody.h" />
+    <ClInclude Include="include\qRigidBodyPhysX.h" />
     <ClInclude Include="include\qscriptable.h" />
     <ClInclude Include="include\qscriptengine.h" />
     <ClInclude Include="include\qscripteventhandler.h" />

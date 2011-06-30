@@ -26,7 +26,7 @@ typedef multimap<unsigned int, qeventlistener* > listener_multimap;
 typedef multimap<unsigned int, qeventlistener* > monitor_multimap;
 typedef multimap<unsigned int, multimap<unsigned int, qeventlistener* > > listener_multi_map;
 
-const unsigned int EVENT_BUFFER_MAX = 100;
+const unsigned int EVENT_BUFFER_MAX = 10;
 
 class QEVENTREGISTRYEXPORT_API qeventregistry
 {

@@ -33,6 +33,7 @@ public:
     
     int addSection(char *_script);
     int addSectionFromFile(const char *_file);
+	int addSectionFromFile(const std::string& file, const std::string& path);
     
     int buildScript();
     
