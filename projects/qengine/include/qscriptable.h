@@ -11,7 +11,7 @@
 
 #include <new>
 
-//#include "add_ons/scriptany/scriptany.h"
+#include "add_ons/scriptany/scriptany.h"
 
 #ifdef QRENDER_EXPORTS
 #define QSCRIPTEXPORT_API		__declspec(dllexport)

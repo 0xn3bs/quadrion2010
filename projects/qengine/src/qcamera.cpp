@@ -104,14 +104,15 @@ void CCamera::MoveCameraRelative(float tx, float ty, float tz)
 	currPos += upVec*ty;
 	currPos += strafeVec*tx;
 
-	viewVec.x += viewVec.x*tx;
-	viewVec.y += viewVec.y*ty;
-	viewVec.z += viewVec.z*tz;
+	vec3f curLookPos = lookPos;
+	curLookPos += viewVec * tz;
+	curLookPos += upVec * ty;
+	curLookPos += strafeVec * tx;
 
 	viewVec += this->lookPos;
 
 	this->SetCamera(currPos.x, currPos.y, currPos.z,
-					viewVec.x, viewVec.y, viewVec.z,
+					curLookPos.x, curLookPos.y, curLookPos.z, 
 					upVec.x, upVec.y, upVec.z);
 }
 

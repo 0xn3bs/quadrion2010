@@ -38,6 +38,7 @@
 #include <vector>
 
 
+static inline DWORD F2DW(FLOAT f) { return *((DWORD*)&f); }  
 
 
  
@@ -392,7 +393,9 @@ class QRENDEREXPORT_API CQuadrionRender
 		
 		// Depth mode //
 		bool		ChangeDepthMode(const unsigned int& mode);
-		
+		bool		ChangeDepthBias(const float bias);
+		bool		ChangeSlopeBias(const float bias);
+
 		// Alpha blending //
 		bool		EnableAlphaBlending();
 		bool		DisableAlphaBlending();

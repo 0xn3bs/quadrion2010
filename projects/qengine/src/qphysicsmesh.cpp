@@ -227,10 +227,10 @@ void qPhysicsMesh3DS::setModel(CModelObject *mdl)
 
 void qPhysicsMesh3DS::processMesh()
 {
-	unsigned int depth = 0;
-    float cpercent     = 0;
-	float ppercent     = 0;
-	unsigned int maxv  = 0;
+	unsigned int depth = 3;
+    float cpercent     = 3;
+	float ppercent     = 8;
+	unsigned int maxv  = 10;
 	float skinWidth    = 0;
 
 	ConvexDecomposition::DecompDesc desc;

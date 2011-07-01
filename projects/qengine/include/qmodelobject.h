@@ -34,6 +34,8 @@ class QMODELOBJECTEXPORT_API CModelObject
 		virtual void		GetModelCenter(vec3f& center) {}
 		virtual bool		IsInstance() { return false; }
 
+		virtual void		GetLowLODMesh(vec3f* newVerts, unsigned int* newIndices) {}
+
 		bool				LoadEffect(const std::string& fxName, const std::string& fxPath = "./");
 		
 		void				CreateFinalTransform(mat4& M);

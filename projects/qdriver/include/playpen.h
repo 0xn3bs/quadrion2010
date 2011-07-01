@@ -269,7 +269,7 @@ static void PlayInit()
 	g_pApp->SetMousePosition( 1400/2, 1900/2 );
 
 	g_pCamera->SetCamera( 60.0f, 20.0f, 60.0f, 0.0f, 100.0f, 0.0f, 0.0f, 1.0f, 0.0f );
-	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 55.0f ), (float)w / (float)h, 0.8f, 1000.0f );
+	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 55.0f ), (float)w / (float)h, 2.0f, 500.0f );
 	g_pCamera->Apply();
 
 	g_pModelManager->SetTexturePath("Media/Textures/");
@@ -426,6 +426,9 @@ float dx = 0.0f;
 
 static void PlayRender()
 {
+	g_pRender->ChangeDepthBias(-0.0005f);
+	g_pRender->ChangeSlopeBias(1.0f);
+
 	//g_pPhysicsWorld->renderBodies(g_pCamera);
 	//g_pPhysicsWorld->step(timer->GetElapsedSec());
 
@@ -530,6 +533,8 @@ static void PlayRender()
 	//g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DEFAULT);
 	g_pRender->DisableAlphaBlending();
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DEFAULT);	
+	g_pRender->ChangeDepthBias(0.0f);
+	g_pRender->ChangeSlopeBias(0.0f);
 }
 
 static void PlayUpdate()

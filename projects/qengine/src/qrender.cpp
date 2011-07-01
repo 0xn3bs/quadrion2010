@@ -1281,6 +1281,24 @@ bool CQuadrionRender::ChangeDepthMode(const unsigned int& mode)
 	return true;
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+// ChangeDepthBias
+bool CQuadrionRender::ChangeDepthBias(const float bias)
+{
+	if(FAILED(m_pD3DDev->SetRenderState(D3DRS_DEPTHBIAS, F2DW(bias))))
+		return false;
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+// ChangeSlopeBias
+bool CQuadrionRender::ChangeSlopeBias(const float bias)
+{
+	if(FAILED(m_pD3DDev->SetRenderState(D3DRS_SLOPESCALEDEPTHBIAS, F2DW(bias))))
+		return false;
+	return true;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // EnableAlphaBlending

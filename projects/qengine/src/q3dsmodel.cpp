@@ -1814,3 +1814,12 @@ void c3DSModel::RenderModel()
 }
 
 
+void c3DSModel::GetLowLODMesh(vec3f* newVerts, unsigned int* newIndices)
+{
+	LPD3DXMESH pMesh;
+	D3DVERTEXELEMENT9 vDecl;
+//	D3DXDeclaratorFromFVF(D3DFVF_XYZ, vDecl);
+
+//	D3DXCreateMesh(mdlData.triCount, mdlData.vertCount, D3DXMESH_SYSTEMMEM, 
+}
+

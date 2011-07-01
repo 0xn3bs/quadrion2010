@@ -202,7 +202,7 @@ class Q3DSMODELEXPORT_API c3DSModel : public CModelObject
 		// such that the textures are bound to the correct samplers //
 		void RenderModel();
 		
-
+		void		GetLowLODMesh(vec3f* newVerts, unsigned int* newIndices);
 		
 		// Get mesh's orientation matrix from mesh handle //
 		void						getMeshOrientationMat( mat4& m, const int mesh );
