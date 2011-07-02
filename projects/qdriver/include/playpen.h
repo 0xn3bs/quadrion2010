@@ -545,16 +545,16 @@ static void PlayRender()
 	skybox_uv[2] = vec2f(1, 1);
 	skybox_uv[3] = vec2f(1, 0);
 
-	skybox_coord[0] = vec3f(-1000, 1000, 200);
-	skybox_coord[1] = vec3f(-1000, -1000, 200);
-	skybox_coord[2] = vec3f(1000, -1000, 200);
-	skybox_coord[3] = vec3f(1000, 1000, 200);
+	skybox_coord[0] = vec3f(-1024, 1024, 1041.2);
+	skybox_coord[1] = vec3f(-1024, -1024, 1041.2);
+	skybox_coord[2] = vec3f(1024, -1024, 1041.2);
+	skybox_coord[3] = vec3f(1024, 1024, 1041.2);
 
 
-	skybox.pos[0] = skybox_coord[0];
-	skybox.pos[1] = skybox_coord[1];
-	skybox.pos[2] = skybox_coord[2];
-	skybox.pos[3] = skybox_coord[3];
+	skybox.pos[0] = skybox_coord[0] + g_pCamera->GetPosition();
+	skybox.pos[1] = skybox_coord[1] + g_pCamera->GetPosition();
+	skybox.pos[2] = skybox_coord[2] + g_pCamera->GetPosition();
+	skybox.pos[3] = skybox_coord[3] + g_pCamera->GetPosition();
 
 	skybox.texcoords[0] = skybox_uv[0];
 	skybox.texcoords[1] = skybox_uv[1];
