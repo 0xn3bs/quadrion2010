@@ -79,8 +79,22 @@ static int g_hEffectHandle = QRENDER_INVALID_HANDLE;
 
 unsigned char keys[256];
 
-std::vector<int> sky_box_handles;
+//// temporary skybox jazz..
+struct skybox_face
+{
+	STexturedQuad tquad;
+	vec3f pos[4];
+	int texture_handle;
+};
 
+struct skybox
+{
+	skybox_face face[6];
+};
+
+skybox* g_pSkybox;
+
+/////////////////////////////
 
 //// completely temporary solution ///
 
@@ -204,6 +218,79 @@ void GetMousePosition( int& x, int& y )
 	else 
 		return;
 }
+
+void GenerateSkybox(skybox* p_sb)
+{
+	unsigned int flags = QTEXTURE_FILTER_NEAREST;
+	//	Load textures and set handles.
+	p_sb->face[0].texture_handle = g_pRender->AddTextureObject(flags, "skybox_right1.dds", "Media/Textures/skybox/space/purple_nebula_complex/");
+	p_sb->face[1].texture_handle = g_pRender->AddTextureObject(flags, "skybox_left2.dds", "Media/Textures/skybox/space/purple_nebula_complex/");
+	p_sb->face[2].texture_handle = g_pRender->AddTextureObject(flags, "skybox_top3.dds", "Media/Textures/skybox/space/purple_nebula_complex/");
+	p_sb->face[3].texture_handle = g_pRender->AddTextureObject(flags, "skybox_bottom4.dds", "Media/Textures/skybox/space/purple_nebula_complex/");
+	p_sb->face[4].texture_handle = g_pRender->AddTextureObject(flags, "skybox_front5.dds", "Media/Textures/skybox/space/purple_nebula_complex/");
+	p_sb->face[5].texture_handle = g_pRender->AddTextureObject(flags, "skybox_back6.dds", "Media/Textures/skybox/space/purple_nebula_complex/");
+
+	//	Generate UVs for all faces.
+	for(unsigned int i = 0; i < 6; ++i)
+	{
+		p_sb->face[i].tquad.texcoords[0] = vec2f(0, 0);
+		p_sb->face[i].tquad.texcoords[1] = vec2f(0, 1);
+		p_sb->face[i].tquad.texcoords[2] = vec2f(1, 1);
+		p_sb->face[i].tquad.texcoords[3] = vec2f(1, 0);
+	}
+
+	//	RIGHT
+	p_sb->face[0].pos[0] = vec3f(-1000, 1000, 1000);
+	p_sb->face[0].pos[1] = vec3f(-1000, -1000, 1000);
+	p_sb->face[0].pos[2] = vec3f(1000, -1000, 1000);
+	p_sb->face[0].pos[3] = vec3f(1000, 1000, 1000);
+
+	//	LEFT
+	p_sb->face[1].pos[0] = vec3f(1000, 1000, -1000);
+	p_sb->face[1].pos[1] = vec3f(1000, -1000, -1000);
+	p_sb->face[1].pos[2] = vec3f(-1000, -1000, -1000);
+	p_sb->face[1].pos[3] = vec3f(-1000, 1000, -1000);
+
+	//	TOP
+	p_sb->face[2].pos[0] = vec3f(1000, 1000, -1000);
+	p_sb->face[2].pos[1] = vec3f(-1000, 1000, -1000);
+	p_sb->face[2].pos[2] = vec3f(-1000, 1000, 1000);
+	p_sb->face[2].pos[3] = vec3f(1000, 1000, 1000);
+
+	//	BOTTOM
+	p_sb->face[3].pos[0] = vec3f(-1000, -1000, -1000);
+	p_sb->face[3].pos[1] = vec3f(1000, -1000, -1000);
+	p_sb->face[3].pos[2] = vec3f(1000, -1000, 1000);
+	p_sb->face[3].pos[3] = vec3f(-1000, -1000, 1000);
+
+	//	FRONT
+	p_sb->face[4].pos[0] = vec3f(-1000, 1000, -1000);
+	p_sb->face[4].pos[1] = vec3f(-1000, -1000, -1000);
+	p_sb->face[4].pos[2] = vec3f(-1000, -1000, 1000);
+	p_sb->face[4].pos[3] = vec3f(-1000, 1000, 1000);
+	
+	//	BACK
+	p_sb->face[5].pos[0] = vec3f(1000, 1000, 1000);
+	p_sb->face[5].pos[1] = vec3f(1000, -1000, 1000);
+	p_sb->face[5].pos[2] = vec3f(1000, -1000, -1000);
+	p_sb->face[5].pos[3] = vec3f(1000, 1000, -1000);
+}
+
+void RenderSkybox()
+{
+	for(unsigned int i = 0; i < 6; ++i)
+	{
+		CQuadrionTextureObject* tex = g_pRender->GetTextureObject(g_pSkybox->face[i].texture_handle);
+		
+		for(unsigned int j = 0; j < 4; ++j)
+			g_pSkybox->face[i].tquad.pos[j] = g_pSkybox->face[i].pos[j] + g_pCamera->GetPosition();
+
+		tex->BindTexture();
+		g_pRender->RenderQuad(g_pSkybox->face[i].tquad);
+		tex->UnbindTexture();
+	}
+}
+
 static void PlayInit()
 {
 	for(int a = 0;a < 256;a++)
@@ -362,14 +449,8 @@ static void PlayInit()
 	if(!font->LoadFont("arial.tga", "Media/Textures/", false))
 		QUIT_ERROR("Could not load font!", "Font Loading Error!");
 
-	unsigned int cock = QTEXTURE_FILTER_LINEAR;
-
-	sky_box_handles.push_back(g_pRender->AddTextureObject(cock, "skybox_right1.jpg", "Media/Textures/skybox/space/purple_nebula_complex/"));
-	sky_box_handles.push_back(g_pRender->AddTextureObject(cock, "skybox_left2.jpg", "Media/Textures/skybox/space/purple_nebula_complex/"));
-	sky_box_handles.push_back(g_pRender->AddTextureObject(cock, "skybox_top3.jpg", "Media/Textures/skybox/space/purple_nebula_complex/"));
-	sky_box_handles.push_back(g_pRender->AddTextureObject(cock, "skybox_bottom4.jpg", "Media/Textures/skybox/space/purple_nebula_complex/"));
-	sky_box_handles.push_back(g_pRender->AddTextureObject(cock, "skybox_front5.jpg", "Media/Textures/skybox/space/purple_nebula_complex/"));
-	sky_box_handles.push_back(g_pRender->AddTextureObject(cock, "skybox_back6.jpg", "Media/Textures/skybox/space/purple_nebula_complex/"));
+	g_pSkybox = new skybox;
+	GenerateSkybox(g_pSkybox);
 }
 
 void PlayUpdate();
@@ -532,43 +613,15 @@ static void PlayRender()
 	//g_pPhysicsWorld->getLocalAABB(handle, min, max);
 
 	vec3f mint(min.getX(), min.getY(), min.getZ());
-	vec3f maxt(max.getX(), max.getY(), max.getZ());*/
+	vec3f maxt(max.getX(), max.getY(), max.getZ());
+	*/
 
-	RenderGrid(camPos);
-
-	STexturedQuad skybox;
-	vec2f skybox_uv[4];
-	vec3f skybox_coord[4];
-
-	skybox_uv[0] = vec2f(0, 0);
-	skybox_uv[1] = vec2f(0, 1);
-	skybox_uv[2] = vec2f(1, 1);
-	skybox_uv[3] = vec2f(1, 0);
-
-	skybox_coord[0] = vec3f(-1024, 1024, 1041.2);
-	skybox_coord[1] = vec3f(-1024, -1024, 1041.2);
-	skybox_coord[2] = vec3f(1024, -1024, 1041.2);
-	skybox_coord[3] = vec3f(1024, 1024, 1041.2);
-
-
-	skybox.pos[0] = skybox_coord[0] + g_pCamera->GetPosition();
-	skybox.pos[1] = skybox_coord[1] + g_pCamera->GetPosition();
-	skybox.pos[2] = skybox_coord[2] + g_pCamera->GetPosition();
-	skybox.pos[3] = skybox_coord[3] + g_pCamera->GetPosition();
-
-	skybox.texcoords[0] = skybox_uv[0];
-	skybox.texcoords[1] = skybox_uv[1];
-	skybox.texcoords[2] = skybox_uv[2];
-	skybox.texcoords[3] = skybox_uv[3];
-
-	CQuadrionTextureObject* tex = g_pRender->GetTextureObject(sky_box_handles[0]);
-	tex->BindTexture();
-	g_pRender->RenderQuad(skybox);
-	tex->UnbindTexture();
+	RenderSkybox();
 
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DISABLE);
 	g_pRender->EnableAlphaBlending();
 	g_pRender->ChangeAlphaBlendMode(QRENDER_ALPHABLEND_SRCALPHA, QRENDER_ALPHABLEND_ONE);
+	RenderGrid(camPos);
 	font->WriteText("test", vec2f(100,100), vec2f(0,0), FONT_ALIGN_LEFT, QRENDER_MAKE_ARGB(0xFF, 255,0,0));
 	//g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DEFAULT);
 	g_pRender->DisableAlphaBlending();
