@@ -221,7 +221,7 @@ void GetMousePosition( int& x, int& y )
 
 void GenerateSkybox(skybox* p_sb)
 {
-	unsigned int flags = QTEXTURE_FILTER_NEAREST;
+	unsigned int flags = QTEXTURE_CLAMP | QTEXTURE_FILTER_TRILINEAR_ANISO;
 	//	Load textures and set handles.
 	p_sb->face[0].texture_handle = g_pRender->AddTextureObject(flags, "skybox_right1.dds", "Media/Textures/skybox/space/purple_nebula_complex/");
 	p_sb->face[1].texture_handle = g_pRender->AddTextureObject(flags, "skybox_left2.dds", "Media/Textures/skybox/space/purple_nebula_complex/");
@@ -398,7 +398,7 @@ static void PlayInit()
 
 		mat4 id;
 		QMATH_MATRIX_LOADIDENTITY( id );
-		mdl->SetModelPos( vec3f( rand()%500-250, rand()%100+100.0f, rand()%500-250 ) );
+		mdl->SetModelPos( vec3f( rand()%100-50, rand()%20, rand()%100-50 ) );
 		mdl->SetModelScale( vec3f( 1.0f, 1.0f, 1.0f ) );
 		mdl->SetModelOrientation( id );
 		mdl->BindDiffuseTexture(0);
@@ -621,8 +621,8 @@ static void PlayRender()
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DISABLE);
 	g_pRender->EnableAlphaBlending();
 	g_pRender->ChangeAlphaBlendMode(QRENDER_ALPHABLEND_SRCALPHA, QRENDER_ALPHABLEND_ONE);
-	RenderGrid(camPos);
-	font->WriteText("test", vec2f(100,100), vec2f(0,0), FONT_ALIGN_LEFT, QRENDER_MAKE_ARGB(0xFF, 255,0,0));
+	//RenderGrid(camPos);
+	//font->WriteText("test", vec2f(100,100), vec2f(0,0), FONT_ALIGN_LEFT, QRENDER_MAKE_ARGB(0xFF, 255,0,0));
 	//g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DEFAULT);
 	g_pRender->DisableAlphaBlending();
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DEFAULT);	
