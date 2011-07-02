@@ -359,6 +359,15 @@ static void PlayInit()
 	font = new CFont();
 	if(!font->LoadFont("arial.tga", "Media/Textures/", false))
 		QUIT_ERROR("Could not load font!", "Font Loading Error!");
+
+	unsigned int cock = QTEXTURE_FILTER_LINEAR;
+
+	g_pRender->AddTextureObject(cock, "skybox_right1.jpg", "Media/Textures/skybox/space/purple_nebula_complex/");
+	g_pRender->AddTextureObject(cock, "skybox_left2.jpg", "Media/Textures/skybox/space/purple_nebula_complex/");
+	g_pRender->AddTextureObject(cock, "skybox_top3.jpg", "Media/Textures/skybox/space/purple_nebula_complex/");
+	g_pRender->AddTextureObject(cock, "skybox_bottom4.jpg", "Media/Textures/skybox/space/purple_nebula_complex/");
+	g_pRender->AddTextureObject(cock, "skybox_front5.jpg", "Media/Textures/skybox/space/purple_nebula_complex/");
+	g_pRender->AddTextureObject(cock, "skybox_back6.jpg", "Media/Textures/skybox/space/purple_nebula_complex/");
 }
 
 void PlayUpdate();
