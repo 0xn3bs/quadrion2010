@@ -271,7 +271,7 @@ static void PlayInit()
 	g_pApp->SetMousePosition( 1400/2, 1900/2 );
 
 	g_pCamera->SetCamera( 60.0f, 20.0f, 60.0f, 0.0f, 100.0f, 0.0f, 0.0f, 1.0f, 0.0f );
-	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 55.0f ), (float)w / (float)h, 2.0f, 500.0f );
+	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 55.0f ), (float)w / (float)h, 2.0f, 1000.0f );
 	g_pCamera->Apply();
 
 	g_pModelManager->SetTexturePath("Media/Textures/");
@@ -545,10 +545,10 @@ static void PlayRender()
 	skybox_uv[2] = vec2f(1, 1);
 	skybox_uv[3] = vec2f(1, 0);
 
-	skybox_coord[0] = vec3f(0, 0, 0);
-	skybox_coord[1] = vec3f(0, 0, 1*100);
-	skybox_coord[2] = vec3f(0, 1*100, 1*100);
-	skybox_coord[3] = vec3f(0, 1*100, 0);
+	skybox_coord[0] = vec3f(-1000, 1000, 200);
+	skybox_coord[1] = vec3f(-1000, -1000, 200);
+	skybox_coord[2] = vec3f(1000, -1000, 200);
+	skybox_coord[3] = vec3f(1000, 1000, 200);
 
 
 	skybox.pos[0] = skybox_coord[0];
@@ -561,7 +561,10 @@ static void PlayRender()
 	skybox.texcoords[2] = skybox_uv[2];
 	skybox.texcoords[3] = skybox_uv[3];
 
+	CQuadrionTextureObject* tex = g_pRender->GetTextureObject(sky_box_handles[0]);
+	tex->BindTexture();
 	g_pRender->RenderQuad(skybox);
+	tex->UnbindTexture();
 
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DISABLE);
 	g_pRender->EnableAlphaBlending();
