@@ -2027,7 +2027,7 @@ bool CQuadrionRender::RenderQuad( const STexturedQuad& quad )
 	if( FAILED( m_pD3DDev->SetFVF( TexturedVertexFVF ) ) )
 		return false;
 	
-	if( FAILED( m_pD3DDev->DrawPrimitiveUP( D3DPT_TRIANGLESTRIP, 2, verts, sizeof( STexturedVertex ) ) ) )
+	if( FAILED( m_pD3DDev->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, verts, sizeof( STexturedVertex ) ) ) )
 		return false;
 	
 	return true;
