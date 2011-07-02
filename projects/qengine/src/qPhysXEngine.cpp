@@ -50,7 +50,9 @@ void qPhysXEngine::init()
 	mCudaContextManager = physx::pxtask::createCudaContextManager(CudaDesc);
 
 	PxSceneDesc sceneDesc(this->mSDK->getTolerancesScale());
-	sceneDesc.gravity=PxVec3(0.0f, -9.8f, 0.0f);
+
+	//sceneDesc.gravity=PxVec3(0.0f, -9.8f, 0.0f);
+	sceneDesc.gravity=PxVec3(0.0f, -0.0f, 0.0f);
 
     if(!sceneDesc.cpuDispatcher)
 	{
@@ -114,12 +116,16 @@ qRigidBody* qPhysXEngine::addRigidBody(float mass, CModelObject *mdl, qPhysicsSh
 	PxVec3 dimensions(3.5,2.5,0.5);
 	PxBoxGeometry geometry(dimensions);
     
-	PxMaterial* mMaterial = this->mSDK->createMaterial(0.3,0.2,0.1);
+	//PxMaterial* mMaterial = this->mSDK->createMaterial(0.3,0.2,0.1);
+	PxMaterial* mMaterial = this->mSDK->createMaterial(0.0,0.0,0.0);
 
 	PxRigidDynamic *actor = PxCreateDynamic(*this->mSDK, transform, geometry, *mMaterial, density);
     //actor->setAngularDamping(0.75);
-	actor->setAngularVelocity(PxVec3(rand()%10,rand()%10,rand()%10)); 
-    //actor->setLinearVelocity(PxVec3(10,0,0)); 
+	//actor->setAngularVelocity(PxVec3(rand()%10,rand()%10,rand()%10)); 
+
+	actor->setAngularVelocity(PxVec3(rand()%5, rand()%5, rand()%5)); 
+
+    actor->setLinearVelocity(PxVec3(rand()%10 - rand()%10,rand()%10 - rand()%10,rand()%10 - rand()%10)); 
 	if (!actor)
 		QUIT_ERROR("create actor failed!", "Physics Error!");
 	
