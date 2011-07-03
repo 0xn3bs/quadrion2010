@@ -79,6 +79,8 @@ static int g_hEffectHandle = QRENDER_INVALID_HANDLE;
 
 unsigned char keys[256];
 
+bool g_bCenterCursor = true;
+
 //// temporary skybox jazz..
 struct skybox_face
 {
@@ -149,7 +151,24 @@ static LRESULT CALLBACK PlaypenEventCallback(HWND hWnd, UINT uMsg, WPARAM wParam
 				//model_list.push_back(t);
 				}
 
+				if(wParam == VK_TAB)
+				{
+					g_bCenterCursor = !g_bCenterCursor;
+
+					if(g_bCenterCursor)
+						ShowCursor(FALSE);
+					else
+						ShowCursor(TRUE);
+				}
+
 				keys[wParam] = 1;
+				break;
+			}
+
+			case WM_KILLFOCUS:
+			{
+				g_bCenterCursor = false;
+				ShowCursor(TRUE);
 				break;
 			}
 
@@ -356,9 +375,10 @@ static void PlayInit()
 	int h = g_pApp->GetWindowHeight();
 
 	g_pApp->SetMousePosition( 1400/2, 1900/2 );
+	ShowCursor(FALSE);
 
 	g_pCamera->SetCamera( 60.0f, 20.0f, 60.0f, 0.0f, 100.0f, 0.0f, 0.0f, 1.0f, 0.0f );
-	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 55.0f ), (float)w / (float)h, 2.0f, 1000.0f );
+	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 55.0f ), (float)w / (float)h, 2.0f, 1100.0f );
 	g_pCamera->Apply();
 
 	g_pModelManager->SetTexturePath("Media/Textures/");
@@ -521,6 +541,7 @@ static void PlayRender()
 	g_pRender->ChangeDepthBias(-0.0005f);
 	g_pRender->ChangeSlopeBias(1.0f);
 
+
 	//g_pPhysicsWorld->renderBodies(g_pCamera);
 	//g_pPhysicsWorld->step(timer->GetElapsedSec());
 
@@ -584,6 +605,10 @@ static void PlayRender()
 	g_pModelManager->PushInstances("glock18c.3DS", "Media/Models/");
 	}
 	*/
+
+
+	RenderSkybox();
+
 	g_pModelManager->PushInstances("glock18c.3DS", "Media/Models/");
 
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_ENABLEWRITE);
@@ -603,7 +628,6 @@ static void PlayRender()
 	fx->EndEffect();
 	
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DEFAULT);
-	g_pRender->EnableColorWrites();
 
 	/*
 	//vec3f bound_low, bound_high;
@@ -615,8 +639,6 @@ static void PlayRender()
 	vec3f mint(min.getX(), min.getY(), min.getZ());
 	vec3f maxt(max.getX(), max.getY(), max.getZ());
 	*/
-
-	RenderSkybox();
 
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DISABLE);
 	g_pRender->EnableAlphaBlending();
@@ -637,12 +659,15 @@ static void PlayUpdate()
 	int sx = g_pApp->GetWindowWidth();
 	int sy = g_pApp->GetWindowHeight();
 
-	g_pApp->GetMousePosition( mx, my );
+	if(g_bCenterCursor)
+	{
+		g_pApp->GetMousePosition( mx, my );
 
-	g_pCamera->RotateByMouse( mx, my, 1400 / 2, 900 / 2 );
-	g_pCamera->Apply();
+		g_pCamera->RotateByMouse( mx, my, sx / 2, sy / 2 );
+		g_pCamera->Apply();
 
-	g_pApp->SetMousePosition( 1400/2, 900/2 );
+		g_pApp->SetMousePosition( sx / 2, sy / 2 );
+	}
 }
 
 

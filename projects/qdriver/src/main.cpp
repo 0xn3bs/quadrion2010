@@ -25,7 +25,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// Mem dump shit
 	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	//_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
-	
+
 	// Initialization of MFC for nVidia PerfHUD (cheap workaround for perfHUD bug)
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
@@ -35,7 +35,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// preset game loop //
 	MSG msg;
-	ShowCursor(TRUE);
 
 	//HACK: PlayInit() //
 	PlayInit();
@@ -63,14 +62,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			// Do updates //
 			PlayUpdate();
-			
+
 			g_pRender->BeginRendering();
 
 			g_pRender->ClearBuffers(QRENDER_CLEAR_BACKBUFFER | QRENDER_CLEAR_ZBUFFER,  QRENDER_MAKE_ARGB(0, 0, 0, 0), 1.0f);
 
 
 			PlayRender();
-	
+
 
 			g_pRender->EndRendering();
 
@@ -84,14 +83,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			done = true;
 		}
 	}
-	
+
 	PlayDestroy();
 	QMem_SafeDelete(g_pApp);
 
 	// Dump the leaks
 	//_CrtDumpMemoryLeaks();
 	//CloseHandle(hLogFile);
-	
+
 	//exit(0);
 	return((int)msg.wParam);
 }
