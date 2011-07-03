@@ -650,7 +650,8 @@ static void PlayRender()
 	g_pHDRPipeline->SetMiddleGrey(0.6f);
 	g_pHDRPipeline->SetBloomScale(2.4f);
 	g_pHDRPipeline->SetBrightnessThreshold(1.5f);
-	g_pHDRPipeline->SetBrightnessOffset(5.0f);
+	g_pHDRPipeline->SetBrightnessOffset(2.0f);
+	g_pHDRPipeline->SetAdaptationFactor(60.0f);
 	g_pHDRPipeline->SetDepthTarget(QRENDER_DEFAULT);
 	g_pHDRPipeline->Render();
 
