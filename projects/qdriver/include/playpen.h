@@ -221,7 +221,7 @@ void GetMousePosition( int& x, int& y )
 
 void GenerateSkybox(skybox* p_sb)
 {
-	unsigned int flags = QTEXTURE_CLAMP | QTEXTURE_FILTER_TRILINEAR_ANISO;
+	unsigned int flags = QTEXTURE_CLAMP | QTEXTURE_FILTER_BILINEAR_ANISO;
 	//	Load textures and set handles.
 	p_sb->face[0].texture_handle = g_pRender->AddTextureObject(flags, "skybox_right1.dds", "Media/Textures/skybox/space/purple_nebula_complex/");
 	p_sb->face[1].texture_handle = g_pRender->AddTextureObject(flags, "skybox_left2.dds", "Media/Textures/skybox/space/purple_nebula_complex/");
