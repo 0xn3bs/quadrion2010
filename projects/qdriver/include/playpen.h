@@ -10,6 +10,7 @@
 #include "app.h"
 #include "qtimer.h"
 #include "qmath.h"
+#include "hdrpipeline.h"
 #include <math.h>
 #include <list>
 
@@ -73,6 +74,7 @@ btRigidBody *handle;
 
 static CCamera* g_pCamera = NULL;
 static CModelManager* g_pModelManager = NULL;
+static CHDRPipeline* g_pHDRPipeline = NULL;
 
 static int g_hModelHandle = QRENDER_INVALID_HANDLE;
 static int g_hEffectHandle = QRENDER_INVALID_HANDLE;
@@ -317,6 +319,8 @@ static void PlayInit()
 
 	g_pCamera = new CCamera;
 	g_pModelManager = new CModelManager;
+	g_pHDRPipeline = new CHDRPipeline;
+
 
 	// scripting init //
 	g_pScriptEngine = new qscriptengine();
@@ -378,7 +382,7 @@ static void PlayInit()
 	ShowCursor(FALSE);
 
 	g_pCamera->SetCamera( 60.0f, 20.0f, 60.0f, 0.0f, 100.0f, 0.0f, 0.0f, 1.0f, 0.0f );
-	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 55.0f ), (float)w / (float)h, 2.0f, 1100.0f );
+	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 55.0f ), (float)w / (float)h, 2.0f, 2000.0f );
 	g_pCamera->Apply();
 
 	g_pModelManager->SetTexturePath("Media/Textures/");
@@ -541,7 +545,10 @@ static void PlayRender()
 	g_pRender->ChangeDepthBias(-0.0005f);
 	g_pRender->ChangeSlopeBias(1.0f);
 
-
+	int hdr_surf = g_pHDRPipeline->GetHDRSurface();
+	CQuadrionRenderTarget* hdr_tgt = g_pRender->GetRenderTarget(hdr_surf);
+	hdr_tgt->Clear();
+	hdr_tgt->BindRenderTarget(0);
 	//g_pPhysicsWorld->renderBodies(g_pCamera);
 	//g_pPhysicsWorld->step(timer->GetElapsedSec());
 
@@ -639,6 +646,13 @@ static void PlayRender()
 	vec3f mint(min.getX(), min.getY(), min.getZ());
 	vec3f maxt(max.getX(), max.getY(), max.getZ());
 	*/
+
+	g_pHDRPipeline->SetMiddleGrey(0.6f);
+	g_pHDRPipeline->SetBloomScale(2.4f);
+	g_pHDRPipeline->SetBrightnessThreshold(1.5f);
+	g_pHDRPipeline->SetBrightnessOffset(5.0f);
+	g_pHDRPipeline->SetDepthTarget(QRENDER_DEFAULT);
+	g_pHDRPipeline->Render();
 
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DISABLE);
 	g_pRender->EnableAlphaBlending();
