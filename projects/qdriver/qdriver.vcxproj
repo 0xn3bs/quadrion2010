@@ -15,6 +15,7 @@
     <ClInclude Include="include\cINI.h" />
     <ClInclude Include="include\debug.h" />
     <ClInclude Include="include\hashtable.h" />
+    <ClInclude Include="include\hdrpipeline.h" />
     <ClInclude Include="include\playpen.h" />
     <ClInclude Include="include\split.h" />
   </ItemGroup>
@@ -22,6 +23,7 @@
     <ClCompile Include="src\app.cpp" />
     <ClCompile Include="src\cINI.cpp" />
     <ClCompile Include="src\debug.cpp" />
+    <ClCompile Include="src\hdrpipeline.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\split.cpp" />
   </ItemGroup>
