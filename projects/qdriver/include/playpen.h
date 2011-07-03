@@ -50,6 +50,8 @@ qRigidBody *box;
 
 #include "qfont.h"
 
+#include <sstream>
+
 qscriptengine *g_pScriptEngine;
 qscriptexec *g_pScriptExec;
 qscriptexec *event_script;
@@ -69,6 +71,7 @@ qPhysicsMesh *convex_mesh;
 SWF	*g_pSWF;
 
 CTimer *timer;
+CTimer *frameTimer;
 
 btRigidBody *handle;
 
@@ -469,6 +472,9 @@ static void PlayInit()
 	timer = new CTimer();
 	timer->Start();
 
+	frameTimer = new CTimer();
+	frameTimer->Start();
+
 	font = new CFont();
 	if(!font->LoadFont("arial.tga", "Media/Textures/", false))
 		QUIT_ERROR("Could not load font!", "Font Loading Error!");
@@ -542,6 +548,7 @@ float dx = 0.0f;
 
 static void PlayRender()
 {
+	frameTimer->Start();
 	g_pRender->ChangeDepthBias(-0.0005f);
 	g_pRender->ChangeSlopeBias(1.0f);
 
@@ -658,8 +665,12 @@ static void PlayRender()
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DISABLE);
 	g_pRender->EnableAlphaBlending();
 	g_pRender->ChangeAlphaBlendMode(QRENDER_ALPHABLEND_SRCALPHA, QRENDER_ALPHABLEND_ONE);
+
+	double ft = frameTimer->GetElapsedMilliSec();
+	std::ostringstream ft_ss;
+	ft_ss << "Frame time: " << ft << "ms";
 	//RenderGrid(camPos);
-	//font->WriteText("test", vec2f(100,100), vec2f(0,0), FONT_ALIGN_LEFT, QRENDER_MAKE_ARGB(0xFF, 255,0,0));
+	font->WriteText(ft_ss.str(), vec2f(3,0), vec2f(0,0), FONT_ALIGN_LEFT, QRENDER_MAKE_ARGB(0xFF, 255,255,0));
 	//g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DEFAULT);
 	g_pRender->DisableAlphaBlending();
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DEFAULT);	
