@@ -392,8 +392,8 @@ static void PlayInit()
 
 	// adding a root model and one instance model;
 	//g_hModelHandle = g_pModelManager->AddModel( "AsteroidSmall.3DS", "Media/Models/" );
-	int mHandle = g_pModelManager->AddModel( "AsteroidSmall.3DS", "Media/Models/" );
-	CModelObject* mdl = g_pModelManager->GetModel( "AsteroidSmall.3DS", "Media/Models/", mHandle );
+	int mHandle = g_pModelManager->AddModel( "box.3DS", "Media/Models/" );
+	CModelObject* mdl = g_pModelManager->GetModel( "box.3DS", "Media/Models/", mHandle );
 
 	vec3f min, max, center;
 	mdl->GetAABB(min, max);
@@ -419,9 +419,9 @@ static void PlayInit()
 
 	for(int a = 0;a < 1;a++)
 	{
-		mHandle = g_pModelManager->AddModel( "AsteroidSmall.3DS", "Media/Models/" );
+		mHandle = g_pModelManager->AddModel( "box.3DS", "Media/Models/" );
 
-		mdl = g_pModelManager->GetModel( "AsteroidSmall.3DS", "Media/Models/", mHandle );
+		mdl = g_pModelManager->GetModel( "box.3DS", "Media/Models/", mHandle );
 
 		mat4 id;
 		QMATH_MATRIX_LOADIDENTITY( id );
@@ -444,7 +444,17 @@ static void PlayInit()
 	}
 	//g_pModelManager->PushInstances("AsteroidSmall.3DS", "Media/Models/");
 
-	
+	// init 10cm block
+	mHandle = g_pModelManager->AddModel( "box.3DS", "Media/Models/" );
+	mdl = g_pModelManager->GetModel( "box.3DS", "Media/Models/", mHandle );
+	//id;
+	QMATH_MATRIX_LOADIDENTITY( id );
+	mdl->SetModelPos( vec3f(0,0,0) );
+	mdl->SetModelScale( vec3f( 1.0f, 1.0f, 1.0f ) );
+	mdl->SetModelOrientation( id );
+	mdl->BindDiffuseTexture(0);
+	mdl->BindNormalmapTexture( -1 );
+	mdl->CreateFinalTransform(id);
 	/*mat4 id;
 	QMATH_MATRIX_LOADIDENTITY( id );
 	mdl->SetModelPos( vec3f( 0.0f, 50.0f, 0.0f ) );
@@ -579,7 +589,7 @@ static void PlayRender()
 	//g_pEventRegistry->process_events();
 	PlayUpdate();
 
-	CModelObject* mdl = g_pModelManager->GetModel( "AsteroidSmall.3DS", "Media/Models/", 0 );
+	CModelObject* mdl = g_pModelManager->GetModel( "box.3DS", "Media/Models/", 0 );
 	 
 
 //	g_pPhysicsWorld->updateCenterOfMassOffest(handle, mdl);
@@ -601,7 +611,7 @@ static void PlayRender()
 		(*it).bodyHandle->getPose(rot);
 		//trans.getOpenGLMatrix(rot);
 		//QMATH_MATRIX_TRANSPOSE(rot);
-		g_pModelManager->UpdateModelOrientation("AsteroidSmall.3DS", "Media/Models/", (*it).modelHandle, rot);
+		g_pModelManager->UpdateModelOrientation("box.3DS", "Media/Models/", (*it).modelHandle, rot);
 	}
 
 	//mat4 pose;
@@ -625,7 +635,7 @@ static void PlayRender()
 
 	RenderSkybox();
 
-	g_pModelManager->PushInstances("AsteroidSmall.3DS", "Media/Models/");
+	g_pModelManager->PushInstances("box.3DS", "Media/Models/");
 
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_ENABLEWRITE);
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_LEQUAL);
