@@ -1,4 +1,4 @@
-float moveSpeed = 1.0f;
+float moveSpeed = 10.0f;
 
 class sMouse
 {
@@ -83,7 +83,6 @@ CTimer timer;
 
 void updateKeyboard()
 {
-	timer.Start();
 	KB.update();
 	int x;
 	int y;
@@ -94,6 +93,8 @@ void updateKeyboard()
 void updateMovement(CCamera @cam)
 {	
 	double dt = timer.GetElapsedSec();
+	timer.Start();
+	
 	if(KB.keyDown(VK_A))
 		cam.MoveCameraRelative(-moveSpeed*dt, 0.0f, 0.0f);
 		
