@@ -413,9 +413,9 @@ static void PlayInit()
 
 	//btRigidBody* bHandle = g_pPhysicsWorld->addRigidBody(20.0f, mdl, convex_mesh->getCollisionShape());
 	//btRigidBody* bHandle = g_pPhysicsWorld->addBox(20.0f, vec3f(0.0f, 60.0f, 0.0f), max - center, mdl);
-	qRigidBody* bHandle = PE->addRigidBody(10.0f, mdl, qPhysicsShape());
-	glockObject GO = {bHandle, mHandle};
-	glockObjectList.push_back(GO);
+	qRigidBody* bHandle;
+	//glockObject GO = {bHandle, mHandle};
+	//glockObjectList.push_back(GO);
 
 	for(int a = 0; a < 100; a++)
 	{
@@ -425,7 +425,7 @@ static void PlayInit()
 
 		mat4 id;
 		QMATH_MATRIX_LOADIDENTITY( id );
-		mdl->SetModelPos( vec3f( rand()%100-50, rand()%20, rand()%100-50 ) );
+		mdl->SetModelPos( vec3f( rand()%500-250, -rand()%100-182.88, rand()%500-250 ) );
 		mdl->SetModelScale( vec3f( 1.0f, 1.0f, 1.0f ) );
 		mdl->SetModelOrientation( id );
 		mdl->BindDiffuseTexture(0);
@@ -569,8 +569,9 @@ static void PlayRender(const float totalTime)
 	//g_pPhysicsWorld->renderBodies(g_pCamera);
 	//g_pPhysicsWorld->step(timer->GetElapsedSec());
 
-	PE->step(timer->GetElapsedMicroSec()/1000000.0f);
+	PE->step(timer->GetElapsedSec());
 	timer->Start();
+
 	//g_pPhysicsWorld->step(1/60.0f);
 	
 	//timer->Reset();
