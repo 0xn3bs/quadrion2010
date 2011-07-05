@@ -633,7 +633,16 @@ static void PlayRender()
 	*/
 
 
+
 	RenderSkybox();
+
+	g_pHDRPipeline->SetMiddleGrey(0.6f);
+	g_pHDRPipeline->SetBloomScale(2.4f);
+	g_pHDRPipeline->SetBrightnessThreshold(1.5f);
+	g_pHDRPipeline->SetBrightnessOffset(2.0f);
+	g_pHDRPipeline->SetAdaptationFactor(60.0f);
+	g_pHDRPipeline->SetDepthTarget(QRENDER_DEFAULT);
+	g_pHDRPipeline->Render();
 
 	g_pModelManager->PushInstances("box.3DS", "Media/Models/");
 
@@ -666,22 +675,27 @@ static void PlayRender()
 	vec3f maxt(max.getX(), max.getY(), max.getZ());
 	*/
 
-	g_pHDRPipeline->SetMiddleGrey(0.6f);
+	/*g_pHDRPipeline->SetMiddleGrey(0.6f);
 	g_pHDRPipeline->SetBloomScale(2.4f);
 	g_pHDRPipeline->SetBrightnessThreshold(1.5f);
 	g_pHDRPipeline->SetBrightnessOffset(2.0f);
 	g_pHDRPipeline->SetAdaptationFactor(60.0f);
 	g_pHDRPipeline->SetDepthTarget(QRENDER_DEFAULT);
-	g_pHDRPipeline->Render();
+	g_pHDRPipeline->Render();*/
+
+	g_pRender->EnableAlphaBlending();
+	g_pRender->ChangeAlphaBlendMode(QRENDER_ALPHABLEND_DESTALPHA, QRENDER_ALPHABLEND_ONE);
+	RenderGrid(camPos);
+	//g_pRender->DisableAlphaBlending();
 
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DISABLE);
-	g_pRender->EnableAlphaBlending();
+	//g_pRender->EnableAlphaBlending();
 	g_pRender->ChangeAlphaBlendMode(QRENDER_ALPHABLEND_SRCALPHA, QRENDER_ALPHABLEND_ONE);
 
 	double ft = frameTimer->GetElapsedMilliSec();
 	std::ostringstream ft_ss;
 	ft_ss << "Frame time: " << ft << "ms";
-	RenderGrid(camPos);
+	//RenderGrid(camPos);
 	font->WriteText(ft_ss.str(), vec2f(3,0), vec2f(0,0), FONT_ALIGN_LEFT, QRENDER_MAKE_ARGB(0xFF, 255,255,0));
 	//g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DEFAULT);
 	g_pRender->DisableAlphaBlending();
