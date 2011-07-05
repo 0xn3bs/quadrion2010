@@ -14,13 +14,14 @@
 
 
 CApplication* g_pApp = NULL;
-
-
+CTimer* mainTimer;
 
 ////////////////////////////////////////////////////////////////////////////////////
 // WinMain 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	float totalFrameTime = 0.0f;
+	mainTimer = new CTimer;
 
 	// Mem dump shit
 	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -43,6 +44,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	bool done = false;
 	while(!done)
 	{
+		mainTimer->Start();
+
 		// use PeekMessage so we dont get stuck waiting for one
 		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
@@ -68,7 +71,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			g_pRender->ClearBuffers(QRENDER_CLEAR_BACKBUFFER | QRENDER_CLEAR_ZBUFFER,  QRENDER_MAKE_ARGB(0, 0, 0, 0), 1.0f);
 
 
-			PlayRender();
+			PlayRender(totalFrameTime);
 
 
 			g_pRender->EndRendering();
@@ -82,6 +85,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			PostQuitMessage(0);
 			done = true;
 		}
+
+		totalFrameTime = mainTimer->GetElapsedMilliSec();
 	}
 
 	PlayDestroy();
