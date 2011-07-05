@@ -417,7 +417,7 @@ static void PlayInit()
 	glockObject GO = {bHandle, mHandle};
 	glockObjectList.push_back(GO);
 
-	for(int a = 0;a < 100;a++)
+	for(int a = 0;a < 1;a++)
 	{
 		mHandle = g_pModelManager->AddModel( "AsteroidSmall.3DS", "Media/Models/" );
 
@@ -567,12 +567,13 @@ static void PlayRender()
 	//timer->Reset();
 	
 	//keysUpdate->ctx->SetArgObject(0, &keys[0]);
-	keysUpdate->exec();
-	keysUpdate->reset();
 
 	camMovement->ctx->SetArgObject(0, g_pCamera);
 	camMovement->exec();
 	camMovement->reset();
+
+	keysUpdate->exec();
+	keysUpdate->reset();
 	
 	//processKeys();
 	//g_pEventRegistry->process_events();
