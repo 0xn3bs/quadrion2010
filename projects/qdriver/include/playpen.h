@@ -353,7 +353,7 @@ static void PlayInit()
 	REGISTER_GLOBAL_FUNCTION(g_pScriptEngine, "void killApp()", killApp);
 	REGISTER_GLOBAL_FUNCTION(g_pScriptEngine, "bool isKeyDown(uint8 key)", isKeyDown);
 	REGISTER_GLOBAL_FUNCTION(g_pScriptEngine, "void GetMousePosition(int &out, int &out)", GetMousePosition);
-	r = g_pScriptEngine->getEngine()->RegisterGlobalProperty("CCamera@ cam", &g_pCamera); assert( r >= 0);
+	//r = g_pScriptEngine->getEngine()->RegisterGlobalProperty("CCamera@ cam", &g_pCamera); assert( r >= 0);
 	
 
 	g_pScriptModule = g_pScriptEngine->pGetScriptModule("script");
@@ -369,14 +369,14 @@ static void PlayInit()
 	keysUpdate	= g_pScriptEngine->pGetScriptExec("script", "void updateKeyboard()");
 	camMovement	= g_pScriptEngine->pGetScriptExec("script", "void updateMovement(CCamera @cam)");
 
-	event_script = g_pScriptEngine->pGetScriptExec("script", "void ON_EVENT(qevent @evt, qobject @obj)");
+	/*event_script = g_pScriptEngine->pGetScriptExec("script", "void ON_EVENT(qevent @evt, qobject @obj)");
 
 	qeventlistener *L = new qkeyeventlistener();
 	L->set_key(KEY_DOWN);
 	qeventhandler *H = new qscripteventhandler();
 	((qscripteventhandler*)H)->set_script_exe(event_script);
 
-	g_pEventRegistry->register_pair(L, H, g_pCamera);
+	g_pEventRegistry->register_pair(L, H, g_pCamera);*/
 
 	int w = g_pApp->GetWindowWidth();
 	int h = g_pApp->GetWindowHeight();
@@ -417,7 +417,7 @@ static void PlayInit()
 	glockObject GO = {bHandle, mHandle};
 	glockObjectList.push_back(GO);
 
-	for(int a = 0;a < 1;a++)
+	for(int a = 0;a < 100;a++)
 	{
 		mHandle = g_pModelManager->AddModel( "box.3DS", "Media/Models/" );
 
