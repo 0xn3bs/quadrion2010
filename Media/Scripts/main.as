@@ -1,3 +1,5 @@
+float moveSpeed = 1.0f;
+
 class sMouse
 {
 	sMouse()
@@ -91,18 +93,18 @@ void updateKeyboard()
 
 void updateMovement(CCamera @cam)
 {	
-	double dt = timer.GetElapsedMicroSec()/100000.0f;
+	double dt = timer.GetElapsedSec();
 	if(KB.keyDown(VK_A))
-		cam.MoveCameraRelative(-100.0f*dt, 0.0f, 0.0f);
+		cam.MoveCameraRelative(-moveSpeed*dt, 0.0f, 0.0f);
 		
 	if(KB.keyDown(VK_D))
-		cam.MoveCameraRelative(100.0f*dt, 0.0f, 0.0f);
+		cam.MoveCameraRelative(moveSpeed*dt, 0.0f, 0.0f);
 		
 	if(KB.keyDown(VK_S))
-		cam.MoveCameraRelative(0.0f, 0.0f, -100.0f*dt);
+		cam.MoveCameraRelative(0.0f, 0.0f, -moveSpeed*dt);
 		
 	if(KB.keyDown(VK_W))
-		cam.MoveCameraRelative(0.0f, 0.0f, 100.0f*dt);
+		cam.MoveCameraRelative(0.0f, 0.0f, moveSpeed*dt);
 	
 	//if(MOUSE.moved())
 	//	cam.RotateByMouse(MOUSE.x, MOUSE.y, 1400/2, 900/2);
