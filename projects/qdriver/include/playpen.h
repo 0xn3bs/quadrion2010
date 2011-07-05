@@ -384,7 +384,7 @@ static void PlayInit()
 	g_pApp->SetMousePosition( 1400/2, 1900/2 );
 	ShowCursor(FALSE);
 
-	g_pCamera->SetCamera( 60.0f, 20.0f, 60.0f, 0.0f, 100.0f, 0.0f, 0.0f, 1.0f, 0.0f );
+	g_pCamera->SetCamera( 60.0f, 182.88f, 60.0f, 0.0f, 100.0f, 0.0f, 0.0f, 1.0f, 0.0f );
 	g_pCamera->CreatePerspective( QMATH_DEG2RAD( 55.0f ), (float)w / (float)h, 2.0f, 2000.0f );
 	g_pCamera->Apply();
 
@@ -417,7 +417,7 @@ static void PlayInit()
 	glockObject GO = {bHandle, mHandle};
 	glockObjectList.push_back(GO);
 
-	for(int a = 0;a < 100;a++)
+	for(int a = 0; a < 100; a++)
 	{
 		mHandle = g_pModelManager->AddModel( "box.3DS", "Media/Models/" );
 
@@ -557,9 +557,8 @@ void GLtoDX(float *dxm, float *glm)
 
 float dx = 0.0f;
 
-static void PlayRender()
+static void PlayRender(const float totalTime)
 {
-	frameTimer->Start();
 	g_pRender->ChangeDepthBias(-0.0005f);
 	g_pRender->ChangeSlopeBias(1.0f);
 
@@ -633,7 +632,7 @@ static void PlayRender()
 	*/
 
 
-
+	frameTimer->Start();
 	RenderSkybox();
 
 	g_pHDRPipeline->SetMiddleGrey(0.6f);
@@ -674,6 +673,10 @@ static void PlayRender()
 	vec3f mint(min.getX(), min.getY(), min.getZ());
 	vec3f maxt(max.getX(), max.getY(), max.getZ());
 	*/
+	g_pRender->EnableAlphaBlending();
+	g_pRender->ChangeAlphaBlendMode(QRENDER_ALPHABLEND_DESTALPHA, QRENDER_ALPHABLEND_ONE);
+	RenderGrid(camPos);
+	g_pRender->DisableAlphaBlending();
 
 	/*g_pHDRPipeline->SetMiddleGrey(0.6f);
 	g_pHDRPipeline->SetBloomScale(2.4f);
@@ -692,11 +695,20 @@ static void PlayRender()
 	//g_pRender->EnableAlphaBlending();
 	g_pRender->ChangeAlphaBlendMode(QRENDER_ALPHABLEND_SRCALPHA, QRENDER_ALPHABLEND_ONE);
 
-	double ft = frameTimer->GetElapsedMilliSec();
+	float gpuTime = frameTimer->GetElapsedMilliSec();
+
 	std::ostringstream ft_ss;
-	ft_ss << "Frame time: " << ft << "ms";
-	//RenderGrid(camPos);
+	ft_ss << "GPU time: " << gpuTime << "ms";
+	font->WriteText(ft_ss.str(), vec2f(3,10), vec2f(0,0), FONT_ALIGN_LEFT, QRENDER_MAKE_ARGB(0xFF, 255,255,0));
+
+	ft_ss = std::ostringstream();
+	ft_ss << "CPU time: " << totalTime - gpuTime << "ms";
+	font->WriteText(ft_ss.str(), vec2f(3,20), vec2f(0,0), FONT_ALIGN_LEFT, QRENDER_MAKE_ARGB(0xFF, 255,255,0));
+
+	ft_ss = std::ostringstream();
+	ft_ss << "Total time: " << totalTime << "ms";
 	font->WriteText(ft_ss.str(), vec2f(3,0), vec2f(0,0), FONT_ALIGN_LEFT, QRENDER_MAKE_ARGB(0xFF, 255,255,0));
+
 	//g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DEFAULT);
 	g_pRender->DisableAlphaBlending();
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DEFAULT);	
