@@ -113,7 +113,7 @@ qRigidBody* qPhysXEngine::addRigidBody(float mass, CModelObject *mdl, qPhysicsSh
 	PxReal density = 1.0f;
 	//PxTransform transform(PxVec3(0.0f, 50.0f, 0.0f), PxQuat::createIdentity());
 	PxTransform transform(PxVec3(mdl->GetModelPos().x, mdl->GetModelPos().y, mdl->GetModelPos().z), PxQuat::createIdentity());
-	PxVec3 dimensions(3.5,2.5,0.5);
+	PxVec3 dimensions(5,5,5);
 	PxBoxGeometry geometry(dimensions);
     
 	//PxMaterial* mMaterial = this->mSDK->createMaterial(0.3,0.2,0.1);
