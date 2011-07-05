@@ -38,7 +38,15 @@ static PxSimulationFilterShader gDefaultFilterShader=PxDefaultSimulationFilterSh
 
 void qPhysXEngine::init()
 {
-	this->mSDK = PxCreatePhysics(PX_PHYSICS_VERSION, gDefaultAllocatorCallback, gDefaultErrorCallback, PxTolerancesScale() );
+	//	We want to simulate the physics in a centimeter scale.
+	PxTolerancesScale tolerance;
+	tolerance.length = 100;
+	tolerance.mass = 10;
+	tolerance.speed = 1000;
+	//
+
+	this->mSDK = PxCreatePhysics(PX_PHYSICS_VERSION, gDefaultAllocatorCallback, gDefaultErrorCallback, tolerance );
+
 	
 	if(this->mSDK == NULL)
 		QUIT_ERROR("Failed to initialize PhysX!", "Physics Error!");
@@ -51,8 +59,7 @@ void qPhysXEngine::init()
 
 	PxSceneDesc sceneDesc(this->mSDK->getTolerancesScale());
 
-	sceneDesc.gravity=PxVec3(0.0f, -9.8f, 0.0f);
-	//sceneDesc.gravity=PxVec3(0.0f, -0.0f, 0.0f);
+	sceneDesc.gravity=PxVec3(0.0f, -983.1f, 0.0f);
 
     if(!sceneDesc.cpuDispatcher)
 	{
@@ -101,6 +108,7 @@ void qPhysXEngine::init()
 void qPhysXEngine::step(float dt)
 {
 	this->mScene->simulate(dt);
+	this->mScene->flush();
 
 	while(!this->mScene->fetchResults() )     
 	{
@@ -116,8 +124,8 @@ qRigidBody* qPhysXEngine::addRigidBody(float mass, CModelObject *mdl, qPhysicsSh
 	PxVec3 dimensions(5,5,5);
 	PxBoxGeometry geometry(dimensions);
     
-	//PxMaterial* mMaterial = this->mSDK->createMaterial(0.3,0.2,0.1);
-	PxMaterial* mMaterial = this->mSDK->createMaterial(0.0,0.0,0.0);
+	PxMaterial* mMaterial = this->mSDK->createMaterial(0.3,0.2,0.1);
+	//PxMaterial* mMaterial = this->mSDK->createMaterial(0.5,0.5,0.5);
 
 	PxRigidDynamic *actor = PxCreateDynamic(*this->mSDK, transform, geometry, *mMaterial, density);
     //actor->setAngularDamping(0.75);

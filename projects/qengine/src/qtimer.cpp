@@ -78,7 +78,7 @@ double CTimer::GetElapsedMilliSec()
 
 double CTimer::GetElapsedSec()
 {
-	return GetElapsedMilliSec() * 0.001;
+	return GetElapsedMicroSec() * 0.000001;
 }
 
 TIME CTimer::GetElapsed()
