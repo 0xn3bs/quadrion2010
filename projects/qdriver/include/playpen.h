@@ -391,9 +391,9 @@ static void PlayInit()
 	g_pModelManager->SetTexturePath("Media/Textures/");
 
 	// adding a root model and one instance model;
-	//g_hModelHandle = g_pModelManager->AddModel( "glock18c.3DS", "Media/Models/" );
-	int mHandle = g_pModelManager->AddModel( "glock18c.3DS", "Media/Models/" );
-	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", mHandle );
+	//g_hModelHandle = g_pModelManager->AddModel( "AsteroidSmall.3DS", "Media/Models/" );
+	int mHandle = g_pModelManager->AddModel( "AsteroidSmall.3DS", "Media/Models/" );
+	CModelObject* mdl = g_pModelManager->GetModel( "AsteroidSmall.3DS", "Media/Models/", mHandle );
 
 	vec3f min, max, center;
 	mdl->GetAABB(min, max);
@@ -419,9 +419,9 @@ static void PlayInit()
 
 	for(int a = 0;a < 100;a++)
 	{
-		mHandle = g_pModelManager->AddModel( "glock18c.3DS", "Media/Models/" );
+		mHandle = g_pModelManager->AddModel( "AsteroidSmall.3DS", "Media/Models/" );
 
-		mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", mHandle );
+		mdl = g_pModelManager->GetModel( "AsteroidSmall.3DS", "Media/Models/", mHandle );
 
 		mat4 id;
 		QMATH_MATRIX_LOADIDENTITY( id );
@@ -432,7 +432,7 @@ static void PlayInit()
 		mdl->BindNormalmapTexture( -1 );
 		mdl->CreateFinalTransform(id);
 
-		//g_pModelManager->UpdateModelOrientation("glock18c.3DS", "Media/Models/", mHandle, id);
+		//g_pModelManager->UpdateModelOrientation("AsteroidSmall.3DS", "Media/Models/", mHandle, id);
 
 		//bHandle = g_pPhysicsWorld->addRigidBody(20.0f, mdl, convex_mesh->getCollisionShape());
 		//bHandle = g_pPhysicsWorld->addBox(20.0f, vec3f(0.0f, 60.0f, 0.0f), max - center, mdl);
@@ -442,7 +442,7 @@ static void PlayInit()
 		glockObject GO = {bHandle, mHandle};
 		glockObjectList.push_back(GO);
 	}
-	//g_pModelManager->PushInstances("glock18c.3DS", "Media/Models/");
+	//g_pModelManager->PushInstances("AsteroidSmall.3DS", "Media/Models/");
 
 	
 	/*mat4 id;
@@ -487,12 +487,13 @@ void PlayUpdate();
 
 void RenderGrid(vec3f pos)
 {
+	int lineSpaceing = 1;
 	pos.y = 0;
 	//pos.x = (int)(pos.x/5);
 	//pos.z = (int)(pos.z/5);
-	int tx = ((int)(pos.x))%5;
+	int tx = ((int)(pos.x))%lineSpaceing;
 	pos.x = pos.x/1 + tx;
-	int tz = ((int)(pos.z))%5;
+	int tz = ((int)(pos.z))%lineSpaceing;
 	pos.z = pos.z/1 + tz;
 
 	int size = 500;
@@ -500,9 +501,9 @@ void RenderGrid(vec3f pos)
 	{
 		//for(int y = -100;y < 100;y++)
 		//{
-			g_pRender->RenderLine(vec3f(x*5,0,-size*5), vec3f(x*5,0,size*5), QRENDER_MAKE_ARGB(0x80, 10,100,10));
+			g_pRender->RenderLine(vec3f(x*lineSpaceing,0,-size*lineSpaceing), vec3f(x*lineSpaceing,0,size*lineSpaceing), QRENDER_MAKE_ARGB(0x80, 10,100,10));
 			
-			g_pRender->RenderLine(vec3f(-size*5, 0, x*5), vec3f(size*5, 0, x*5), QRENDER_MAKE_ARGB(0x80, 10,100,10));
+			g_pRender->RenderLine(vec3f(-size*lineSpaceing, 0, x*lineSpaceing), vec3f(size*lineSpaceing, 0, x*lineSpaceing), QRENDER_MAKE_ARGB(0x80, 10,100,10));
 		//}
 	}
 	//g_pRender->RenderLine(vec3f(0,0,0), vec3f(1000,1000,1000), QRENDER_MAKE_ARGB(0xFF, 255,255,255));
@@ -577,7 +578,7 @@ static void PlayRender()
 	//g_pEventRegistry->process_events();
 	PlayUpdate();
 
-	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", 0 );
+	CModelObject* mdl = g_pModelManager->GetModel( "AsteroidSmall.3DS", "Media/Models/", 0 );
 	 
 
 //	g_pPhysicsWorld->updateCenterOfMassOffest(handle, mdl);
@@ -599,7 +600,7 @@ static void PlayRender()
 		(*it).bodyHandle->getPose(rot);
 		//trans.getOpenGLMatrix(rot);
 		//QMATH_MATRIX_TRANSPOSE(rot);
-		g_pModelManager->UpdateModelOrientation("glock18c.3DS", "Media/Models/", (*it).modelHandle, rot);
+		g_pModelManager->UpdateModelOrientation("AsteroidSmall.3DS", "Media/Models/", (*it).modelHandle, rot);
 	}
 
 	//mat4 pose;
@@ -607,23 +608,23 @@ static void PlayRender()
 
 	//QMATH_MATRIX_LOADIDENTITY(pose);
 
-	//g_pModelManager->UpdateModelOrientation("glock18c.3DS", "Media/Models/", 0, pose);
+	//g_pModelManager->UpdateModelOrientation("AsteroidSmall.3DS", "Media/Models/", 0, pose);
 
-	//g_pModelManager->PushInstances("glock18c.3DS", "Media/Models/");
+	//g_pModelManager->PushInstances("AsteroidSmall.3DS", "Media/Models/");
 	
     /*
 	handle->getMotionState()->getWorldTransform(trans);
 	trans.getOpenGLMatrix(rot);
 	QMATH_MATRIX_TRANSPOSE(rot);
-	g_pModelManager->UpdateModelOrientation("glock18c.3DS", "Media/Models/", g_hModelHandle, rot);
-	g_pModelManager->PushInstances("glock18c.3DS", "Media/Models/");
+	g_pModelManager->UpdateModelOrientation("AsteroidSmall.3DS", "Media/Models/", g_hModelHandle, rot);
+	g_pModelManager->PushInstances("AsteroidSmall.3DS", "Media/Models/");
 	}
 	*/
 
 
 	RenderSkybox();
 
-	g_pModelManager->PushInstances("glock18c.3DS", "Media/Models/");
+	g_pModelManager->PushInstances("AsteroidSmall.3DS", "Media/Models/");
 
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_ENABLEWRITE);
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_LEQUAL);
@@ -669,7 +670,7 @@ static void PlayRender()
 	double ft = frameTimer->GetElapsedMilliSec();
 	std::ostringstream ft_ss;
 	ft_ss << "Frame time: " << ft << "ms";
-	//RenderGrid(camPos);
+	RenderGrid(camPos);
 	font->WriteText(ft_ss.str(), vec2f(3,0), vec2f(0,0), FONT_ALIGN_LEFT, QRENDER_MAKE_ARGB(0xFF, 255,255,0));
 	//g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DEFAULT);
 	g_pRender->DisableAlphaBlending();
