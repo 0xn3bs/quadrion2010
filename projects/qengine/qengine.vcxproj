@@ -93,19 +93,20 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>include;..\shared\include;..\..\angelscript\include;..\..\bullet\include;..\qdriver\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;UNICODE;NDEBUG;_WINDOWS;_USRDLL;QRENDER_EXPORTS;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_SECURE_SCL 0;_HAS_ITERATOR_DEBUGGING 0;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>include;..\shared\include;..\qdriver\include;..\..\bullet\include;..\..\angelscript\include;..\..\PhysX\include\PhysXAPI;..\..\PhysX\include\PxToolkit\include;..\..\PhysX\include\;..\..\PhysX\include\PhysXAPI\common;..\..\PhysX\include\PhysXAPI\cooking;..\..\PhysX\include\PhysXAPI\deformable;..\..\PhysX\include\PhysXAPI\deprecated;..\..\PhysX\include\PhysXAPI\extensions;..\..\PhysX\include\PhysXAPI\foundation;..\..\PhysX\include\PhysXAPI\foundation\internal\include;..\..\PhysX\include\PhysXAPI\geometry;..\..\PhysX\include\PhysXAPI\gpu;..\..\PhysX\include\PhysXAPI\patricles;..\..\PhysX\include\PhysXAPI\pvd;..\..\PhysX\include\PhysXAPI\pxtask\include;..\..\PhysX\include\PhysXAPI\vehicle;..\..\PhysX\include\PhysXAPI\foundation\windows;..\..\PhysX\include\PhysXCommon\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;UNICODE;_WINDOWS;_USRDLL;QRENDER_EXPORTS;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_SECURE_SCL 0;_HAS_ITERATOR_DEBUGGING 0;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level1</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;angelscript.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BulletFileLoader.lib;BulletWorldImporter.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;angelscript.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BulletFileLoader.lib;BulletWorldImporter.lib;PhysX3Cooking_x86.lib;PhysX3_x86.lib;SimulationController.lib;LowLevel.lib;PhysXProfileSDK.lib;PhysX3Extensions.lib;Foundation.lib;SceneQuery.lib;GeomUtils.lib;PhysX3Common.lib;PhysX3CharacterKinematic.lib;PvdRuntime.lib;PhysX3MetaData.lib;RepX3.lib;PxTask.lib;PhysX3Vehicle.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)/build/qengine.dll</OutputFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)/angelscript/lib;$(SolutionDir)/bullet/lib/Release;$(SolutionDir)/build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/PhysX/lib/win32/;$(SolutionDir)/angelscript/lib;$(SolutionDir)/bullet/lib/Release;$(SolutionDir)/build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>

@@ -1,4 +1,4 @@
-float moveSpeed = 10.0f;
+float moveSpeed = 200.0f;
 
 class sMouse
 {
@@ -111,50 +111,4 @@ void updateMovement(CCamera @cam)
 	//	cam.RotateByMouse(MOUSE.x, MOUSE.y, 1400/2, 900/2);
 	
 	cam.Apply();
-}
-
-void ON_EVENT(qevent @evt, qobject @obj)
-{
-	CCamera @view = cast<CCamera>(@obj);
-	switch(evt.type())
-	{
-		case EVENT_KEY :
-		{
-			switch(evt.get_key_code())
-			{
-				case VK_A :
-				{
-					view.MoveCameraRelative(-1.0f, 0.0f, 0.0f);
-					break;
-				}
-				case VK_D :
-				{
-					view.MoveCameraRelative(1.0f, 0.0f, 0.0f);
-					break;
-				}
-				case VK_W :
-				{
-					view.MoveCameraRelative(0.0f, 0.0f, 1.0f);
-					break;
-				}
-				case VK_S :
-				{
-					view.MoveCameraRelative(0.0f, 0.0f, -1.0f);
-					break;
-				}
-				case VK_Q :
-				{
-					killApp();
-					break;
-				}
-			}
-			break;
-		}
-		case EVENT_MOUSE :
-		{
-			//view.RotateByMouse( evt.get_mouse_x(), evt.get_mouse_y(), 1400 / 2, 900 / 2 );
-			break;
-		}
-	}
-	view.Apply();
 }

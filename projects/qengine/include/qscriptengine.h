@@ -29,6 +29,8 @@
 
 void QSCRIPTEXPORT_API SCRIPT_ERROR(const char *format, ...);
 
+#ifdef _DEBUG
+
 ///////////////////////
 #define REGISTER_CLASS(ENGINE, NAME, CLASS)																									\
 if(ENGINE->hasObjectType(NAME) < 0)																											\
@@ -70,6 +72,52 @@ printf("Global property '%s' is already defined.\n", DECLARATION);							\
 ENGINE->getScriptLibrary()->add(NAME, FUNCTION);		\
 
 ///////////////////////
+
+#else
+
+///////////////////////
+#define REGISTER_CLASS(ENGINE, NAME, CLASS)																									\
+if(ENGINE->hasObjectType(NAME) < 0)																											\
+{																																			\
+ENGINE->getEngine()->RegisterObjectType(NAME, sizeof(CLASS), asOBJ_REF);													\
+ENGINE->getEngine()->RegisterObjectBehaviour(NAME, asBEHAVE_FACTORY, NAME" @f()", asFUNCTION(factory), asCALL_CDECL);		\
+\
+ENGINE->getEngine()->RegisterObjectBehaviour(NAME, asBEHAVE_FACTORY, NAME" @f(const "NAME"&in)", asFUNCTION(copyFactory), asCALL_CDECL);		\
+\
+ENGINE->getEngine()->RegisterObjectBehaviour(NAME, asBEHAVE_ADDREF, "void f()", asMETHOD(CLASS,addRef), asCALL_THISCALL);	\
+ENGINE->getEngine()->RegisterObjectBehaviour(NAME, asBEHAVE_RELEASE, "void f()", asMETHOD(CLASS,release), asCALL_THISCALL);\
+}else																																		\
+{																																			\
+printf("Class name '%s' is already defined.\n", NAME);																					\
+}																																			\
+
+
+#define REGISTER_METHOD(ENGINE, NAME, CLASS, PROTO, FUNC)														\
+if(ENGINE->objectHasMethod(NAME, PROTO) < 0)																	\
+ENGINE->getEngine()->RegisterObjectMethod(NAME, PROTO, asMETHOD(CLASS,FUNC), asCALL_THISCALL);	\
+else																											\
+printf("Method name '%s' for class '%s' is already defined.\n", PROTO, NAME);								\
+
+
+#define REGISTER_GLOBAL_FUNCTION(ENGINE, PROTO, FUNC)												\
+if(ENGINE->hasFunction(PROTO) < 0)																	\
+ENGINE->getEngine()->RegisterGlobalFunction(PROTO, asFUNCTION(FUNC), asCALL_CDECL);\
+else																								\
+printf("Global function '%s' is already defined.\n", PROTO);											\
+
+
+#define REGISTER_GLOBAL_PROPERTY(ENGINE, DECLARATION, PROPERTY)						\
+if(ENGINE->hasProperty(DECLARATION) < 0)											\
+ENGINE->getEngine()->RegisterGlobalProperty(DECLARATION, PROPERTY);\
+else																				\
+printf("Global property '%s' is already defined.\n", DECLARATION);							\
+
+#define REGISTER_TO_LIBRARY(ENGINE, NAME, FUNCTION)		\
+ENGINE->getScriptLibrary()->add(NAME, FUNCTION);		\
+
+///////////////////////
+
+#endif
 
 class qscriptmodule;
 class qscriptexec;
