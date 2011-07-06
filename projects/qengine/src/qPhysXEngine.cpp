@@ -59,7 +59,7 @@ void qPhysXEngine::init()
 
 	PxSceneDesc sceneDesc(this->mSDK->getTolerancesScale());
 
-	sceneDesc.gravity=PxVec3(0.0f, -983.1f, 0.0f);
+	sceneDesc.gravity=PxVec3(0.0f, 0.0f, 0.0f);
 
     if(!sceneDesc.cpuDispatcher)
 	{
