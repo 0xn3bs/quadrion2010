@@ -395,7 +395,7 @@ static void PlayInit()
 	mat4 id;
 	qRigidBody* bHandle;
 
-	for(int a = 0; a < 100; a++)
+	for(int a = 0; a < 500; a++)
 	{
 		mHandle = g_pModelManager->AddModel( "AsteroidSmall.3DS", "Media/Models/" );
 
@@ -404,7 +404,7 @@ static void PlayInit()
 		mat4 id;
 		QMATH_MATRIX_LOADIDENTITY( id );
 		mdl->SetModelPos( vec3f( rand()%500-250, rand()%50 + 182.88, rand()%500-250 ) );
-		mdl->SetModelScale( vec3f( 1.0f, 1.0f, 1.0f ) );
+		mdl->SetModelScale( vec3f( 0.1f, 0.1f, 0.1f ) );
 		mdl->SetModelOrientation( id );
 		mdl->BindDiffuseTexture(0);
 		mdl->BindNormalmapTexture( -1 );
@@ -572,10 +572,15 @@ static void PlayRender(const float totalTime)
 	btTransform trans;
 	mat4 rot;
 	std::vector<glockObject>::iterator it;
+	CModelObject* pModel = NULL;
 	for(it = glockObjectList.begin(); it != glockObjectList.end(); it++)
 	{
 		//(*it).bodyHandle->getMotionState()->getWorldTransform(trans);
 		(*it).bodyHandle->getPose(rot);
+
+		pModel = g_pModelManager->GetModel("AsteroidSmall.3DS", "Media/Models/", (*it).modelHandle);
+		pModel->SetModelOrientation(rot);
+		pModel->CreateFinalTransform(rot);
 		//trans.getOpenGLMatrix(rot);
 		//QMATH_MATRIX_TRANSPOSE(rot);
 		g_pModelManager->UpdateModelOrientation("AsteroidSmall.3DS", "Media/Models/", (*it).modelHandle, rot);

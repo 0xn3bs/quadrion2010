@@ -38,7 +38,7 @@ class QMODELOBJECTEXPORT_API CModelObject
 
 		bool				LoadEffect(const std::string& fxName, const std::string& fxPath = "./");
 		
-		void				CreateFinalTransform(mat4& M);
+		virtual void		CreateFinalTransform(mat4& M);
 		
 		const inline void	MakeInvisible() { m_bIsRenderable = false; }
 		const inline void	MakeVisible() { m_bIsRenderable = true; }
@@ -109,6 +109,8 @@ class QMODELOBJECTEXPORT_API CModelObjectInstance : public CModelObject
 		
 		void		SetModelOrientation(const mat4& m);
 		void		GetModelOrientation(mat4& out);
+
+		void		CreateFinalTransform(mat4& M);
 		
 		void		RenderModel();
 		
