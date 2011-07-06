@@ -82,6 +82,7 @@ void CModelObject::CreateFinalTransform(mat4& M)
 	QMATH_MATRIX_MULTIPLY(S, T, T);
 	QMATH_MATRIX_MULTIPLY(m_modelPose, T, m_modelPose); 
 
+	QMATH_MATRIX_COPY(M, m_modelPose);
 //	g_pRender->MulMatrix(QRENDER_MATRIX_MODEL, m_modelPose);
 //
 //	QMATH_MATRIX_COPY(M, m_modelPose);
@@ -134,6 +135,18 @@ void CModelObjectInstance::SetModelOrientation(const mat4& m)
 void CModelObjectInstance::GetModelOrientation(mat4& out)
 {
 	QMATH_MATRIX_COPY(out, m_orientation);
+}
+
+void CModelObjectInstance::CreateFinalTransform(mat4& M)
+{
+	mat4 T, S, NT, TMP;
+
+	QMATH_MATRIX_LOADTRANSLATION(T, vec3f(-m_modelCenter));
+	QMATH_MATRIX_LOADSCALE(S, vec3f(m_modelScale));
+	QMATH_MATRIX_MULTIPLY(S, T, T);
+	QMATH_MATRIX_MULTIPLY(m_orientation, T, m_orientation); 	
+
+	QMATH_MATRIX_COPY(M, m_orientation);
 }
 
 
