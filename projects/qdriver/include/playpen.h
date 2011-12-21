@@ -38,8 +38,8 @@
 #include "qRigidBody.h"
 
 // PhysX physics implementation //
-#include "qPhysXEngine.h"
-#include "qRigidBodyPhysX.h"
+//#include "qPhysXEngine.h"
+//#include "qRigidBodyPhysX.h"
 
 qRigidBody *box;
 
@@ -63,9 +63,10 @@ qphysicsengine *g_pPhysicsWorld;
 qscriptexec*	camMovement;
 qscriptexec*	keysUpdate;
 
-qPhysicsEngine *PE;
+//qPhysicsEngine *PE;
 
 CFont *font;
+CModelObject** g_pModelObjects;
 
 qPhysicsMesh *convex_mesh;
 SWF	*g_pSWF;
@@ -107,7 +108,7 @@ skybox* g_pSkybox;
 
 struct glockObject
 {
-	qRigidBody*		bodyHandle;
+	btRigidBody*		bodyHandle;
 	int				modelHandle;
 };
 
@@ -337,11 +338,11 @@ static void PlayInit()
 
 	// physics init //
 	g_pPhysicsWorld = new qphysicsengine();
-	g_pPhysicsWorld->setGravity(0.0f, -32.2f, 0.0f);
+	g_pPhysicsWorld->setGravity(0.0f, -0.5f, 0.0f);
 
 	// new physics init //
-	PE = new qPhysXEngine();
-	PE->init();
+//	PE = new qPhysXEngine();
+//	PE->init();
 
 	//box = PE->addRigidBody(10.0f, NULL, qPhysicsShape());
 
@@ -393,18 +394,25 @@ static void PlayInit()
 	int mHandle;
 	CModelObject* mdl;
 	mat4 id;
-	qRigidBody* bHandle;
-
-	for(int a = 0; a < 500; a++)
+	btRigidBody* bHandle;
+	
+	g_pModelObjects = new CModelObject*[100];
+	for(int a = 0; a < 100; a++)
 	{
-		mHandle = g_pModelManager->AddModel( "AsteroidSmall.3DS", "Media/Models/" );
+		mHandle = g_pModelManager->AddModel( "glock18c.3DS", "Media/Models/", g_pModelObjects[a] );
+		
 
-		mdl = g_pModelManager->GetModel( "AsteroidSmall.3DS", "Media/Models/", mHandle );
+		mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", mHandle );
+		if(a == 0)
+		{
+			convex_mesh = new qPhysicsMesh3DS(mdl);
+			convex_mesh->processMesh();
+		}
 
 		mat4 id;
 		QMATH_MATRIX_LOADIDENTITY( id );
-		mdl->SetModelPos( vec3f( rand()%500-250, rand()%50 + 182.88, rand()%500-250 ) );
-		mdl->SetModelScale( vec3f( 0.1f, 0.1f, 0.1f ) );
+		mdl->SetModelPos( vec3f( rand()%1000-500, rand()%1000 - 500, rand()%1000-500 ) );
+		mdl->SetModelScale( vec3f( 0.9f, 0.9f, 0.9f ) );
 		mdl->SetModelOrientation( id );
 		mdl->BindDiffuseTexture(0);
 		mdl->BindNormalmapTexture( -1 );
@@ -412,10 +420,15 @@ static void PlayInit()
 
 		//g_pModelManager->UpdateModelOrientation("AsteroidSmall.3DS", "Media/Models/", mHandle, id);
 
-		//bHandle = g_pPhysicsWorld->addRigidBody(20.0f, mdl, convex_mesh->getCollisionShape());
-		//bHandle = g_pPhysicsWorld->addBox(20.0f, vec3f(0.0f, 60.0f, 0.0f), max - center, mdl);
-		 bHandle = PE->addRigidBody(10.0f, mdl, qPhysicsShape());
-		//bHandle->applyTorqueImpulse(btVector3(rand()%400-200, rand()%400-200, rand()%400-200));
+//		bHandle = (qRigidBody*)g_pPhysicsWorld->addRigidBody(20.0f, mdl, convex_mesh->getCollisionShape());
+//		bHandle = g_pPhysicsWorld->addBox(20.0f, vec3f(0.0f, 60.0f, 0.0f), max - mdl->GetModelPos(), mdl);
+
+		vec3f mdlMin, mdlMax;
+		mdl->GetAABB(mdlMin, mdlMax);
+		bHandle = g_pPhysicsWorld->addBox(20.0f, mdl->GetModelPos(), mdlMax - mdlMin, mdl);
+//		 bHandle = PE->addRigidBody(10.0f, mdl, qPhysicsShape());
+//		bHandle->applyTorqueImpulse(btVector3(rand()%400-200, rand()%400-200, rand()%400-200));
+		bHandle->applyCentralImpulse(btVector3(rand() % 20 - 10, rand() % 20 - 10, rand() % 20  - 10));
 
 		glockObject GO = {bHandle, mHandle};
 		glockObjectList.push_back(GO);
@@ -534,9 +547,9 @@ static void PlayRender(const float totalTime)
 	hdr_tgt->Clear();
 	hdr_tgt->BindRenderTarget(0);
 	//g_pPhysicsWorld->renderBodies(g_pCamera);
-	//g_pPhysicsWorld->step(timer->GetElapsedSec());
+//	g_pPhysicsWorld->step(timer->GetElapsedSec());
 
-	PE->step(timer->GetElapsedSec());
+//	PE->step(timer->GetElapsedSec());
 	timer->Start();
 
 	//g_pPhysicsWorld->step(1/60.0f);
@@ -556,7 +569,7 @@ static void PlayRender(const float totalTime)
 	//g_pEventRegistry->process_events();
 	PlayUpdate();
 
-	CModelObject* mdl = g_pModelManager->GetModel( "AsteroidSmall.3DS", "Media/Models/", 0 );
+	CModelObject* mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", 0 );
 	 
 
 //	g_pPhysicsWorld->updateCenterOfMassOffest(handle, mdl);
@@ -571,19 +584,26 @@ static void PlayRender(const float totalTime)
 	
 	btTransform trans;
 	mat4 rot;
+	int i;
 	std::vector<glockObject>::iterator it;
 	CModelObject* pModel = NULL;
-	for(it = glockObjectList.begin(); it != glockObjectList.end(); it++)
+	float m[16];
+	for(it = glockObjectList.begin(), i = 0; it != glockObjectList.end(); it++, ++i)
 	{
 		//(*it).bodyHandle->getMotionState()->getWorldTransform(trans);
-		(*it).bodyHandle->getPose(rot);
+//		(*it).bodyHandle->getPose(rot);
+		trans = (*it).bodyHandle->getCenterOfMassTransform();
+		trans.getOpenGLMatrix(m);
+		QMATH_MATRIX_TRANSPOSE(m);
 
-		pModel = g_pModelManager->GetModel("AsteroidSmall.3DS", "Media/Models/", (*it).modelHandle);
-		pModel->SetModelOrientation(rot);
-		pModel->CreateFinalTransform(rot);
+		pModel = g_pModelObjects[i];//g_pModelManager->GetModel("AsteroidSmall.3DS", "Media/Models/", (*it).modelHandle);
+		pModel->SetModelOrientation(m);
+		pModel->CreateFinalTransform(m);
 		//trans.getOpenGLMatrix(rot);
 		//QMATH_MATRIX_TRANSPOSE(rot);
-		g_pModelManager->UpdateModelOrientation("AsteroidSmall.3DS", "Media/Models/", (*it).modelHandle, rot);
+//		g_pModelManager->UpdateModelOrientation(pModel, m);
+		pModel->SetModelOrientation(m);
+//		g_pModelManager->UpdateModelOrientation("AsteroidSmall.3DS", "Media/Models/", (*it).modelHandle, m);
 	}
 
 	//mat4 pose;
@@ -608,15 +628,23 @@ static void PlayRender(const float totalTime)
 	frameTimer->Start();
 	RenderSkybox();
 
-	g_pHDRPipeline->SetMiddleGrey(0.6f);
-	g_pHDRPipeline->SetBloomScale(2.4f);
-	g_pHDRPipeline->SetBrightnessThreshold(1.5f);
-	g_pHDRPipeline->SetBrightnessOffset(2.0f);
-	g_pHDRPipeline->SetAdaptationFactor(60.0f);
-	g_pHDRPipeline->SetDepthTarget(QRENDER_DEFAULT);
-	g_pHDRPipeline->Render();
+	// Render Model //
+	CModelObject* root = g_pModelManager->GetRoot("glock18c.3DS", "Media/Models/");
+	int nInstances = g_pModelManager->GetInstanceCount("glock18c.3DS", "Media/Models/");
+	memcpy(root->m_modelInstanceMatrices, root->m_modelPose, sizeof(float) * 16);
+	for(int i = 1; i < nInstances; ++i)
+	{
+		CModelObjectInstance* inst = (CModelObjectInstance*)g_pModelObjects[i];
+		memcpy((void*)&(root->m_modelInstanceMatrices[i * 16]), inst->m_orientation, sizeof(float) * 16);
+	}
 
-	g_pModelManager->PushInstances("AsteroidSmall.3DS", "Media/Models/");
+	CQuadrionInstancedVertexBuffer* vb = NULL;
+	for(int i = 0; i < root->m_vertexBufferHandles.size(); ++i)
+	{
+		vb = g_pRender->GetInstancedVertexBuffer(root->m_vertexBufferHandles[i]);
+		vb->UpdateInstanceBuffer(root->m_modelInstanceMatrices, root->m_nModelInstances);
+	}
+
 
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_ENABLEWRITE);
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_LEQUAL);
@@ -635,6 +663,18 @@ static void PlayRender(const float totalTime)
 	fx->EndEffect();
 	
 	g_pRender->ChangeDepthMode(QRENDER_ZBUFFER_DEFAULT);
+
+	g_pHDRPipeline->SetMiddleGrey(0.33f); // 0.6
+	g_pHDRPipeline->SetBloomScale(4.4f); // 2.4
+	g_pHDRPipeline->SetBrightnessThreshold(1.5f);
+	g_pHDRPipeline->SetBrightnessOffset(2.0f);
+	g_pHDRPipeline->SetAdaptationFactor(60.0f);
+	g_pHDRPipeline->SetDepthTarget(QRENDER_DEFAULT);
+	g_pHDRPipeline->Render();
+
+//	g_pModelManager->PushInstances("AsteroidSmall.3DS", "Media/Models/");
+	// Update model instances //
+	
 
 	/*
 	//vec3f bound_low, bound_high;

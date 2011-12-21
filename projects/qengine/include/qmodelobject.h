@@ -11,7 +11,7 @@
 #define __MODELOBJECT_H_
 
 
-#define	MAX_MODEL_INSTANCES		2048
+#define	MAX_MODEL_INSTANCES		65535
 
 #ifdef QRENDER_EXPORTS
 #define QMODELOBJECTEXPORT_API		__declspec(dllexport)
@@ -23,6 +23,7 @@ class QMODELOBJECTEXPORT_API CModelObject
 {
 	public:
 	
+		CModelObject(){}
 		CModelObject(const unsigned int handle, const std::string& name, const std::string& path = "./");
 		virtual ~CModelObject();
 		
@@ -58,6 +59,7 @@ class QMODELOBJECTEXPORT_API CModelObject
 
 		
 		const inline std::string	GetFileName() { return m_fileName; }
+		const inline std::string	GetFilePath() { return m_filePath; }
 		const inline int			GetEffectHandle() { return m_effectHandle; }
 		
 		// Set the diffuse texture's sampler location: all diffuse textures upon rendering will be bound to this unit //
@@ -66,7 +68,7 @@ class QMODELOBJECTEXPORT_API CModelObject
 		void		BindNormalmapTexture( const int& texUnit );
 
 	
-	protected:
+//	protected:
 	
 		friend class CModelManager;
 
@@ -104,6 +106,7 @@ class QMODELOBJECTEXPORT_API CModelObjectInstance : public CModelObject
 {
 	public:
 	
+		CModelObjectInstance(){}
 		CModelObjectInstance(const unsigned int handle, const std::string& name, const std::string& path = "./");
 		~CModelObjectInstance();
 		
@@ -117,9 +120,9 @@ class QMODELOBJECTEXPORT_API CModelObjectInstance : public CModelObject
 		bool		IsInstance() { return true; }
 		bool		IsActive() { return m_bIsActive; }
 	
-	protected:
-	
-	private:
+//	protected:
+//	
+//	private:
 
 		
 		
@@ -148,15 +151,19 @@ class QMODELOBJECTEXPORT_API CModelManager
 		CModelManager();
 		~CModelManager();
 		
-		int		AddModel( const std::string& name, const std::string& path, bool loadNormalmaps = false );
-		void	RemoveModel(const std::string& name, const std::string& path, const int& handle);
+		int				AddModel( const std::string& name, const std::string& path, CModelObject* &ret, bool loadNormalmaps = false );
+		void			RemoveModel(const std::string& name, const std::string& path, const int& handle);
 		
 		static void	RenderVisibleModelsBSPCallback(void* self);
 		void			RenderVisibleModelsBSP();
 
 		
 		CModelObject*			GetModel(const std::string& name, const std::string& path, const int& handle);
+		CModelObject*			GetRoot(const std::string& name, const std::string& path);
+		int						GetInstanceCount(const std::string& name, const std::string& path);
 		void					UpdateModelOrientation(const std::string& name, const std::string& path, int handle, const mat4& newPose);
+		void					UpdateModelOrientation(CModelObject* obj, const mat4& newPose);
+
 		void					PushInstances(const std::string& name, const std::string& path);
 
 		const inline void		SetEffectPath( const std::string& path ) { m_effectPath = path; }

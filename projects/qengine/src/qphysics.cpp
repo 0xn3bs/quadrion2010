@@ -145,7 +145,7 @@ btRigidBody *qphysicsengine::addRigidBody(float mass, CModelObject *model, btCol
 
 void qphysicsengine::step(float dt)
 {
-	this->world->stepSimulation(dt, 10);// might want to change the 5 to something calculated.
+	this->world->stepSimulation(dt);// might want to change the 5 to something calculated.
 }
 
 void qphysicsengine::renderBodies(CCamera *cam)

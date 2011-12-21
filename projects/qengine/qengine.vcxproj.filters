@@ -224,16 +224,10 @@
     <ClInclude Include="include\qphysicsengine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\qPhysXEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\qerrorlog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\qRigidBody.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\qRigidBodyPhysX.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\qfont.h">
@@ -436,13 +430,7 @@
     <ClCompile Include="src\qswf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\qPhysXEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\qerrorlog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\qRigidBodyPhysX.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\qRigidBody.cpp">
