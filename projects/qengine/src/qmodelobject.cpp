@@ -104,7 +104,7 @@ void CModelObject::CreateFinalTransform(mat4& M)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 
-CModelObjectInstance::CModelObjectInstance(const unsigned int handle, const std::string& name, const std::string& path) : CModelObject(handle, name, path)
+CModelObjectInstance::CModelObjectInstance(const unsigned int handle, const std::string& name, const std::string& path) //: CModelObject(handle, name, path)
 {
 	m_handle = handle;
 	m_fileName = path + name;
@@ -175,10 +175,13 @@ CModelManager::~CModelManager()
 
 
 
-int CModelManager::AddModel( const std::string& name, const std::string& path, bool loadNormalmaps )
+int CModelManager::AddModel( const std::string& name, const std::string& path, CModelObject* &ret, bool loadNormalmaps )
 {
 	if(name.empty() || path.empty())
+	{
+		ret = NULL;
 		return -1;
+	}
 	
 	
 	std::string file_name = path + name;
@@ -198,6 +201,7 @@ int CModelManager::AddModel( const std::string& name, const std::string& path, b
 				new_model = new CModelObjectInstance(i, name, path);
 				m_modelMap[file_name][i] = new_model;
 				m_modelMap[file_name][0]->m_nModelInstances++;
+				ret = new_model;
 				return i;
 			}
 		}
@@ -206,6 +210,7 @@ int CModelManager::AddModel( const std::string& name, const std::string& path, b
 		new_model = new CModelObjectInstance(size, name, path);
 		m_modelMap[file_name].push_back(new_model);
 		m_modelMap[file_name][0]->m_nModelInstances++;
+		ret = new_model;
 		return size;
 	}
 	
@@ -222,6 +227,7 @@ int CModelManager::AddModel( const std::string& name, const std::string& path, b
 			{
 				delete new_base; 
 				new_base = NULL;
+				ret = NULL;
 				return -1;
 			}
 		}
@@ -250,6 +256,7 @@ int CModelManager::AddModel( const std::string& name, const std::string& path, b
 //		}
 		
 		m_modelMap[file_name].push_back(new_base);
+		ret = new_base;
 		return 0;
 	}
 	
@@ -262,6 +269,7 @@ int CModelManager::AddModel( const std::string& name, const std::string& path, b
 			{
 				delete new_base;
 				new_base = NULL;
+				ret = NULL;
 				return -1;
 			}
 		}
@@ -271,6 +279,7 @@ int CModelManager::AddModel( const std::string& name, const std::string& path, b
 		{
 			delete new_base;
 			new_base = NULL;
+			ret = NULL;
 			return -1;
 		}
 		
@@ -287,6 +296,7 @@ int CModelManager::AddModel( const std::string& name, const std::string& path, b
 			{
 				delete new_base;
 				new_base = NULL;
+				ret = NULL;
 				return -1;
 			}
 		}
@@ -295,14 +305,17 @@ int CModelManager::AddModel( const std::string& name, const std::string& path, b
 		{
 			delete new_base;
 			new_base = NULL;
+			ret = NULL;
 			return -1;
 		}
 
 		m_modelMap[file_name].push_back(new_base);
+		ret = new_base;
 		return 0;
 	}
 	
 	// Fail //
+	ret = NULL;
 	return -1;
 }
 
@@ -315,6 +328,12 @@ CModelObject* CModelManager::GetModel(const std::string& name, const std::string
 		return m_modelMap[concat][handle];
 
 	return NULL;
+}
+
+CModelObject* CModelManager::GetRoot(const std::string& name, const std::string& path)
+{
+	std::string concat = path + name;
+	return m_modelMap[concat][0];
 }
 
 void CModelManager::UpdateModelOrientation(const std::string& name, const std::string& path, int handle, const mat4& newPose)
@@ -334,6 +353,21 @@ void CModelManager::UpdateModelOrientation(const std::string& name, const std::s
 			inst->SetModelOrientation(newPose);
 		}
 	}
+}
+
+void CModelManager::UpdateModelOrientation(CModelObject* obj, const mat4& newPose)
+{
+	std::string fPathAndName = obj->GetFileName();
+	if(obj == m_modelMap[fPathAndName][0])
+		m_modelMap[fPathAndName][0]->SetModelOrientation(newPose);
+	else
+		obj->SetModelOrientation(newPose);
+}
+
+int	CModelManager::GetInstanceCount(const std::string& name, const std::string& path)
+{
+	std::string concat = path + name;
+	return m_modelMap[concat].size();
 }
 
 void CModelManager::PushInstances(const std::string& name, const std::string& path)
