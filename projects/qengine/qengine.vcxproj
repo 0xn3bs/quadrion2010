@@ -20,10 +20,12 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -121,30 +123,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\angelscript\include\add_ons\scriptarray\scriptarray.cpp" />
-    <ClCompile Include="..\..\angelscript\include\add_ons\scriptbuilder\scriptbuilder.cpp" />
-    <ClCompile Include="..\..\angelscript\include\add_ons\scriptdictionary\scriptdictionary.cpp" />
-    <ClCompile Include="..\..\angelscript\include\add_ons\scriptfile\scriptfile.cpp" />
-    <ClCompile Include="..\..\angelscript\include\add_ons\scripthelper\scripthelper.cpp" />
-    <ClCompile Include="..\..\angelscript\include\add_ons\scriptmath3d\scriptmath3d.cpp" />
-    <ClCompile Include="..\..\angelscript\include\add_ons\scriptmath\scriptmath.cpp" />
-    <ClCompile Include="..\..\angelscript\include\add_ons\scriptstdstring\scriptstdstring.cpp" />
-    <ClCompile Include="..\..\angelscript\include\add_ons\scriptstring\scriptstring.cpp" />
-    <ClCompile Include="..\..\angelscript\include\add_ons\scriptstring\scriptstring_utils.cpp" />
-    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\bestfit.cpp" />
-    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\bestfitobb.cpp" />
-    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\cd_hull.cpp" />
-    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\cd_wavefront.cpp" />
-    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\concavity.cpp" />
-    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\ConvexBuilder.cpp" />
-    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\ConvexDecomposition.cpp" />
-    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\fitsphere.cpp" />
-    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\float_math.cpp" />
-    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\meshvolume.cpp" />
-    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\planetri.cpp" />
-    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\raytri.cpp" />
-    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\splitplane.cpp" />
-    <ClCompile Include="..\..\bullet\include\Extras\ConvexDecomposition\vlookup.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\H2v2.cpp" />
     <ClCompile Include="src\idct.cpp" />
@@ -155,32 +133,16 @@
     <ClCompile Include="src\qcamera.cpp" />
     <ClCompile Include="src\qeffect.cpp" />
     <ClCompile Include="src\qerrorlog.cpp" />
-    <ClCompile Include="src\qevent.cpp" />
-    <ClCompile Include="src\qeventhandler.cpp" />
-    <ClCompile Include="src\qeventlistener.cpp" />
-    <ClCompile Include="src\qeventregistry.cpp" />
     <ClCompile Include="src\qfile.cpp" />
     <ClCompile Include="src\qfont.cpp" />
     <ClCompile Include="src\qgeom.cpp" />
     <ClCompile Include="src\qindex_t.cpp" />
     <ClCompile Include="src\qindexbuffer.cpp" />
-    <ClCompile Include="src\qkeyeventlistener.cpp" />
     <ClCompile Include="src\qmath.cpp" />
     <ClCompile Include="src\qmd3.cpp" />
     <ClCompile Include="src\qmodel.cpp" />
     <ClCompile Include="src\qmodelobject.cpp" />
-    <ClCompile Include="src\qmotionstate.cpp" />
-    <ClCompile Include="src\qobject.cpp" />
-    <ClCompile Include="src\qphysics.cpp" />
-    <ClCompile Include="src\qphysicsmesh.cpp" />
-    <ClCompile Include="src\qphysicsshapedrawer.cpp" />
     <ClCompile Include="src\qrender.cpp" />
-    <ClCompile Include="src\qRigidBody.cpp" />
-    <ClCompile Include="src\qscriptable.cpp" />
-    <ClCompile Include="src\qscriptengine.cpp" />
-    <ClCompile Include="src\qscripteventhandler.cpp" />
-    <ClCompile Include="src\qscriptexec.cpp" />
-    <ClCompile Include="src\qscriptmodule.cpp" />
     <ClCompile Include="src\qswf.cpp" />
     <ClCompile Include="src\qtext.cpp" />
     <ClCompile Include="src\qtexture.cpp" />
@@ -191,30 +153,6 @@
     <ClCompile Include="src\stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\angelscript\include\add_ons\scriptarray\scriptarray.h" />
-    <ClInclude Include="..\..\angelscript\include\add_ons\scriptbuilder\scriptbuilder.h" />
-    <ClInclude Include="..\..\angelscript\include\add_ons\scriptdictionary\scriptdictionary.h" />
-    <ClInclude Include="..\..\angelscript\include\add_ons\scriptfile\scriptfile.h" />
-    <ClInclude Include="..\..\angelscript\include\add_ons\scripthelper\scripthelper.h" />
-    <ClInclude Include="..\..\angelscript\include\add_ons\scriptmath3d\scriptmath3d.h" />
-    <ClInclude Include="..\..\angelscript\include\add_ons\scriptmath\scriptmath.h" />
-    <ClInclude Include="..\..\angelscript\include\add_ons\scriptstdstring\scriptstdstring.h" />
-    <ClInclude Include="..\..\angelscript\include\add_ons\scriptstring\scriptstring.h" />
-    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\bestfit.h" />
-    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\bestfitobb.h" />
-    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\cd_hull.h" />
-    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\cd_vector.h" />
-    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\cd_wavefront.h" />
-    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\concavity.h" />
-    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\ConvexBuilder.h" />
-    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\ConvexDecomposition.h" />
-    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\fitsphere.h" />
-    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\float_math.h" />
-    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\meshvolume.h" />
-    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\planetri.h" />
-    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\raytri.h" />
-    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\splitplane.h" />
-    <ClInclude Include="..\..\bullet\include\Extras\ConvexDecomposition\vlookup.h" />
     <ClInclude Include="include\jpegdecoder.h" />
     <ClInclude Include="include\jpegref.h" />
     <ClInclude Include="include\q3dsmodel.h" />
@@ -222,36 +160,19 @@
     <ClInclude Include="include\qcamera.h" />
     <ClInclude Include="include\qeffect.h" />
     <ClInclude Include="include\qerrorlog.h" />
-    <ClInclude Include="include\qevent.h" />
-    <ClInclude Include="include\qeventhandler.h" />
-    <ClInclude Include="include\qeventlistener.h" />
-    <ClInclude Include="include\qeventregistry.h" />
     <ClInclude Include="include\qfile.h" />
     <ClInclude Include="include\qfont.h" />
     <ClInclude Include="include\qgeom.h" />
     <ClInclude Include="include\qhash.h" />
     <ClInclude Include="include\qindex_t.h" />
     <ClInclude Include="include\qindexbuffer.h" />
-    <ClInclude Include="include\qkeyeventlistener.h" />
     <ClInclude Include="include\qmath.h" />
     <ClInclude Include="include\qmd3.h" />
     <ClInclude Include="include\qmem.h" />
     <ClInclude Include="include\qmodel.h" />
     <ClInclude Include="include\qmodelobject.h" />
-    <ClInclude Include="include\qmotionstate.h" />
-    <ClInclude Include="include\qobject.h" />
-    <ClInclude Include="include\qphysics.h" />
-    <ClInclude Include="include\qphysicsengine.h" />
-    <ClInclude Include="include\qphysicsmesh.h" />
-    <ClInclude Include="include\qphysicsshapedrawer.h" />
     <ClInclude Include="include\qrender.h" />
     <ClInclude Include="include\qresource.h" />
-    <ClInclude Include="include\qRigidBody.h" />
-    <ClInclude Include="include\qscriptable.h" />
-    <ClInclude Include="include\qscriptengine.h" />
-    <ClInclude Include="include\qscripteventhandler.h" />
-    <ClInclude Include="include\qscriptexec.h" />
-    <ClInclude Include="include\qscriptmodule.h" />
     <ClInclude Include="include\qswf.h" />
     <ClInclude Include="include\qswf_types.h" />
     <ClInclude Include="include\qtext.h" />

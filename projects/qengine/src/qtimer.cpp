@@ -21,7 +21,6 @@
 */
 
 #include "qtimer.h"
-#include "qscriptengine.h"
 #include <stdlib.h>
 
 void CTimer::Start()
@@ -93,17 +92,4 @@ TIME CTimer::GetElapsed()
 	temp.Years = temp.Days * 0.00277777;
 
 	return temp;
-}
-
-void CTimer::REGISTER_SCRIPTABLES(qscriptengine *engine)
-{
-	REGISTER_CLASS(engine, "CTimer", CTimer);
-
-	REGISTER_METHOD(engine, "CTimer", CTimer, "void Start()", Start);
-	REGISTER_METHOD(engine, "CTimer", CTimer, "void Stop()", Stop);
-	REGISTER_METHOD(engine, "CTimer", CTimer, "void Reset()", Reset);
-
-	REGISTER_METHOD(engine, "CTimer", CTimer, "double GetElapsedMicroSec()", GetElapsedMicroSec); 
-	REGISTER_METHOD(engine, "CTimer", CTimer, "double GetElapsedMilliSec()", GetElapsedMilliSec);
-	REGISTER_METHOD(engine, "CTimer", CTimer, "double GetElapsedSec()", GetElapsedSec); 
 }

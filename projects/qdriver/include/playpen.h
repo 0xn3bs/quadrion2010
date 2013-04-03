@@ -13,68 +13,19 @@
 #include "hdrpipeline.h"
 #include <math.h>
 #include <list>
-
-#include "qscriptengine.h"
-#include "qscriptexec.h"
-#include "qscriptmodule.h"
-#include "angelscript.h"
-//#include "../../../angelscript/include/angelscript.h"
-
 #include "qerrorlog.h"
-#include "qeventregistry.h"
-#include "qevent.h"
-#include "qeventlistener.h"
-#include "qeventhandler.h"
-#include "qkeyeventlistener.h"
-#include "qscripteventhandler.h"
-#include "qobject.h"
-
-#include "qphysics.h"
-#include "qphysicsmesh.h"
-#include "btBulletDynamicsCommon.h"
-
-// new physics interface //
-#include "qphysicsengine.h"
-#include "qRigidBody.h"
-
-// PhysX physics implementation //
-//#include "qPhysXEngine.h"
-//#include "qRigidBodyPhysX.h"
-
-qRigidBody *box;
-
-#include "add_ons/scriptstring/scriptstring.h"
-#include "add_ons/scriptany/scriptany.h"
-
 #include "qswf.h"
-
 #include "qfont.h"
-
 #include <sstream>
 
-qscriptengine *g_pScriptEngine;
-qscriptexec *g_pScriptExec;
-qscriptexec *event_script;
-qscriptexec *cam;
-qscriptmodule *g_pScriptModule;
-qeventregistry *g_pEventRegistry;
-qphysicsengine *g_pPhysicsWorld;
 
-qscriptexec*	camMovement;
-qscriptexec*	keysUpdate;
-
-//qPhysicsEngine *PE;
 
 CFont *font;
 CModelObject** g_pModelObjects;
-
-qPhysicsMesh *convex_mesh;
 SWF	*g_pSWF;
 
 CTimer *timer;
 CTimer *frameTimer;
-
-btRigidBody *handle;
 
 static CCamera* g_pCamera = NULL;
 static CModelManager* g_pModelManager = NULL;
@@ -108,7 +59,7 @@ skybox* g_pSkybox;
 
 struct glockObject
 {
-	btRigidBody*		bodyHandle;
+//	btRigidBody*		bodyHandle;
 	int				modelHandle;
 };
 
@@ -117,25 +68,22 @@ std::vector<glockObject> glockObjectList;
 //// completely temporary solution ///
 
 
-short VK_KEY(CScriptString *str)
-{
-	return VkKeyScan(str->buffer.at(0));
-}
+
 
 void processKeys()
 {
 	for(int a = 0;a < 256;a++)
 	{
-		if(keys[a] == 1)
-		{
-			g_pEventRegistry->push_event(qevent(a, KEY_DOWN, EVENT_KEY));
-		}
+//		if(keys[a] == 1)
+//		{
+//			g_pEventRegistry->push_event(qevent(a, KEY_DOWN, EVENT_KEY));
+//		}
 	}
 
 	int mx = 0;
 				int my = 0;
 				g_pApp->GetMousePosition(mx, my);
-				g_pEventRegistry->push_event(qevent(mx, my, EVENT_MOUSE));
+	//			g_pEventRegistry->push_event(qevent(mx, my, EVENT_MOUSE));
 }
 
 static LRESULT CALLBACK PlaypenEventCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -325,60 +273,6 @@ static void PlayInit()
 	g_pModelManager = new CModelManager;
 	g_pHDRPipeline = new CHDRPipeline;
 
-
-	// scripting init //
-	g_pScriptEngine = new qscriptengine();
-	g_pScriptEngine->registerScriptable<qobject>();
-	g_pScriptEngine->registerScriptable<qevent>();
-	g_pScriptEngine->registerScriptable<CCamera>();
-	g_pScriptEngine->registerScriptable<CTimer>();
-
-	// event system //
-	g_pEventRegistry = new qeventregistry();
-
-	// physics init //
-	g_pPhysicsWorld = new qphysicsengine();
-	g_pPhysicsWorld->setGravity(0.0f, -0.5f, 0.0f);
-
-	// new physics init //
-//	PE = new qPhysXEngine();
-//	PE->init();
-
-	//box = PE->addRigidBody(10.0f, NULL, qPhysicsShape());
-
-	// TODO : write overloaded wrappers to AS
-	int r = g_pScriptEngine->getEngine()->RegisterGlobalFunction("float cosf(float)",  asFUNCTIONPR(cos, (float), float), asCALL_CDECL); assert( r >= 0);
-	r = g_pScriptEngine->getEngine()->RegisterGlobalFunction("float sinf(float)",  asFUNCTIONPR(sin, (float), float), asCALL_CDECL); assert( r >= 0);
-	//r = g_pScriptEngine->getEngine()->RegisterGlobalFunction("uint16 VK_KEY(uint8)",  asFUNCTIONPR(VkKeyScan, (float), float), asCALL_CDECL); assert( r >= 0);
-	REGISTER_GLOBAL_FUNCTION(g_pScriptEngine, "uint16 VK_KEY(string &in)", VK_KEY);
-	REGISTER_GLOBAL_FUNCTION(g_pScriptEngine, "void killApp()", killApp);
-	REGISTER_GLOBAL_FUNCTION(g_pScriptEngine, "bool isKeyDown(uint8 key)", isKeyDown);
-	REGISTER_GLOBAL_FUNCTION(g_pScriptEngine, "void GetMousePosition(int &out, int &out)", GetMousePosition);
-	//r = g_pScriptEngine->getEngine()->RegisterGlobalProperty("CCamera@ cam", &g_pCamera); assert( r >= 0);
-	
-
-	g_pScriptModule = g_pScriptEngine->pGetScriptModule("script");
-
-	// TODO : fix the from file loader..
-    //if(g_pScriptModule->addSectionFromFile("C:\Users\avansc\Desktop\quad2010\Media\Scriptstest.as") < 0) exit(-1);
-	//if(g_pScriptModule->addSection(on_event) < 0) exit(-1);
-
-	if(g_pScriptModule->addSectionFromFile("main.as", "Media/Scripts/") < 0) exit(-1);
-
-	if(g_pScriptModule->buildScript() < 0) exit(-1);
-
-	keysUpdate	= g_pScriptEngine->pGetScriptExec("script", "void updateKeyboard()");
-	camMovement	= g_pScriptEngine->pGetScriptExec("script", "void updateMovement(CCamera @cam)");
-
-	/*event_script = g_pScriptEngine->pGetScriptExec("script", "void ON_EVENT(qevent @evt, qobject @obj)");
-
-	qeventlistener *L = new qkeyeventlistener();
-	L->set_key(KEY_DOWN);
-	qeventhandler *H = new qscripteventhandler();
-	((qscripteventhandler*)H)->set_script_exe(event_script);
-
-	g_pEventRegistry->register_pair(L, H, g_pCamera);*/
-
 	int w = g_pApp->GetWindowWidth();
 	int h = g_pApp->GetWindowHeight();
 
@@ -394,20 +288,13 @@ static void PlayInit()
 	int mHandle;
 	CModelObject* mdl;
 	mat4 id;
-	btRigidBody* bHandle;
+//	btRigidBody* bHandle;
 	
 	g_pModelObjects = new CModelObject*[100];
 	for(int a = 0; a < 100; a++)
 	{
 		mHandle = g_pModelManager->AddModel( "glock18c.3DS", "Media/Models/", g_pModelObjects[a] );
-		
-
 		mdl = g_pModelManager->GetModel( "glock18c.3DS", "Media/Models/", mHandle );
-		if(a == 0)
-		{
-			convex_mesh = new qPhysicsMesh3DS(mdl);
-			convex_mesh->processMesh();
-		}
 
 		mat4 id;
 		QMATH_MATRIX_LOADIDENTITY( id );
@@ -418,19 +305,15 @@ static void PlayInit()
 		mdl->BindNormalmapTexture( -1 );
 		mdl->CreateFinalTransform(id);
 
-		//g_pModelManager->UpdateModelOrientation("AsteroidSmall.3DS", "Media/Models/", mHandle, id);
-
-//		bHandle = (qRigidBody*)g_pPhysicsWorld->addRigidBody(20.0f, mdl, convex_mesh->getCollisionShape());
-//		bHandle = g_pPhysicsWorld->addBox(20.0f, vec3f(0.0f, 60.0f, 0.0f), max - mdl->GetModelPos(), mdl);
-
 		vec3f mdlMin, mdlMax;
 		mdl->GetAABB(mdlMin, mdlMax);
-		bHandle = g_pPhysicsWorld->addBox(20.0f, mdl->GetModelPos(), mdlMax - mdlMin, mdl);
+//		bHandle = g_pPhysicsWorld->addBox(20.0f, mdl->GetModelPos(), mdlMax - mdlMin, mdl);
 //		 bHandle = PE->addRigidBody(10.0f, mdl, qPhysicsShape());
 //		bHandle->applyTorqueImpulse(btVector3(rand()%400-200, rand()%400-200, rand()%400-200));
-		bHandle->applyCentralImpulse(btVector3(rand() % 20 - 10, rand() % 20 - 10, rand() % 20  - 10));
+//		bHandle->applyCentralImpulse(btVector3(rand() % 20 - 10, rand() % 20 - 10, rand() % 20  - 10));
 
-		glockObject GO = {bHandle, mHandle};
+		glockObject GO;//= {bHandle, mHandle};
+		GO.modelHandle = mHandle;
 		glockObjectList.push_back(GO);
 	}
 	//g_pModelManager->PushInstances("AsteroidSmall.3DS", "Media/Models/");
@@ -558,12 +441,12 @@ static void PlayRender(const float totalTime)
 	
 	//keysUpdate->ctx->SetArgObject(0, &keys[0]);
 
-	camMovement->ctx->SetArgObject(0, g_pCamera);
-	camMovement->exec();
-	camMovement->reset();
+//	camMovement->ctx->SetArgObject(0, g_pCamera);
+//	camMovement->exec();
+//	camMovement->reset();
 
-	keysUpdate->exec();
-	keysUpdate->reset();
+//	keysUpdate->exec();
+//	keysUpdate->reset();
 	
 	//processKeys();
 	//g_pEventRegistry->process_events();
@@ -582,7 +465,7 @@ static void PlayRender(const float totalTime)
 	vec3f p = g_pCamera->GetPosition();
 	vec3f camPos = vec3f(p.x, p.y, p.z);
 	
-	btTransform trans;
+//	btTransform trans;
 	mat4 rot;
 	int i;
 	std::vector<glockObject>::iterator it;
@@ -592,9 +475,10 @@ static void PlayRender(const float totalTime)
 	{
 		//(*it).bodyHandle->getMotionState()->getWorldTransform(trans);
 //		(*it).bodyHandle->getPose(rot);
-		trans = (*it).bodyHandle->getCenterOfMassTransform();
-		trans.getOpenGLMatrix(m);
-		QMATH_MATRIX_TRANSPOSE(m);
+//		trans = (*it).bodyHandle->getCenterOfMassTransform();
+//		trans.getOpenGLMatrix(m);
+		QMATH_MATRIX_LOADIDENTITY(m);
+
 
 		pModel = g_pModelObjects[i];//g_pModelManager->GetModel("AsteroidSmall.3DS", "Media/Models/", (*it).modelHandle);
 		pModel->SetModelOrientation(m);
